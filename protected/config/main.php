@@ -1,13 +1,9 @@
 <?php
-
-// uncomment the following to define a path alias
-// Yii::setPathOfAlias('local','path/to/local-folder');
-
 // This is the main Web application configuration. Any writable
 // CWebApplication properties can be configured here.
 return array(
 	'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
-	'name'=>'Yii Blog Demo',
+	'name'=>'Kajak',
 
 	// preloading 'log' component
 	'preload'=>array('log'),
@@ -18,7 +14,7 @@ return array(
 		'application.components.*',
 	),
 
-	'defaultController'=>'post',
+	'defaultController'=>'site',
 
 	// application components
 	'components'=>array(
@@ -27,20 +23,13 @@ return array(
 			'allowAutoLogin'=>true,
 		),
 		'db'=>array(
-			'connectionString' => 'sqlite:protected/data/blog.db',
-			'tablePrefix' => 'tbl_',
-		),
-		// uncomment the following to use a MySQL database
-		/*
-		'db'=>array(
-			'connectionString' => 'mysql:host=localhost;dbname=blog',
+			'connectionString' => 'mysql:host=localhost;dbname=kajak',
 			'emulatePrepare' => true,
-			'username' => 'root',
-			'password' => '',
+			'username' => 'kajak',
+			'password' => 'pSSpPVmn7ZnPt6cE',
 			'charset' => 'utf8',
-			'tablePrefix' => 'tbl_',
+			'tablePrefix' => '',
 		),
-		*/
 		'errorHandler'=>array(
 			// use 'site/error' action to display errors
             'errorAction'=>'site/error',
@@ -48,9 +37,6 @@ return array(
         'urlManager'=>array(
         	'urlFormat'=>'path',
         	'rules'=>array(
-        		'post/<id:\d+>/<title:.*?>'=>'post/view',
-        		'posts/<tag:.*?>'=>'post/index',
-        		'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
         	),
         ),
 		'log'=>array(
@@ -60,17 +46,7 @@ return array(
 					'class'=>'CFileLogRoute',
 					'levels'=>'error, warning',
 				),
-				// uncomment the following to show log messages on web pages
-				/*
-				array(
-					'class'=>'CWebLogRoute',
-				),
-				*/
 			),
 		),
 	),
-
-	// application-level parameters that can be accessed
-	// using Yii::app()->params['paramName']
-	'params'=>require(dirname(__FILE__).'/params.php'),
 );

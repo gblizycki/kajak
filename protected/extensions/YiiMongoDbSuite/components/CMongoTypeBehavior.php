@@ -1,25 +1,47 @@
 <?php
+
 class CMongoTypeBehavior extends EMongoDocumentBehavior
 {
- public $attributes=array();
- public function beforeToArray($event)
- {
-  parent::beforeToArray($event);
-  $owner = $this->owner;
-  foreach($this->attributes as $atr=>$type)
-  {
-   switch($type)
-   {
-    case 'MongoId':if(!$owner->$atr instanceof MongoId)$owner->$atr=new MongoId($owner->$atr);break;
-    case 'MongoDate':if(!$owner->$atr instanceof MongoDate)$owner->$atr = ($owner->$atr instanceof int)?new MongoDate($owner->$atr):new MongoDate(strtotime($owner->$atr));break;
-    case 'GeoPoint':$owner->$atr=array((double)$owner->{$atr}[0],(double)$owner->{$atr}[1]);break;
-    default:if($owner->$atr !==null && strlen(trim($owner->$atr))!=0)
-     settype($owner->$atr,$type);
-    else
-     $owner->$atr = null;
-    break;
-   }
-  }
- }
+
+    public $attributes = array();
+
+    public function beforeToArray($event)
+    {
+        parent::beforeToArray($event);
+        foreach ($this->attributes as $atr => $type)
+        {
+            $this->owner->{$atr} = $this->setType($this->owner->{$atr}, $type);
+        }
+    }
+
+    private function setType($value, $type)
+    {
+        if (strpos($type, 'array.'))
+        {
+            $type = str_replace('array.', '', $type);
+            foreach ($value as $k => $v)
+            {
+                $value[$k] = $this->setType($v, $type);
+            }
+            return $value;
+        }
+        switch ($type)
+        {
+            case 'MongoId':if (!$value instanceof MongoId)
+                    $value = new MongoId($value);break;
+            case 'MongoDate':if (!$value instanceof MongoDate)
+                    $value = ($value instanceof int) ? new MongoDate($value) : new MongoDate(strtotime($value));break;
+            case 'GeoPoint':$value = array((double) $value[0], (double) $value[1]);
+                break;
+            default:if ($value !== null && strlen(trim($value)) != 0)
+                    settype($value, $type);
+                else
+                    $value = null;
+                break;
+        }
+        return $value;
+    }
+
 }
+
 ?>

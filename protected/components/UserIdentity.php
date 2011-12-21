@@ -8,22 +8,24 @@
 class UserIdentity extends CUserIdentity
 {
 	private $_id;
-
 	/**
 	 * Authenticates a user.
 	 * @return boolean whether authentication succeeds.
 	 */
 	public function authenticate()
 	{
-		$user=User::model()->find('LOWER(username)=?',array(strtolower($this->username)));
+        $criteria = new EMongoCriteria();
+        $criteria->email('==',strtolower($this->username));
+		$user=User::model()->find($criteria);//findAll(array('conditions'=>array('email'=>array('==',strtolower($this->username)))));//User::model()->find('LOWER(username)=?',array(strtolower($this->username)));
+                
 		if($user===null)
 			$this->errorCode=self::ERROR_USERNAME_INVALID;
-		else if(!$user->validatePassword($this->password))
+		else if($user->password !== $user->hashPassword($this->password,$user->salt))
 			$this->errorCode=self::ERROR_PASSWORD_INVALID;
 		else
 		{
-			$this->_id=$user->id;
-			$this->username=$user->username;
+			$this->_id=$user->_id;
+			$this->username=$user->email;
 			$this->errorCode=self::ERROR_NONE;
 		}
 		return $this->errorCode==self::ERROR_NONE;

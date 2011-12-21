@@ -210,8 +210,9 @@ class CWebUser extends CApplicationComponent implements IWebUser
 		$states=$identity->getPersistentStates();
 		if($this->beforeLogin($id,$states,false))
 		{
+                    
 			$this->changeIdentity($id,$identity->getName(),$states);
-
+                        
 			if($duration>0)
 			{
 				if($this->allowAutoLogin)
@@ -220,7 +221,6 @@ class CWebUser extends CApplicationComponent implements IWebUser
 					throw new CException(Yii::t('yii','{class}.allowAutoLogin must be set true in order to use cookie-based authentication.',
 						array('{class}'=>get_class($this))));
 			}
-
 			$this->afterLogin(false);
 		}
 	}

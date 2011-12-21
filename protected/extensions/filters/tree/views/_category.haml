@@ -1,0 +1,16 @@
+.category.#{$element['class']}
+    %input.hidden.value(value ="#{$element['value']}")
+    %input.hidden.parent(value ="#{$element['parent']}")
+    %h2 
+        -if($element['parent']!=null)
+            %span.explore ='&#171;'
+        =CHtml::link($element['name'],array('product/list','Product[categoryId]'=>$element['value']))
+    %ul
+        -foreach($element['subs'] as $e)
+            %li 
+                =CHtml::link($e['name'],array('product/list','Product[categoryId]'=>$e['value']))
+                %input.hidden.value(value ="#{$e['value']}")
+                -if(count($e['subs'])>0)
+                    %span.explore ='&#187;'
+-foreach($element['subs'] as $e)
+    -$this->render('_category',array('element'=>$e))

@@ -1,0 +1,7 @@
+.filter.tree
+    -if($this->formModel!=null)
+        =CHtml::activeHiddenField($this->formModel,$this->formModelAttribute,array('class'=>'filter-field'))
+    .name = $this->name
+    .content
+        -foreach($this->data as $element)
+            -$this->render('_category',array('element'=>$element))

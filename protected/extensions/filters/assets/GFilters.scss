@@ -1,0 +1,38 @@
+$filterColumnWidth = 200px;
+.filter.tree
+{
+    width: $filterColumnWidth;
+    overflow: hidden;
+    .content
+    {
+        width: 2000px;
+        position: relative;
+    }
+    .hidden
+    {
+        display: none;
+    }
+    .category
+    {
+        width: 0;
+        float: left;
+        overflow: hidden;
+        position: relative;
+        &.prev
+        {
+            display: block;
+            width: 0px;
+        }
+        &.actual
+        {
+            display: block;
+            width: 200px;
+        }
+        &.next
+        {
+            display: block;
+            width: 200px;
+        }
+        
+    }
+}

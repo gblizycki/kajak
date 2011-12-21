@@ -2,6 +2,7 @@
 
 class CMongoCriteria extends EMongoCriteria
 {
+    const INDEX_2D = '2d';
  /**
   * Add condidtion based on model value
   * @param type $column

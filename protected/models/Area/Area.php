@@ -12,6 +12,24 @@ class Area extends CMongoDocument
 {
 
     /**
+     * Points defining the area border
+     * @var array
+     */
+    public $points;
+
+    /**
+     * Create date
+     * @var MongoDate
+     */
+    public $createDate;
+
+    /**
+     * Modyfication/update date
+     * @var MongoDate
+     */
+    public $updateDate;
+
+    /**
      * Returns the static model of the specified AR class.
      * @return UserRights the static model class
      */
@@ -34,6 +52,7 @@ class Area extends CMongoDocument
     public function rules()
     {
         return array(
+            array('points, createDate, updateDate', 'safe')
         );
     }
 
@@ -43,6 +62,9 @@ class Area extends CMongoDocument
     public function attributeLabels()
     {
         return array(
+            'points' => 'Punkty',
+            'createDate' => 'Data stworzenia',
+            'updateDate' => 'Data modyfikacji',
         );
     }
 
@@ -53,6 +75,18 @@ class Area extends CMongoDocument
     public function behaviors()
     {
         return array(
+            'points' => array(
+                'class' => 'ext.YiiMongoDbSuite.extra.EEmbeddedArraysBehavior',
+                'arrayPropertyName' => 'points',
+                'arrayDocClassName' => 'Point'
+            ),
+            'timestamp' => array(
+                'class' => 'zii.behaviors.CTimestampBehavior',
+                'createAttribute' => 'createDate',
+                'updateAttribute' => 'updateDate',
+                'setUpdateOnCreate' => true,
+                'timestampExpression' => 'new MongoDate()'
+            ),
         );
     }
 
@@ -63,6 +97,26 @@ class Area extends CMongoDocument
     public function indexes()
     {
         return array(
+            'points' => array(
+                // key array holds list of fields for index
+                // you may define multiple keys for index and multikey indexes
+                // each key must have a sorting direction SORT_ASC or SORT_DESC
+                'key' => array(
+                    'points.location' => CMongoCriteria::INDEX_2D,
+                ),
+            ),
+        );
+    }
+
+    /**
+     * returns embedded documents
+     * @return array
+     */
+    public function embeddedDocuments()
+    {
+        return array(
+            'info' => 'Info',
+            'style' => 'Style',
         );
     }
 

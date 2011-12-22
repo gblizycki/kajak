@@ -12,6 +12,15 @@ class Route extends CMongoDocument
 {
 
     /**
+     * @var MongoId Author id (@see User) 
+     */
+    public $authorId;
+    /**
+     * @var MongoId Place category id (@see CategoryRoute)
+     */
+    public $category;
+    
+    /**
      * Returns the static model of the specified AR class.
      * @return UserRights the static model class
      */
@@ -34,6 +43,7 @@ class Route extends CMongoDocument
     public function rules()
     {
         return array(
+            array('authorId, category', 'safe'),
         );
     }
 
@@ -43,6 +53,8 @@ class Route extends CMongoDocument
     public function attributeLabels()
     {
         return array(
+            'authorId'=>'Autor',
+            'category'=>'Kategoria',
         );
     }
 
@@ -53,6 +65,18 @@ class Route extends CMongoDocument
     public function behaviors()
     {
         return array(
+            'points' => array(
+                'class' => 'ext.YiiMongoDbSuite.extra.EEmbeddedArraysBehavior',
+                'arrayPropertyName' => 'points',
+                'arrayDocClassName' => 'Point'
+            ),
+            'MongoTypes' => array(
+                'class' => 'CMongoTypeBehavior',
+                'attributes' => array(
+                    'authorId' => 'MongoId',
+                    'category' => 'MongoId',
+                ),
+            ),
         );
     }
 
@@ -63,9 +87,27 @@ class Route extends CMongoDocument
     public function indexes()
     {
         return array(
+            'points' => array(
+                // key array holds list of fields for index
+                // you may define multiple keys for index and multikey indexes
+                // each key must have a sorting direction SORT_ASC or SORT_DESC
+                'key' => array(
+                    'points.location' => CMongoCriteria::INDEX_2D,
+                ),
+            ),
         );
     }
-
+    /**
+     * returns embedded documents
+     * @return array
+     */
+    public function embeddedDocuments()
+    {
+        return array(
+            'info' => 'Info',
+            'style' => 'Style',
+        );
+    }
 }
 
 

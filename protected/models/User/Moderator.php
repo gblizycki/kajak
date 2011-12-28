@@ -7,7 +7,7 @@
  * @package models
  * @category user
  */
-class Admin extends User
+class Moderator extends User
 {
  /**
   * Returns the static model of the specified AR class.
@@ -24,7 +24,7 @@ class Admin extends User
  {
   //parent::afterConstruct();
   if ($this->type == null)
-   $this->type = self::USER_ADMIN;
+   $this->type = self::USER_MODERATOR;
  }
 
  /**
@@ -34,7 +34,7 @@ class Admin extends User
  {
   return array(
       'conditions' => array(
-          'type' => array('=='=>self::USER_ADMIN),
+          'type' => array('=='=>self::USER_MODERATOR),
       ),
   );
  }

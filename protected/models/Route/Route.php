@@ -21,6 +21,12 @@ class Route extends CMongoDocument
     public $category;
     
     /**
+     * Route points
+     * @var array
+     */
+    public $points;
+    
+    /**
      * Returns the static model of the specified AR class.
      * @return UserRights the static model class
      */

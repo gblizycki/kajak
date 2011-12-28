@@ -27,26 +27,6 @@ class Info extends CMongoEmbeddedDocument
     public $title;
 
     /**
-     * @var double Distance form start
-     */
-    public $distance;
-
-    /**
-     * @var double
-     */
-    public $elevation;
-
-    /**
-     * @var string 
-     */
-    public $difficulty;
-
-    /**
-     * @var string
-     */
-    public $terrain;
-
-    /**
      * @var mixed Array of undefined data type e.g. url's, id's, ...
      */
     public $photos;
@@ -70,10 +50,6 @@ class Info extends CMongoEmbeddedDocument
                     'name' => 'string',
                     'description' => 'string',
                     'title' => 'string',
-                    'distance' => 'double',
-                    'elevation' => 'double',
-                    'difficulty' => 'string',
-                    'terrain' => 'string',
                     'photos' => 'array',
                     'data'=>'array',
                 ),

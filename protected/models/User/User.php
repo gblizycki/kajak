@@ -16,10 +16,9 @@ class User extends CMongoDocument
 {
  //User types
  const USER_UNREGISTER = 0;
- const USER_CUSTOMER = 1;
- const USER_WORKER = 2;
- const USER_SHOPKEEPER = 3;
- const USER_ADMIN = 4;
+ const USER_ADMIN = 1;
+ const USER_MODERATOR = 2;
+ const USER_REGISTER = 3;
 
  /**
   * @var string Email
@@ -100,13 +99,11 @@ class User extends CMongoDocument
   {
    case self::USER_UNREGISTER: $model = new User(null);
     break;
-   case self::USER_CUSTOMER: $model = new Customer(null);
-    break;
-   case self::USER_WORKER: $model = new Worker(null);
-    break;
-   case self::USER_SHOPKEEPER: $model = new Shopkeeper(null);
-    break;
    case self::USER_ADMIN: $model = new Admin(null);
+    break;
+   case self::USER_MODERATOR: $model = new Moderator(null);
+    break;
+   case self::USER_REGISTER: $model = new User(null);
     break;
    default :throw new CException('Unkown type of user');
   }
@@ -231,13 +228,13 @@ class User extends CMongoDocument
   parent::afterSave();
   switch ($this->type)
   {
-   case self::USER_CUSTOMER: Rights::assign('Customer', $this->id);
-    break;
-   case self::USER_WORKER: Rights::assign('Worker', $this->id);
-    break;
-   case self::USER_SHOPKEEPER: Rights::assign('Shopkeeper', $this->id);
+   case self::USER_UNREGISTER: Rights::assign('UserUnregister', $this->id);
     break;
    case self::USER_ADMIN: Rights::assign('Admin', $this->id);
+    break;
+   case self::USER_MODERATOR: Rights::assign('Moderator', $this->id);
+    break;
+   case self::USER_REGISTER: Rights::assign('UserRegister', $this->id);
     break;
    default :throw new CException('Unkown type of user');
   }

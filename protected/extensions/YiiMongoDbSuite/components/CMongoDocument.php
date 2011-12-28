@@ -11,5 +11,10 @@ abstract class CMongoDocument extends EMongoDocument
  {
   $this->_useCursor = $useCursor;
  }*/
+    
+    public function getId()
+    {
+        return (string)$this->_id;
+    }
 }
 ?>

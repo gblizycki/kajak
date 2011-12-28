@@ -33,8 +33,11 @@ class CMongoTypeBehavior extends EMongoDocumentBehavior
                     $value = ($value instanceof int) ? new MongoDate($value) : new MongoDate(strtotime($value));break;
             case 'GeoPoint':$value = array((double) $value[0], (double) $value[1]);
                 break;
-            default:if ($value !== null && strlen(trim($value)) != 0)
+            default:if ($value !== null)
+            {
+                if((is_array($value) && $type=='array') || strlen(trim($value)) != 0)
                     settype($value, $type);
+            }
                 else
                     $value = null;
                 break;

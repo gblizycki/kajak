@@ -30,7 +30,7 @@ class Style extends CMongoEmbeddedDocument
      * Optional data added
      * @var array
      */
-    public $data;
+    public $data=array();
 
     /**
      * returns array of behaviors
@@ -49,6 +49,21 @@ class Style extends CMongoEmbeddedDocument
                 ),
             ),
         );
+    }
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        return array(
+            array('data','ext.JSONInput.JSONValidator'),
+            array('color, marker, thickness', 'safe')
+        );
+    }
+    
+    public function __toString()
+    {
+        return str_replace('\u', '&#x', CJSON::encode($this->attributes));
     }
 
 }

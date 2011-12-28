@@ -1,7 +1,7 @@
 <?php
 $this->breadcrumbs=array(
 	'Areas'=>array('index'),
-	$model->_id,
+	$model->id,
 );
 
 $this->menu=array(
@@ -14,15 +14,21 @@ $this->menu=array(
 ?>
 
 <h1>View Area #<?php echo $model->_id; ?></h1>
-
 <?php $this->widget('zii.widgets.CDetailView', array(
 	'data'=>$model,
 	'attributes'=>array(
-		'points',
-		'createDate',
-		'updateDate',
-		'_id',
-		'info',
-		'style',
+		'points:raw',
+		array(
+                    'label'=>'createDate',
+                    'value'=>$model->createDate->sec,
+                    'type'=>'datetime',
+                    ),
+		array(
+                    'label'=>'updateDate',
+                    'value'=>$model->updateDate->sec,
+                    'type'=>'datetime',
+                    ),
+		'info:raw',
+		'style:raw',
 	),
 )); ?>

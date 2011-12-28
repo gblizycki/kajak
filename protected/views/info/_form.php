@@ -1,13 +1,3 @@
-<div class="form">
-
-<?php $form=$this->beginWidget('CActiveForm', array(
-	'id'=>'area-form',
-	'enableAjaxValidation'=>false,
-)); ?>
-
-	<p class="note">Fields with <span class="required">*</span> are required.</p>
-
-	<?php echo $form->errorSummary($model); ?>
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'name'); ?>
@@ -26,11 +16,13 @@
 		<?php echo $form->textField($model,'title'); ?>
 		<?php echo $form->error($model,'title'); ?>
 	</div>
-        
-	<div class="row buttons">
-		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
+	<div class="row">
+		<?php echo $form->labelEx($model,'photos'); ?>
+		<?php $this->widget('ext.JSONInput.JSONInput',array('model'=>$model,'attribute'=>'photos'));?>
+		<?php echo $form->error($model,'photos'); ?>
 	</div>
-
-<?php $this->endWidget(); ?>
-
-</div><!-- form -->
+	<div class="row">
+		<?php echo $form->labelEx($model,'data'); ?>
+		<?php $this->widget('ext.JSONInput.JSONInput',array('model'=>$model,'attribute'=>'data'));?>
+		<?php echo $form->error($model,'data'); ?>
+	</div>

@@ -29,13 +29,13 @@ class Info extends CMongoEmbeddedDocument
     /**
      * @var mixed Array of undefined data type e.g. url's, id's, ...
      */
-    public $photos;
+    public $photos=array();
     
     /**
      * Optional data added
      * @var array
      */
-    public $data;
+    public $data=array();
 
     /**
      * returns array of behaviors
@@ -55,6 +55,23 @@ class Info extends CMongoEmbeddedDocument
                 ),
             ),
         );
+    }
+    
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        return array(
+            array('photos, data','ext.JSONInput.JSONValidator'),
+            array('name, description, title, photos, data', 'safe')
+        );
+    }
+    
+    
+    public function __toString()
+    {
+        return str_replace('\u', '&#x', CJSON::encode($this->attributes));
     }
 
 }

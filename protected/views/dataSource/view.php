@@ -20,7 +20,7 @@ $this->menu=array(
 	'attributes'=>array(
 		'format',
 		'version',
-		'options',
+		//'options',
 		'_id',
 	),
 )); ?>

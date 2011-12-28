@@ -12,9 +12,5 @@
 	<?php echo CHtml::encode($data->version); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('options')); ?>:</b>
-	<?php echo CHtml::encode($data->options); ?>
-	<br />
-
 
 </div>

@@ -24,7 +24,7 @@ class DataSource extends CMongoDocument
     /**
      * @var array
      */
-    public $options;
+    public $options=array();
 
     /**
      * Returns the static model of the specified AR class.
@@ -49,6 +49,9 @@ class DataSource extends CMongoDocument
     public function rules()
     {
         return array(
+            array('format','required'),
+            array('options','ext.JSONInput.JSONValidator'),
+            array('format, version, options','safe','on'=>'insert update')
         );
     }
 
@@ -58,6 +61,9 @@ class DataSource extends CMongoDocument
     public function attributeLabels()
     {
         return array(
+            'format'=>'Format',
+            'options'=>'Opcje',
+            'version'=>'Wersja',
         );
     }
 
@@ -71,8 +77,8 @@ class DataSource extends CMongoDocument
             'MongoTypes' => array(
                 'class' => 'CMongoTypeBehavior',
                 'attributes' => array(
-                    'format' => 'GeoPoint',
-                    'version' => 'array.MongoId',
+                    'format' => 'string',
+                    'version' => 'string',
                     'options' => 'array',
                 ),
             ),

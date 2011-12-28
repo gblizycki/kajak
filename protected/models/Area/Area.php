@@ -52,7 +52,7 @@ class Area extends CMongoDocument
     public function rules()
     {
         return array(
-            array('points, createDate, updateDate', 'safe')
+            array('points, createDate, updateDate, info, style', 'safe')
         );
     }
 
@@ -118,6 +118,31 @@ class Area extends CMongoDocument
             'info' => 'Info',
             'style' => 'Style',
         );
+    }
+
+    /**
+     * Simple search by attributes
+     * @param array $pagination
+     * @return CMongoDocumentDataProvider 
+     */
+    public function search($pagination=array())
+    {
+        $criteria = new CMongoCriteria();
+        $criteria->compare('_id', $this->_id, 'MongoId', true);
+        $criteria->compare('createDate', $this->createDate, 'MongoDate');
+        $criteria->compare('updateDate', $this->updateDate, 'MongoDate');
+        $sort = new CSort();
+        $sort->attributes = array(
+            'defaultOrder' => '_id DESC',
+            '_id',
+            'createDate',
+            'updateDate',
+        );
+        return new CMongoDocumentDataProvider(get_class($this), array(
+                    'criteria' => $criteria,
+                    'sort' => $sort,
+                    'pagination' => $pagination,
+                ));
     }
 
 }

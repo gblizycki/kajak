@@ -23,7 +23,7 @@
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'options'); ?>
-		<?php echo $form->textField($model,'options'); ?>
+		<?php $this->widget('ext.JSONInput.JSONInput',array('model'=>$model,'attribute'=>'options'));?>
 		<?php echo $form->error($model,'options'); ?>
 	</div>
 

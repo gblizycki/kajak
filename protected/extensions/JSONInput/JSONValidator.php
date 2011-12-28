@@ -21,6 +21,8 @@ class JSONValidator extends CValidator
     {
         // extract the attribute value from it's model object
         $value = $object->$attribute;
+        if(is_string($value) && strlen($value)==0)
+            $value = array();
         if (is_string($value))
         {
             $value[0]='{';

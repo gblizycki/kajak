@@ -25,10 +25,12 @@ abstract class Category extends CMongoDocument
      * @var string If title is null then name become title
      */
     public $title;
+
     /**
      * @var array Array of filters (@see Filter)
      */
     public $filters;
+
     /**
      * @return array validation rules for model attributes.
      */
@@ -93,6 +95,33 @@ abstract class Category extends CMongoDocument
         return array(
             'style' => 'Style',
         );
+    }
+
+    /**
+     * Simple search by attributes
+     * @param array $pagination
+     * @return CMongoDocumentDataProvider 
+     */
+    public function search($pagination=array())
+    {
+        $criteria = new CMongoCriteria();
+        $criteria->compare('_id', $this->_id, 'MongoId', true);
+        $criteria->compare('name', $this->name, 'string', true);
+        $criteria->compare('description', $this->description, 'string', true);
+        $criteria->compare('title', $this->title, 'string', true);
+        $sort = new CSort();
+        $sort->attributes = array(
+            'defaultOrder' => '_id DESC',
+            '_id',
+            'name',
+            'description',
+            'title',
+        );
+        return new CMongoDocumentDataProvider(get_class($this), array(
+                    'criteria' => $criteria,
+                    'sort' => $sort,
+                    'pagination' => $pagination,
+                ));
     }
 
 }

@@ -25,9 +25,9 @@ $this->menu=array(
 		'birthday',
 		'note',
 		'type',
-		'preferences',
+		/*'preferences',
 		'createDate',
-		'updateDate',
+		'updateDate',*/
 		'_id',
 	),
 )); ?>

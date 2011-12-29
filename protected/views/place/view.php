@@ -1,7 +1,7 @@
 <?php
 $this->breadcrumbs=array(
 	'Places'=>array('index'),
-	$model->_id,
+	$model->id,
 );
 
 $this->menu=array(
@@ -23,8 +23,10 @@ $this->menu=array(
 		'type',
 		'category',
 		'_id',
-		'info',
+		/*
+                'info',
 		'style',
 		'location',
+                 */
 	),
 )); ?>

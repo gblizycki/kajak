@@ -1,7 +1,7 @@
 <?php
 $this->breadcrumbs=array(
 	'Routes'=>array('index'),
-	$model->_id,
+	$model->id,
 );
 
 $this->menu=array(
@@ -20,9 +20,9 @@ $this->menu=array(
 	'attributes'=>array(
 		'authorId',
 		'category',
-		'points',
+		//'points',
 		'_id',
-		'info',
-		'style',
+		//'info',
+		//'style',
 	),
 )); ?>

@@ -121,5 +121,33 @@ class Place extends CMongoDocument
         );
     }
 
+    /**
+     * Simple search by attributes
+     * @param array $pagination
+     * @return CMongoDocumentDataProvider 
+     */
+    public function search($pagination=array())
+    {
+        $criteria = new CMongoCriteria();
+        $criteria->compare('_id', $this->_id, 'MongoId', true);
+        $criteria->compare('address', $this->address, 'string', true);
+        $criteria->compare('authorId', $this->authorId, 'MongoId', true);
+        $criteria->compare('type', $this->type, 'string', true);
+        $criteria->compare('category', $this->category, 'MongoId', true);
+        $sort = new CSort();
+        $sort->attributes = array(
+            'defaultOrder' => '_id DESC',
+            '_id',
+            'address',
+            'authorId',
+            'type',
+            'category',
+        );
+        return new CMongoDocumentDataProvider(get_class($this), array(
+                    'criteria' => $criteria,
+                    'sort' => $sort,
+                    'pagination' => $pagination,
+                ));
+    }
 }
 

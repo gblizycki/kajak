@@ -26,17 +26,10 @@
 		<?php echo $form->textField($model,'title'); ?>
 		<?php echo $form->error($model,'title'); ?>
 	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'filters'); ?>
-		<?php echo $form->textField($model,'filters'); ?>
-		<?php echo $form->error($model,'filters'); ?>
-	</div>
-
+        
 	<div class="row">
 		<?php echo $form->labelEx($model,'style'); ?>
-		<?php echo $form->textField($model,'style'); ?>
-		<?php echo $form->error($model,'style'); ?>
+		<?php $this->renderPartial('/style/_form',array('form'=>$form,'model'=>$model->style));?>
 	</div>
 
 	<div class="row buttons">

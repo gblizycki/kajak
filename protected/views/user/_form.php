@@ -51,24 +51,6 @@
 		<?php echo $form->error($model,'type'); ?>
 	</div>
 
-	<div class="row">
-		<?php echo $form->labelEx($model,'preferences'); ?>
-		<?php echo $form->textField($model,'preferences'); ?>
-		<?php echo $form->error($model,'preferences'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'createDate'); ?>
-		<?php echo $form->textField($model,'createDate'); ?>
-		<?php echo $form->error($model,'createDate'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'updateDate'); ?>
-		<?php echo $form->textField($model,'updateDate'); ?>
-		<?php echo $form->error($model,'updateDate'); ?>
-	</div>
-
 	<div class="row buttons">
 		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
 	</div>

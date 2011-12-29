@@ -24,7 +24,7 @@ class DataSource extends CMongoDocument
     /**
      * @var array
      */
-    public $options=array();
+    public $options = array();
 
     /**
      * Returns the static model of the specified AR class.
@@ -49,9 +49,9 @@ class DataSource extends CMongoDocument
     public function rules()
     {
         return array(
-            array('format','required'),
-            array('options','ext.JSONInput.JSONValidator'),
-            array('format, version, options','safe','on'=>'insert update')
+            array('format', 'required'),
+            array('options', 'ext.JSONInput.JSONValidator'),
+            array('format, version, options', 'safe', 'on' => 'insert update')
         );
     }
 
@@ -61,9 +61,9 @@ class DataSource extends CMongoDocument
     public function attributeLabels()
     {
         return array(
-            'format'=>'Format',
-            'options'=>'Opcje',
-            'version'=>'Wersja',
+            'format' => 'Format',
+            'options' => 'Opcje',
+            'version' => 'Wersja',
         );
     }
 
@@ -103,6 +103,31 @@ class DataSource extends CMongoDocument
     {
         return array(
         );
+    }
+
+    /**
+     * Simple search by attributes
+     * @param array $pagination
+     * @return CMongoDocumentDataProvider 
+     */
+    public function search($pagination=array())
+    {
+        $criteria = new CMongoCriteria();
+        $criteria->compare('_id', $this->_id, 'MongoId', true);
+        $criteria->compare('format', $this->format, 'string', true);
+        $criteria->compare('version', $this->version, 'string', true);
+        $sort = new CSort();
+        $sort->attributes = array(
+            'defaultOrder' => '_id DESC',
+            '_id',
+            'format',
+            'version',
+        );
+        return new CMongoDocumentDataProvider(get_class($this), array(
+                    'criteria' => $criteria,
+                    'sort' => $sort,
+                    'pagination' => $pagination,
+                ));
     }
 
 }

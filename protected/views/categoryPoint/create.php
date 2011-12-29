@@ -5,7 +5,6 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'List CategoryPoint', 'url'=>array('index')),
 	array('label'=>'Manage CategoryPoint', 'url'=>array('admin')),
 );
 ?>

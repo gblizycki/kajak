@@ -5,7 +5,6 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'List AreaPending', 'url'=>array('index')),
 	array('label'=>'Manage AreaPending', 'url'=>array('admin')),
 );
 ?>

@@ -6,7 +6,6 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'List CategoryRoute', 'url'=>array('index')),
 	array('label'=>'Create CategoryRoute', 'url'=>array('create')),
 	array('label'=>'View CategoryRoute', 'url'=>array('view', 'id'=>$model->_id)),
 	array('label'=>'Manage CategoryRoute', 'url'=>array('admin')),

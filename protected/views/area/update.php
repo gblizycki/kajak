@@ -6,7 +6,6 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'List Area', 'url'=>array('index')),
 	array('label'=>'Create Area', 'url'=>array('create')),
 	array('label'=>'View Area', 'url'=>array('view', 'id'=>$model->_id)),
 	array('label'=>'Manage Area', 'url'=>array('admin')),

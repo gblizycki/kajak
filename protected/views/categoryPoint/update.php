@@ -6,7 +6,6 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'List CategoryPoint', 'url'=>array('index')),
 	array('label'=>'Create CategoryPoint', 'url'=>array('create')),
 	array('label'=>'View CategoryPoint', 'url'=>array('view', 'id'=>$model->_id)),
 	array('label'=>'Manage CategoryPoint', 'url'=>array('admin')),

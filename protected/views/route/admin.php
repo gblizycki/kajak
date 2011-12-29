@@ -5,7 +5,6 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'List Route', 'url'=>array('index')),
 	array('label'=>'Create Route', 'url'=>array('create')),
 );
 ?>

@@ -5,7 +5,6 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'List Route', 'url'=>array('index')),
 	array('label'=>'Create Route', 'url'=>array('create')),
 	array('label'=>'Update Route', 'url'=>array('update', 'id'=>$model->_id)),
 	array('label'=>'Delete Route', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->_id),'confirm'=>'Are you sure you want to delete this item?')),

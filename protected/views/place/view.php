@@ -5,7 +5,6 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'List Place', 'url'=>array('index')),
 	array('label'=>'Create Place', 'url'=>array('create')),
 	array('label'=>'Update Place', 'url'=>array('update', 'id'=>$model->_id)),
 	array('label'=>'Delete Place', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->_id),'confirm'=>'Are you sure you want to delete this item?')),

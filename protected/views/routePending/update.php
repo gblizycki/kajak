@@ -6,7 +6,6 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'List RoutePending', 'url'=>array('index')),
 	array('label'=>'Create RoutePending', 'url'=>array('create')),
 	array('label'=>'View RoutePending', 'url'=>array('view', 'id'=>$model->_id)),
 	array('label'=>'Manage RoutePending', 'url'=>array('admin')),

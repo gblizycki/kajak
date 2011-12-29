@@ -5,7 +5,6 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'List CategoryPlace', 'url'=>array('index')),
 	array('label'=>'Create CategoryPlace', 'url'=>array('create')),
 );
 

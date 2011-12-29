@@ -5,7 +5,6 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'List CategoryRoute', 'url'=>array('index')),
 	array('label'=>'Manage CategoryRoute', 'url'=>array('admin')),
 );
 ?>

@@ -6,7 +6,6 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'List Place', 'url'=>array('index')),
 	array('label'=>'Create Place', 'url'=>array('create')),
 	array('label'=>'View Place', 'url'=>array('view', 'id'=>$model->_id)),
 	array('label'=>'Manage Place', 'url'=>array('admin')),

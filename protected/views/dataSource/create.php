@@ -5,7 +5,6 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'List DataSource', 'url'=>array('index')),
 	array('label'=>'Manage DataSource', 'url'=>array('admin')),
 );
 ?>

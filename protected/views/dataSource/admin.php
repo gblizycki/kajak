@@ -3,6 +3,9 @@ $this->breadcrumbs=array(
 	'Data Sources'=>array('index'),
 	'Manage',
 );
+$this->menu=array(
+	array('label'=>'Create DataSource', 'url'=>array('create')),
+);
 ?>
 
 <h1>Manage Data Sources</h1>

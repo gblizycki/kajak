@@ -6,7 +6,6 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'List Route', 'url'=>array('index')),
 	array('label'=>'Create Route', 'url'=>array('create')),
 	array('label'=>'View Route', 'url'=>array('view', 'id'=>$model->_id)),
 	array('label'=>'Manage Route', 'url'=>array('admin')),

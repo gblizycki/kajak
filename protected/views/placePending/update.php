@@ -6,7 +6,6 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'List PlacePending', 'url'=>array('index')),
 	array('label'=>'Create PlacePending', 'url'=>array('create')),
 	array('label'=>'View PlacePending', 'url'=>array('view', 'id'=>$model->_id)),
 	array('label'=>'Manage PlacePending', 'url'=>array('admin')),

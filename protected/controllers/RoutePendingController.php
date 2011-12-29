@@ -1,6 +1,6 @@
 <?php
 
-class PlaceController extends Controller
+class RoutePendingController extends Controller
 {
 
     /**
@@ -36,22 +36,20 @@ class PlaceController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Place;
+        $model = new RoutePending;
         $model->info = new Info;
         $model->style = new Style;
-        $model->location = new Point;
+
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
 
-        if (isset($_POST['Place']) || isset($_POST['Info']) || isset($_POST['Style']) || isset($_POST['Point']))
+        if (isset($_POST['RoutePending']) || isset($_POST['Info']) || isset($_POST['Style']))
         {
-            $model->attributes = $_POST['Place'];
+            $model->attributes = $_POST['RoutePending'];
             if (isset($_POST['Info']))
                 $model->info->attributes = $_POST['Info'];
             if (isset($_POST['Style']))
                 $model->style->attributes = $_POST['Style'];
-            if (isset($_POST['Point']))
-                $model->style->attributes = $_POST['Point'];
             if ($model->save())
                 $this->redirect(array('view', 'id' => $model->_id));
         }
@@ -73,15 +71,13 @@ class PlaceController extends Controller
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
 
-        if (isset($_POST['Place']) || isset($_POST['Info']) || isset($_POST['Style']) || isset($_POST['Point']))
+        if (isset($_POST['RoutePending']) || isset($_POST['Info']) || isset($_POST['Style']))
         {
-            $model->attributes = $_POST['Place'];
+            $model->attributes = $_POST['RoutePending'];
             if (isset($_POST['Info']))
                 $model->info->attributes = $_POST['Info'];
             if (isset($_POST['Style']))
                 $model->style->attributes = $_POST['Style'];
-            if (isset($_POST['Point']))
-                $model->style->attributes = $_POST['Point'];
             if ($model->save())
                 $this->redirect(array('view', 'id' => $model->_id));
         }
@@ -116,11 +112,11 @@ class PlaceController extends Controller
      */
     public function actionAdmin()
     {
-        $model = new Place('search');
+        $model = new RoutePending('search');
         $model->unsetAttributes();
 
-        if (isset($_GET['Place']))
-            $model->setAttributes($_GET['Place']);
+        if (isset($_GET['RoutePending']))
+            $model->setAttributes($_GET['RoutePending']);
 
         $this->render('admin', array(
             'model' => $model
@@ -134,7 +130,7 @@ class PlaceController extends Controller
      */
     public function loadModel($id)
     {
-        $model = Place::model()->findByPk(new MongoId($id));
+        $model = RoutePending::model()->findByPk(new MongoId($id));
         if ($model === null)
             throw new CHttpException(404, 'The requested page does not exist.');
         return $model;
@@ -146,7 +142,7 @@ class PlaceController extends Controller
      */
     protected function performAjaxValidation($model)
     {
-        if (isset($_POST['ajax']) && $_POST['ajax'] === 'place-form')
+        if (isset($_POST['ajax']) && $_POST['ajax'] === 'route-pending-form')
         {
             echo CActiveForm::validate($model);
             Yii::app()->end();

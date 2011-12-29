@@ -1,6 +1,6 @@
 <?php
 
-class PlaceController extends Controller
+class PlacePendingController extends Controller
 {
 
     /**
@@ -25,7 +25,8 @@ class PlaceController extends Controller
      */
     public function actionView($id)
     {
-        $this->render('view', array(
+        $this->render('view',
+                array(
             'model' => $this->loadModel($id),
         ));
     }
@@ -36,16 +37,16 @@ class PlaceController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Place;
+        $model = new PlacePending;
         $model->info = new Info;
         $model->style = new Style;
         $model->location = new Point;
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
 
-        if (isset($_POST['Place']) || isset($_POST['Info']) || isset($_POST['Style']) || isset($_POST['Point']))
+        if (isset($_POST['PlacePending']) || isset($_POST['Info']) || isset($_POST['Style']) || isset($_POST['Point']))
         {
-            $model->attributes = $_POST['Place'];
+            $model->attributes = $_POST['PlacePending'];
             if (isset($_POST['Info']))
                 $model->info->attributes = $_POST['Info'];
             if (isset($_POST['Style']))
@@ -73,9 +74,9 @@ class PlaceController extends Controller
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
 
-        if (isset($_POST['Place']) || isset($_POST['Info']) || isset($_POST['Style']) || isset($_POST['Point']))
+        if (isset($_POST['PlacePending']) || isset($_POST['Info']) || isset($_POST['Style']) || isset($_POST['Point']))
         {
-            $model->attributes = $_POST['Place'];
+            $model->attributes = $_POST['PlacePending'];
             if (isset($_POST['Info']))
                 $model->info->attributes = $_POST['Info'];
             if (isset($_POST['Style']))
@@ -116,11 +117,11 @@ class PlaceController extends Controller
      */
     public function actionAdmin()
     {
-        $model = new Place('search');
+        $model = new PlacePending('search');
         $model->unsetAttributes();
 
-        if (isset($_GET['Place']))
-            $model->setAttributes($_GET['Place']);
+        if (isset($_GET['PlacePending']))
+            $model->setAttributes($_GET['PlacePending']);
 
         $this->render('admin', array(
             'model' => $model
@@ -134,7 +135,7 @@ class PlaceController extends Controller
      */
     public function loadModel($id)
     {
-        $model = Place::model()->findByPk(new MongoId($id));
+        $model = PlacePending::model()->findByPk(new MongoId($id));
         if ($model === null)
             throw new CHttpException(404, 'The requested page does not exist.');
         return $model;
@@ -146,7 +147,7 @@ class PlaceController extends Controller
      */
     protected function performAjaxValidation($model)
     {
-        if (isset($_POST['ajax']) && $_POST['ajax'] === 'place-form')
+        if (isset($_POST['ajax']) && $_POST['ajax'] === 'place-pending-form')
         {
             echo CActiveForm::validate($model);
             Yii::app()->end();

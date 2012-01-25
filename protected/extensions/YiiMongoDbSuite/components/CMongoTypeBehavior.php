@@ -1,32 +1,28 @@
 <?php
 
-class CMongoTypeBehavior extends EMongoDocumentBehavior
-{
+class CMongoTypeBehavior extends EMongoDocumentBehavior {
 
     public $attributes = array();
 
-    public function beforeToArray($event)
-    {
+    public function beforeToArray($event) {
         parent::beforeToArray($event);
-        foreach ($this->attributes as $atr => $type)
-        {
+        foreach ($this->attributes as $atr => $type) {
             $this->owner->{$atr} = $this->setType($this->owner->{$atr}, $type);
         }
     }
 
-    private function setType($value, $type)
-    {
-        if (strpos($type, 'array.'))
-        {
+    private function setType($value, $type) {
+        if ($value === null)
+            return $value;
+
+        if (strpos($type, 'array.')) {
             $type = str_replace('array.', '', $type);
-            foreach ($value as $k => $v)
-            {
+            foreach ($value as $k => $v) {
                 $value[$k] = $this->setType($v, $type);
             }
             return $value;
         }
-        switch ($type)
-        {
+        switch ($type) {
             case 'MongoId':if (!$value instanceof MongoId)
                     $value = new MongoId($value);break;
             case 'MongoDate':if (!$value instanceof MongoDate)
@@ -34,14 +30,11 @@ class CMongoTypeBehavior extends EMongoDocumentBehavior
             case 'GeoPoint':$value = array((double) $value[0], (double) $value[1]);
                 break;
             default:
-                if ($value !== null)
-                {
-                    if (is_array($value) && count($value)==0)
-                    {
+                if ($value !== null) {
+                    if (is_array($value) && count($value) == 0) {
                         return null;
                     }
-                    if (is_string($value) && strlen(trim($value)) == 0)
-                    {
+                    if (is_string($value) && strlen(trim($value)) == 0) {
                         return null;
                     }
                     settype($value, $type);

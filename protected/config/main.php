@@ -30,6 +30,7 @@ return array(
         'rights' => array(
             'debug' => true,
             //'install'=>true,
+            'superuserName'=>'gary@silme.pl',
             'enableBizRuleData' => true,
             'userClass' => 'User',
             'userNameColumn' => 'email',
@@ -48,6 +49,12 @@ return array(
             'newFileMode' => 0666,
             'newDirMode' => 0777,
         ),
+        'DataExchange' => array(
+            'formats' => array(
+                'GPX_kajak_org_pl',
+                'XML_kajak_org_pl',
+            )
+        ),
     ),
     // application components
     'components' => array(
@@ -64,7 +71,6 @@ return array(
             'charset' => 'utf8',
             'tablePrefix' => '',
         ),
-        
         'mongodb' => array(
             'class' => 'EMongoDB',
             'connectionString' => 'mongodb://localhost',
@@ -125,7 +131,7 @@ return array(
         ),
         'urlManager' => array(
             'urlFormat' => 'path',
-            'showScriptName'=>false,
+            'showScriptName' => false,
             'rules' => array(
             ),
         ),

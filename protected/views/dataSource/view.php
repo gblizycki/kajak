@@ -19,6 +19,7 @@ $this->menu=array(
 	'attributes'=>array(
 		'format',
 		'version',
+                'pending:boolean',
 		//'options',
 		'_id',
 	),

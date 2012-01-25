@@ -1,5 +1,5 @@
 <?php
-
+date_default_timezone_set('Europe/Warsaw');
 return array(
     //Users
     'Janina' => array(

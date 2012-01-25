@@ -23,6 +23,11 @@ class Point extends CMongoEmbeddedDocument
     public $places;
 
     /**
+     * @var int
+     */
+    public $order;
+
+    /**
      * returns embedded documents
      * @return array
      */
@@ -45,9 +50,39 @@ class Point extends CMongoEmbeddedDocument
                 'class' => 'CMongoTypeBehavior',
                 'attributes' => array(
                     'location' => 'GeoPoint',
-                    'places'=>'array.MongoId',
+                    'places' => 'array.MongoId',
                 ),
             ),
+        );
+    }
+
+    /**
+     * @return float Longitude
+     */
+    public function getLongitude()
+    {
+        return $this->location[0];
+    }
+
+    /**
+     * @return float Latitude
+     */
+    public function getLatitude()
+    {
+        return $this->location[1];
+    }
+
+    /**
+     * Return encoded object to json format
+     * @return array 
+     */
+    public function getExportAttributes()
+    {
+        return array(
+            'location'=>'array.float',
+            'order'=>'int',
+            'info'=>'',
+            'style'=>''
         );
     }
 

@@ -66,5 +66,20 @@ class Style extends CMongoEmbeddedDocument
         return str_replace('\u', '&#x', CJSON::encode($this->attributes));
     }
 
+    /**
+     * Return encoded object to json format
+     * @return array 
+     */
+    public function getExportAttributes()
+    {
+        return array(
+            'color'=>'string',
+            'marker'=>'string',
+            'thickness'=>'string',
+            //'description'=>'array',
+            'data'=>'array',
+            //'data'=>'array',
+        );
+    }
 }
 

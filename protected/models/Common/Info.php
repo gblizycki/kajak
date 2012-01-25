@@ -73,6 +73,19 @@ class Info extends CMongoEmbeddedDocument
     {
         return str_replace('\u', '&#x', CJSON::encode($this->attributes));
     }
+    /**
+     * Return encoded object to json format
+     * @return array 
+     */
+    public function getExportAttributes()
+    {
+        return array(
+            'name'=>'string',
+            //'description'=>'array',
+            'title'=>'string',
+            //'data'=>'array',
+        );
+    }
 
 }
 

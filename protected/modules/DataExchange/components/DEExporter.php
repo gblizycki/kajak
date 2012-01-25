@@ -10,7 +10,10 @@
  */
 interface DEExporter
 {
-
+    /**
+     * Export all data
+     */
+    public function exportAll();
     /**
      * Export routes to given format
      */

@@ -8,7 +8,7 @@
  * @todo 
  * Created: 2011-12-22
  */
-abstract class DEDataSourceDb extends CComponent
+abstract class DEDataSourceDb extends DEAbstractDataSource
 {
 
     /**
@@ -46,6 +46,7 @@ abstract class DEDataSourceDb extends CComponent
     {
         return $this->db;
     }
+    
 
 }
 

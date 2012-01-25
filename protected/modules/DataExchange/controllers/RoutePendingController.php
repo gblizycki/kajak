@@ -122,7 +122,13 @@ class RoutePendingController extends Controller
             'model' => $model
         ));
     }
-
+    
+    public function actionAccept($id)
+    {
+        $model = $this->loadModel($id);
+        if($model->accept()->save())
+            $model->delete();
+    }
     /**
      * Returns the data model based on the primary key given in the GET variable.
      * If the data model is not found, an HTTP exception will be raised.

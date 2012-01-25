@@ -6,7 +6,7 @@
 class UserTest extends EMongoDbTestCase
 {
  public $fixtures = array(
-     'users' => 'User',
+     'user' => 'User',
  );
  /**
   * @var User

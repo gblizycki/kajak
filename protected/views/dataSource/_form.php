@@ -20,6 +20,12 @@
 		<?php echo $form->textField($model,'version'); ?>
 		<?php echo $form->error($model,'version'); ?>
 	</div>
+                
+        <div class="row">
+		<?php echo $form->labelEx($model,'pending'); ?>
+		<?php echo $form->checkBox($model,'pending'); ?>
+		<?php echo $form->error($model,'pending'); ?>
+	</div>
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'options'); ?>

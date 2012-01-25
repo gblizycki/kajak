@@ -8,7 +8,7 @@
  * @todo 
  * Created: 2011-12-22
  */
-abstract class DEDataSourceFile extends CComponent
+abstract class DEDataSourceFile extends DEAbstractDataSource
 {
 
     /**
@@ -16,6 +16,8 @@ abstract class DEDataSourceFile extends CComponent
      * @var string
      */
     public $uri;
+
+    public $tmpDirectory = 'DataExchange.runtime';
 
     protected $_file;
 
@@ -25,9 +27,8 @@ abstract class DEDataSourceFile extends CComponent
      */
     public function init()
     {
-        $this->_file = md5($this->uri);
+        $this->_file = Yii::getPathOfAlias($this->tmpDirectory) . DIRECTORY_SEPARATOR . md5($this->uri);
         file_put_contents($this->_file, file_get_contents($this->uri));
-        parent::init();
     }
 
 }

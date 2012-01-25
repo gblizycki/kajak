@@ -25,6 +25,12 @@ class DataSource extends CMongoDocument
      * @var array
      */
     public $options = array();
+        
+    /**
+     * Import data from this source as pending objects
+     * @var boolean
+     */
+    public $pending = false;
 
     /**
      * Returns the static model of the specified AR class.

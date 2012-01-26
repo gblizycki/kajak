@@ -356,4 +356,4 @@ abstract class EMongoEmbeddedDocument extends CModel
 		}
 		parent::setScenario($value);
 	}
-}
+				}

@@ -1,0 +1,16 @@
+hello oooohello oooohello oooohello oooohello oooohello oooo 
+:php
+    echo CHtml::activeTextField($Route,'info[data][hardness]');
+    //var_dump($Route->info->data);die();
+    echo CHtml::beginForm();
+    echo CHtml::checkBoxList('type',$type,array('Route'=>'Route','Place'=>'Place','Area'=>'Area'));
+    echo CHtml::activeDropDownList($Route,'category',CHtml::listData(DataExchange::module()->allCategoryRoute,'id','name'));
+    
+    if(isset($filters['Route']))
+    {
+        foreach($filters['Route'] as $filter){
+            $this->widget(Yii::app()->filters->resolveClass($filter->class),CMap::mergeArray(array('model'=>$Route,'attribute'=>$filter->attribute,'name'=>$filter->name)
+                ,$filter->options));
+        }
+    }
+    echo CHtml::endForm();

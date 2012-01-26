@@ -1,0 +1,22 @@
+#DEMap
+{
+    width: 100%;
+    height: 100%;
+    position: relative;
+    .hidden
+    {
+        display: none;
+    }   
+}
+#DEMap-map
+{
+    width: 80%;
+    min-height: 100%;
+    float: right;
+}
+#DEMap-panel
+{
+    float: left;
+    width: 20%;
+    min-height: 100%;
+}

@@ -13,6 +13,7 @@ class DataExchangeModule extends CWebModule
     public $formats = array();
 
     private $_dataSources = array();
+    private $_categories = array();
 
     public function init()
     {
@@ -55,7 +56,41 @@ class DataExchangeModule extends CWebModule
         }
         return $this->_dataSources[$format];
     }
-
+    public function getCategoryArea($name)
+    {
+        if (!isset($this->_categories['Area'][$name]))
+        {
+            $this->_categories['Area'][$name] = $model = CategoryArea::model()->find(array('name',$name));
+        }
+        return $this->_categories['Area'][$name];
+    }
+    public function getCategoryRoute($name)
+    {
+        if (!isset($this->_categories['Route'][$name]))
+        {
+            $this->_categories['Route'][$name] = $model = CategoryRoute::model()->find(array('name',$name));
+        }
+        return $this->_categories['Route'][$name];
+    }
+    public function getAllCategoryRoute()
+    {
+        $model = CategoryRoute::model()->findAll();
+        foreach($model as $category)
+        {
+            $this->_categories['Route'][$category->name]  = $category;
+        }
+        return $this->_categories['Route'];
+    }
+    public function getCategoryPlace($name)
+    {
+        if (!isset($this->_categories['Place'][$name]))
+        {
+            $this->_categories['Place'][$name] = $model = CategoryRoute::model()->find(array('name',$name));
+        }
+        return $this->_categories['Place'][$name];
+    }
+    
+    
     private function saveObject(DataSource $dataSource, $object)
     {
         $object->save();
@@ -74,5 +109,6 @@ class DataExchangeModule extends CWebModule
         $pendingObject->cloneObject($object);
         $pendingObject->save();
     }
+    
 
 }

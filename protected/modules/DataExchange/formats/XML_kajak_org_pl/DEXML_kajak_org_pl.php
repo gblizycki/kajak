@@ -12,7 +12,7 @@ class DEXML_kajak_org_pl extends DEDataSourceFile implements DEImporter
 {
 
     private $_xml = null;
-
+    
     public function init()
     {
         parent::init();
@@ -37,6 +37,7 @@ class DEXML_kajak_org_pl extends DEDataSourceFile implements DEImporter
             foreach ($szlak->odcinek as $odcinek)
             {
                 $model = new Route;
+                $model->category = DataExchange::module()->getCategoryRoute('Kajak')->id;
                 $model->info->name = $odcinek['nazwa'];
                 $model->info->description = $odcinek->opis;
                 

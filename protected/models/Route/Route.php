@@ -49,7 +49,7 @@ class Route extends CMongoDocument
     public function rules()
     {
         return array(
-            array('authorId, category', 'safe'),
+            array('_id, authorId, category, info, style', 'safe'),
         );
     }
 
@@ -123,9 +123,14 @@ class Route extends CMongoDocument
     public function search($pagination=array())
     {
         $criteria = new CMongoCriteria();
-        $criteria->compare('_id', $this->_id, 'MongoId', true);
-        $criteria->compare('authorId', $this->authorId, 'MongoId', true);
-        $criteria->compare('category', $this->category, 'MongoId', true);
+        $criteria->compare('_id', $this->_id, 'MongoId', false);
+        $criteria->compare('authorId', $this->authorId, 'MongoId', false);
+        $criteria->compare('category', $this->category, 'MongoId', false);
+        //info data filters
+        foreach($this->info->data as $field=>$value)
+        {
+            $criteria->compare('info.data.'.$field, $value);
+        }
         $sort = new CSort();
         $sort->attributes = array(
             'defaultOrder' => '_id DESC',
@@ -138,6 +143,25 @@ class Route extends CMongoDocument
                     'sort' => $sort,
                     'pagination' => $pagination,
                 ));
+    }
+    
+    public function exportView()
+    {
+        return array(
+            'id'=>  $this->id,
+            'author'=> (string)$this->authorId,
+            'category'=>  $this->category,
+            'points'=> $this->exportPoints(),
+        );
+    }
+    protected function exportPoints()
+    {
+        $points = array();
+        foreach($this->points as $point)
+        {
+            $points[$point->order] = $point->exportView();
+        }
+        return $points;
     }
 }
 

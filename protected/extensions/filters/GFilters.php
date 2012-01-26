@@ -15,7 +15,7 @@ class GFilters extends CApplicationComponent
     public function resolveClass($widgetClass)
     {
         if(!isset($this->map[$widgetClass]))
-            throw new CException('Widget class unknow');
+            throw new CException('Widget class unknow: '.$widgetClass);
         return $this->map[$widgetClass];
     }
 }

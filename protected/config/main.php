@@ -21,6 +21,7 @@ return array(
         'application.components.*',
         'application.modules.rights.*',
         'application.modules.rights.components.*',
+        'application.modules.DataExchange.components.*',
         'ext.YiiMongoDbSuite.*',
         'ext.YiiMongoDbSuite.components.*',
         'ext.YiiMongoDbSuite.test.*',
@@ -115,6 +116,8 @@ return array(
             'map' => array(
                 'slider' => 'ext.filters.slider.GFSlider',
                 'dropdown' => 'ext.filters.dropdown.GFDropDown',
+                'text' => 'ext.filters.text.GFText',
+                'textarea' => 'ext.filters.textarea.GFTextArea',
             ),
         ),
         'authManager' => array(

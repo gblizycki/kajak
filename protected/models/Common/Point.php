@@ -86,5 +86,22 @@ class Point extends CMongoEmbeddedDocument
         );
     }
 
+    public function exportView()
+    {
+        return array(
+            'order'=> $this->order,
+            'latitude'=>  $this->latitude,
+            'longitude'=>  $this->longitude,
+            'info'=>  $this->exportInfo(),
+        );
+    }
+    
+    protected function exportInfo()
+    {
+        return array(
+            'name'=>  $this->info->name,
+            'description'=>  $this->info->description,
+        );
+    }
 }
 

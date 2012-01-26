@@ -8,8 +8,7 @@
  * @todo 
  * Created: 2011-12-21
  */
-class Area extends CMongoDocument
-{
+class Area extends CMongoDocument {
 
     /**
      * Points defining the area border
@@ -30,27 +29,29 @@ class Area extends CMongoDocument
     public $updateDate;
 
     /**
+     * @var MongoId Area category id (@see CategoryArea)
+     */
+    public $category;
+
+    /**
      * Returns the static model of the specified AR class.
      * @return UserRights the static model class
      */
-    public static function model($className=__CLASS__)
-    {
+    public static function model($className = __CLASS__) {
         return parent::model($className);
     }
 
     /**
      * @return string the associated collection name
      */
-    public function getCollectionName()
-    {
+    public function getCollectionName() {
         return 'area';
     }
 
     /**
      * @return array validation rules for model attributes.
      */
-    public function rules()
-    {
+    public function rules() {
         return array(
             array('points, createDate, updateDate, info, style', 'safe')
         );
@@ -59,8 +60,7 @@ class Area extends CMongoDocument
     /**
      * @return array customized attribute labels (name=>label)
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return array(
             'points' => 'Punkty',
             'createDate' => 'Data stworzenia',
@@ -72,8 +72,7 @@ class Area extends CMongoDocument
      * returns array of behaviors
      * @return array
      */
-    public function behaviors()
-    {
+    public function behaviors() {
         return array(
             'points' => array(
                 'class' => 'ext.YiiMongoDbSuite.extra.EEmbeddedArraysBehavior',
@@ -94,8 +93,7 @@ class Area extends CMongoDocument
      * returns array of indexes
      * @return array
      */
-    public function indexes()
-    {
+    public function indexes() {
         return array(
             'points' => array(
                 // key array holds list of fields for index
@@ -112,8 +110,7 @@ class Area extends CMongoDocument
      * returns embedded documents
      * @return array
      */
-    public function embeddedDocuments()
-    {
+    public function embeddedDocuments() {
         return array(
             'info' => 'Info',
             'style' => 'Style',
@@ -125,8 +122,7 @@ class Area extends CMongoDocument
      * @param array $pagination
      * @return CMongoDocumentDataProvider 
      */
-    public function search($pagination=array())
-    {
+    public function search($pagination = array()) {
         $criteria = new CMongoCriteria();
         $criteria->compare('_id', $this->_id, 'MongoId', true);
         $criteria->compare('createDate', $this->createDate, 'MongoDate');

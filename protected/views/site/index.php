@@ -7,4 +7,6 @@
  * Created: 2011-12-18
  */
 ?>
-Welcome to kajak!
+<?php
+$this->widget('ext.gmap.gmap');
+?>

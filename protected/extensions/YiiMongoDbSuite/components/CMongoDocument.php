@@ -16,5 +16,5 @@ abstract class CMongoDocument extends EMongoDocument
     {
         return (string)$this->_id;
     }
-}
+   }
 ?>

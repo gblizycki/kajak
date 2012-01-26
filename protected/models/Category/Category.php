@@ -37,7 +37,7 @@ abstract class Category extends CMongoDocument
     public function rules()
     {
         return array(
-            array('name, description, title', 'safe'),
+            array('_id, name, description, title', 'safe'),
         );
     }
 
@@ -105,7 +105,7 @@ abstract class Category extends CMongoDocument
     public function search($pagination=array())
     {
         $criteria = new CMongoCriteria();
-        $criteria->compare('_id', $this->_id, 'MongoId', true);
+        $criteria->compare('_id', $this->_id, 'MongoId', false);
         $criteria->compare('name', $this->name, 'string', true);
         $criteria->compare('description', $this->description, 'string', true);
         $criteria->compare('title', $this->title, 'string', true);

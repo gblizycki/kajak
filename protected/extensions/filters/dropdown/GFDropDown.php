@@ -20,7 +20,7 @@ class GFDropDown extends GFBase
         $this->htmlOptions = CMap::mergeArray($this->htmlOptions, array(
             'class'=>'gfdropdown'
         ));
-        if($this->emptyElement!=null)
+        if($this->emptyElement!==null)
         {
             $this->data[null]= $this->emptyElement;
         }

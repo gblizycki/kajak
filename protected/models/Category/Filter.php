@@ -36,6 +36,8 @@ class Filter extends CMongoEmbeddedDocument
      */
     public $order;
 
+    public $type = 'string';
+    public $partialMatch = false;
     /**
      * Optional data for widget e.g. drop down data source
      * If it's array widget use direct
@@ -93,6 +95,17 @@ class Filter extends CMongoEmbeddedDocument
                 ),
             ),
         );
+    }
+    
+    public function setFilter(CMongoCriteria $criteria,$object)
+    {
+        $value = CHtml::resolveValue($object, $this->attribute);
+        $attribute = $this->transformAttribute();
+        $criteria->compare($this->transformAttribute(), CHtml::resolveValue($object, $this->attribute),  $this->type,$this->partialMatch);
+    }
+    protected function transformAttribute()
+    {
+        return str_replace(array('[',']'), array('.',''), $this->attribute);
     }
 
 }

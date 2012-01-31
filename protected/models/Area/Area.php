@@ -140,6 +140,23 @@ class Area extends CMongoDocument {
                     'pagination' => $pagination,
                 ));
     }
+    
+    public function exportView()
+    {
+        return array(
+            'id'=>  $this->id,
+            'points'=> $this->exportPoints(),
+        );
+    }
+    protected function exportPoints()
+    {
+        $points = array();
+        foreach($this->points as $point)
+        {
+            $points[$point->order] = $point->exportView();
+        }
+        return $points;
+    }
 
 }
 

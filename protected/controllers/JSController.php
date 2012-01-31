@@ -20,7 +20,7 @@ class JSController extends Controller {
         if (isset($_GET['type']))
             $type = $_GET['type'];
         else
-            $type = array('Place', 'Route', 'Area');
+            $type = array();
         //set good scenario
         if (isset($_GET['scenario']))
             $scenario = $_GET['scenario'];
@@ -50,8 +50,7 @@ class JSController extends Controller {
             {
                 //try to get one category from 
             }
-            $objects[$t] = $obj->search()->data;
-            
+            $dp = $obj->search();
             //catogry select
             $filters[$t] = array();
             if($obj->category!=null)
@@ -74,14 +73,22 @@ class JSController extends Controller {
                 //one category, select filter from this category
                 $filters[$t] = CMongoDocument::model('Category'.$t)->findByPk(new MongoId($categories))->filters;       
             }
-            
+            $criteria = new CMongoCriteria($dp->getCriteria());
+            foreach($filters[$t] as $filter)
+            {
+                $filter->setFilter($criteria,$obj);
+            }
+            $dp->setCriteria($criteria);
+            $objects[$t] = $dp->data;
             foreach ($objects[$t] as $index => $object) {
                 $objects[$t][$index] = $this->array_filter_recursive($object->{'export' . ucfirst($scenario)}());
             }
             $filterObjects[$t] = $obj;
         }
+        $backUrl = isset($_GET['backUrl'])?$_GET['backUrl']:null;
         echo CJSON::encode(array('objects'=>$objects,
-            'panel'=>  $this->renderPartial('panel',  CMap::mergeArray($filterObjects,array('filters'=>$filters,'objects'=>$objects,'type'=>$type)),true)));
+            'panel'=>  $this->renderPartial('panel',  array('filters'=>$filters,'objects'=>$objects,'type'=>$type,
+            'models'=>$filterObjects,'currentUrl'=>'filter?'.Yii::app()->request->queryString,'backUrl'=>$backUrl),true,true)));
     }
 
     protected function array_filter_recursive($input) {
@@ -96,5 +103,11 @@ class JSController extends Controller {
 }
 function checkNull($value)
     {
+        if(is_array($value))
+        {
+            if(count($value)==0)
+                return false;
+            return true;
+        }
         return $value!==null;
     }

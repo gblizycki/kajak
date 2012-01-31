@@ -35,7 +35,6 @@ abstract class DEDataSourceDb extends DEAbstractDataSource
      */
     public function init()
     {
-        parent::init();
         $this->db = new CDbConnection($this->connectionString,  $this->username,  $this->password);
     }
     /**

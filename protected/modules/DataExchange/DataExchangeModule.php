@@ -22,6 +22,9 @@ class DataExchangeModule extends CWebModule
         {
             $formats[] = 'DataExchange.formats.' . $format . '.DE' . $format;
         }
+        $this->_categories['Area']=array();
+        $this->_categories['Place']=array();
+        $this->_categories['Route']=array();
         $this->setImport(CMap::mergeArray($formats,
                         array(
                     'DataExchange.models.*',
@@ -31,20 +34,27 @@ class DataExchangeModule extends CWebModule
 
     public function save(DataSource $dataSource, array $data)
     {
-        if (!$dataSource->pending)
-        {
             foreach ($data['routes'] as $route)
             {
-                $this->saveObject($dataSource, $route);
+                if(!$dataSource->pending)
+                    $this->saveObject($dataSource, $route);
+                else
+                    $this->saveObjectPending($dataSource, $route);
             }
-        }
-        else
-        {
-            foreach ($data['routes'] as $route)
+            foreach ($data['areas'] as $area)
             {
-                $this->saveObjectPending($dataSource, $route);
+                if(!$dataSource->pending)
+                    $this->saveObject($dataSource, $area);
+                else
+                    $this->saveObjectPending($dataSource, $area);
             }
-        }
+            foreach ($data['places'] as $place)
+            {
+                if(!$dataSource->pending)
+                    $this->saveObject($dataSource, $place);
+                else
+                    $this->saveObjectPending($dataSource, $place);
+            }
     }
 
     public function getDataSource($format)
@@ -80,6 +90,24 @@ class DataExchangeModule extends CWebModule
             $this->_categories['Route'][$category->name]  = $category;
         }
         return $this->_categories['Route'];
+    }
+    public function getAllCategoryPlace()
+    {
+        $model = CategoryPlace::model()->findAll();
+        foreach($model as $category)
+        {
+            $this->_categories['Place'][$category->name]  = $category;
+        }
+        return $this->_categories['Place'];
+    }
+    public function getAllCategoryArea()
+    {
+        $model = CategoryArea::model()->findAll();
+        foreach($model as $category)
+        {
+            $this->_categories['Area'][$category->name]  = $category;
+        }
+        return $this->_categories['Area'];
     }
     public function getCategoryPlace($name)
     {

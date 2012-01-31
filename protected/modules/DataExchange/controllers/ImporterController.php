@@ -27,14 +27,37 @@ class ImporterController extends Controller
         {
             $this->redirect(array('selectfile', 'id' => $id));
         }
+        elseif($model instanceof DEDataSourceWebService)
+        {
+            DataExchange::module()->save($ds, $model->import());
+        }
     }
 
     public function actionSelectDb($id)
     {
         $model = DataSource::model()->findByPk(new MongoId($id));
         $de = DataExchange::module()->getDataSource($model->format);
-        $data = $de->import();
-        var_dump($data);
+        if (isset($_POST['username'],$_POST['password']))
+        {
+            $de = DataExchange::module()->getDataSource($model->format);
+            $de->username = $_POST['username'];
+            $de->password = $_POST['password'];
+            $de->init();
+            //try{
+                //$de->connection->connectionStatus;
+                $data = $de->import();
+            var_dump($data['routes'][0]->points);die();
+            DataExchange::module()->save($model, $data);
+                Yii::app()->user->setFlash('top','Import successful');
+                $this->redirect(array('index'));
+            /*}catch(Exception $e)
+            {
+                Yii::app()->user->setFlash('top','Bad username or password');
+            }*/
+            
+        }
+        $this->render('selectDb',array('model'=>$model));
+        
     }
 
     public function actionSelectFile($id)

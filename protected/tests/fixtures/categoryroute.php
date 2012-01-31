@@ -8,13 +8,13 @@ return array(
         'description'=>'Trasy kajakowe',
         'title'=>'Kajak',
         'filters'=>array(
-            array('name'=>'Nazwa','attribute'=>'info[name]','class'=>'text','order'=>1),
-            array('name'=>'Opis','attribute'=>'info[description]','class'=>'textarea','order'=>2),
-            array('name'=>'Trudność','attribute'=>'info[data][hardness]','class'=>'dropdown','order'=>3,'options'=>array(
+            array('name'=>'Nazwa','attribute'=>'info[name]','class'=>'text','order'=>1,'type'=>'string','partialMatch'=>true),
+            array('name'=>'Opis','attribute'=>'info[description]','class'=>'textarea','order'=>2,'type'=>'string','partialMatch'=>true),
+            array('name'=>'Trudność','attribute'=>'info[data][hardness]','class'=>'dropdown','order'=>3,'type'=>'string','partialMatch'=>false,'options'=>array(
                 'data'=>array('WW1'=>'WW1','WW2'=>'WW2','WW3'=>'WW3'),
                 'emptyElement'=>''
             )),
-            array('name'=>'Atrakcyjność','attribute'=>'info[data][beauty]','class'=>'dropdown','order'=>4,'options'=>array(
+            array('name'=>'Atrakcyjność','attribute'=>'info[data][beauty]','class'=>'dropdown','order'=>4,'type'=>'string','partialMatch'=>false,'options'=>array(
                 'data'=>array('*'=>'*','**'=>'**','***'=>'***','****'=>'****','*****'=>'*****'),
                 'emptyElement'=>''
             )),

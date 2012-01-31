@@ -54,11 +54,16 @@ return array(
             'formats' => array(
                 'GPX_kajak_org_pl',
                 'XML_kajak_org_pl',
+                'wikimapia',
+                'kajakorgpl'
             )
         ),
     ),
     // application components
     'components' => array(
+        'CURL'=>array(
+            'class'=>'CURL',
+        ),
         'user' => array(
             'class' => 'EWebUser',
             'stateKeyPrefix' => 'mongodb',

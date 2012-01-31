@@ -19,12 +19,11 @@ class Route extends CMongoDocument
      * @var MongoId Place category id (@see CategoryRoute)
      */
     public $category;
-    
     /**
-     * Route points
+     * Route sections
      * @var array
      */
-    public $points;
+    public $sections;
     
     /**
      * Returns the static model of the specified AR class.
@@ -71,10 +70,10 @@ class Route extends CMongoDocument
     public function behaviors()
     {
         return array(
-            'points' => array(
+            'sections' => array(
                 'class' => 'ext.YiiMongoDbSuite.extra.EEmbeddedArraysBehavior',
-                'arrayPropertyName' => 'points',
-                'arrayDocClassName' => 'Point'
+                'arrayPropertyName' => 'sections',
+                'arrayDocClassName' => 'Section'
             ),
             'MongoTypes' => array(
                 'class' => 'CMongoTypeBehavior',
@@ -98,7 +97,7 @@ class Route extends CMongoDocument
                 // you may define multiple keys for index and multikey indexes
                 // each key must have a sorting direction SORT_ASC or SORT_DESC
                 'key' => array(
-                    'points.location' => CMongoCriteria::INDEX_2D,
+                    'sections.points.location' => CMongoCriteria::INDEX_2D,
                 ),
             ),
         );

@@ -22,7 +22,7 @@ class GFDropDown extends GFBase
         ));
         if($this->emptyElement!==null)
         {
-            $this->data[null]= $this->emptyElement;
+            $this->data = array(null=>  $this->emptyElement) + $this->data;
         }
     }
 

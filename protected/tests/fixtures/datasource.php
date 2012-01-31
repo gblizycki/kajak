@@ -14,5 +14,17 @@ return array(
         'pending'=>true,
         'version'=>'0.2',
     ),
+    'wikimapia' => array(
+        '_id' => new MongoID('4efaf3c0b1a7882c90000000'),
+        'format' => 'wikimapia',
+        'pending'=>false,
+        'version'=>'0.1',
+    ),
+    'kajakorgpl' => array(
+        '_id' => new MongoID('4efaf3c0b1a7882d00000000'),
+        'format' => 'kajakorgpl',
+        'pending'=>false,
+        'version'=>'0.1',
+    ),
 );
 ?>

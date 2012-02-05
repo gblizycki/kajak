@@ -36,7 +36,12 @@ class Info extends CMongoEmbeddedDocument
      * @var array
      */
     public $data=array();
-
+    
+    /**
+     *
+     * @var string DataSource format
+     */
+    public $format;
     /**
      * returns array of behaviors
      * @return array
@@ -64,7 +69,7 @@ class Info extends CMongoEmbeddedDocument
     {
         return array(
             array('photos, data','ext.JSONInput.JSONValidator'),
-            array('name, description, title, photos, data', 'safe')
+            array('name, description, title, photos, data,format', 'safe')
         );
     }
     

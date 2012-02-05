@@ -15,7 +15,7 @@ class CMongoTypeBehavior extends EMongoDocumentBehavior {
         if ($value === null)
             return $value;
 
-        if (strpos($type, 'array.')) {
+        if (strpos($type, 'array.')===0) {
             $type = str_replace('array.', '', $type);
             foreach ($value as $k => $v) {
                 $value[$k] = $this->setType($v, $type);

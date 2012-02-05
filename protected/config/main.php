@@ -110,7 +110,7 @@ return array(
             'ugly' => false,
             'style' => 'compressed',
             'debug' => 0,
-            'cache' => false,
+            'cache' => true,
             'fileExtension' => '.haml',
             'viewFileExtension' => '.php5',
             'useRuntimePath' => false,
@@ -150,7 +150,18 @@ return array(
                     'class' => 'CFileLogRoute',
                     'levels' => 'error, warning',
                 ),
+                 //array(
+                 //   'class'=>'CProfileLogRoute',
+                //    'report'=>'summary',
+                //),
             ),
         ),
+        'cache'=> array(
+            'class'=>'EMongoDBCache',
+            //'mongoConnectionId' => 'mongodb', // (default) configId from YiiMongoDbSuite
+            //'collectionName' => 'mongodb_cache', // (default)
+            //set to false after first use of the cache to increase performance
+            'ensureIndex' => false,
+        )
     ),
 );

@@ -39,6 +39,12 @@ class Point extends CMongoEmbeddedDocument
         );
     }
 
+    public function rules() {
+        return array(
+            array('location,info,style,places','safe'),
+            array('Longitude,Latitude','numerical')
+        );
+    }
     /**
      * returns array of behaviors
      * @return array

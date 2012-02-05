@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Description of Point
+ * Description of Section
  *
- * @name Point
+ * @name Section
  * @author Grzegorz Bliżycki <grzegorzblizycki@gmail.com>
  * @todo 
  * Created: 2011-12-21
@@ -11,11 +11,15 @@
 class Section extends CMongoEmbeddedDocument
 {
     /**
-     * Route points
+     * Section points
      * @var array
      */
     public $points;
-    
+    /**
+     * Section oreder
+     * @var int 
+     */
+    public $order;
     /**
      * returns embedded documents
      * @return array
@@ -43,28 +47,16 @@ class Section extends CMongoEmbeddedDocument
             'MongoTypes' => array(
                 'class' => 'CMongoTypeBehavior',
                 'attributes' => array(
-                    
+                    'order'=>'int'
                 ),
             ),
         );
     }
-
-    /**
-     * @return float Longitude
-     */
-    public function getLongitude()
-    {
-        return $this->location[0];
+    public function rules() {
+        return array(
+            array('order, points','safe'),
+        );
     }
-
-    /**
-     * @return float Latitude
-     */
-    public function getLatitude()
-    {
-        return $this->location[1];
-    }
-
     /**
      * Return encoded object to json format
      * @return array 
@@ -72,8 +64,8 @@ class Section extends CMongoEmbeddedDocument
     public function getExportAttributes()
     {
         return array(
-            'location'=>'array.float',
             'order'=>'int',
+            'points'=> $this->exportPoints(),
             'info'=>'',
             'style'=>''
         );
@@ -83,9 +75,8 @@ class Section extends CMongoEmbeddedDocument
     {
         return array(
             'order'=> $this->order,
-            'latitude'=>  $this->latitude,
-            'longitude'=>  $this->longitude,
             'info'=>  $this->exportInfo(),
+            'points'=>$this->exportPoints(),
         );
     }
     
@@ -95,6 +86,28 @@ class Section extends CMongoEmbeddedDocument
             'name'=>  $this->info->name,
             'description'=>  $this->info->description,
         );
+    }
+    protected function exportPoints()
+    {
+        $points = array();
+        $this->toArray();
+        foreach($this->points as $point)
+        {
+            $points[$point->order] = $point->exportView();
+        }
+        return $points;
+    }
+    
+    public function getHiddenFields($sectionIndex)
+    {
+        $fields = array();
+        foreach($this->points as $index=>$point)
+        {
+            $fields[ 'sections['.$sectionIndex.'][points]['.$index.'][location][0]']= array('class'=>'section-'.$this->order);
+            $fields['sections['.$sectionIndex.'][points]['.$index.'][location][1]'] = array('class'=>'section-'.$this->order);
+            $fields['sections['.$sectionIndex.'][points]['.$index.'][order]']= array('class'=>'order section-'.$this->order);
+        }
+        return $fields;
     }
 }
 

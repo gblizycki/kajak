@@ -27,10 +27,9 @@ class Place extends CMongoDocument
     public $type;
 
     /**
-     * @var MongoId Place category id (@see CategoryPlace)
+     * @var array.MongoId Place category id (@see CategoryPlace)
      */
     public $category;
-
     /**
      * Returns the static model of the specified AR class.
      * @return UserRights the static model class
@@ -54,7 +53,7 @@ class Place extends CMongoDocument
     public function rules()
     {
         return array(
-            array('address, authorId, type, category', 'safe'),
+            array('address, authorId, type, category,info, style,location', 'safe'),
         );
     }
 
@@ -82,9 +81,7 @@ class Place extends CMongoDocument
                 'class' => 'CMongoTypeBehavior',
                 'attributes' => array(
                     'address' => 'string',
-                    'authorId' => 'MongoId',
-                    'type' => 'string',
-                    'category' => 'MongoId',
+                    'category' => 'array.MongoId',
                 ),
             ),
         );
@@ -129,11 +126,13 @@ class Place extends CMongoDocument
     public function search($pagination=array())
     {
         $criteria = new CMongoCriteria();
-        $criteria->compare('_id', $this->_id, 'MongoId', true);
+        $criteria->compare('_id', $this->_id, 'MongoId', false);
         $criteria->compare('address', $this->address, 'string', true);
-        $criteria->compare('authorId', $this->authorId, 'MongoId', true);
-        $criteria->compare('type', $this->type, 'string', true);
-        $criteria->compare('category', $this->category, 'MongoId', true);
+        $criteria->compare('authorId', $this->authorId, 'MongoId', false);
+        $criteria->compare('type', $this->type, 'string', false);
+        $criteria->compare('category', $this->category , 'MongoId',false);
+        $criteria->setLimit(1000);
+        //$criteria->compare('category', $this->category, 'MongoId', true);
         $sort = new CSort();
         $sort->attributes = array(
             'defaultOrder' => '_id DESC',
@@ -143,11 +142,48 @@ class Place extends CMongoDocument
             'type',
             'category',
         );
+        //$dependecy = new CDbCacheDependency('SELECT MAX(update_time) FROM {{post}}');
         return new CMongoDocumentDataProvider(get_class($this), array(
                     'criteria' => $criteria,
                     'sort' => $sort,
                     'pagination' => $pagination,
                 ));
+    }
+    
+    public function exportView()
+    {
+        
+        $exportdata = Yii::app()->cache->get('export'.$this->id); 
+        if($exportdata===false)
+        {
+            $exportdata = array(
+                'id'=>  $this->id,
+                'author'=> (string)$this->authorId,
+                'category'=>  $this->exportCategories(),
+                'location'=> $this->location->exportView(),
+            );
+            Yii::app()->cache->set('export'.$this->id, $exportdata, 30);
+        }
+        return $exportdata;
+    }
+    
+    public function exportCategories()
+    {
+        $categories = array();
+        if(!is_array($this->category))return $categories;
+        foreach($this->category as $category)
+        {
+            $categories[(string)$category] = (string)$category;
+        }
+        return $categories;
+    }
+    
+    public function getHiddenFields()
+    {
+        return array(
+            'location[location][0]'=>array('class'=>'longitude'),
+            'location[location][1]'=>array('class'=>'latitude'),
+        );
     }
 }
 

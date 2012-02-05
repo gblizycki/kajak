@@ -1,6 +1,6 @@
-=CHtml::beginForm();
+=CHtml::beginForm(array('js/filter'),'get',array('class'=>'object-view'));
 -if(isset($backUrl))
-    =CHtml::link('Undo',array($backUrl),array('class'=>'back-button'))
+    =CHtml::link('Back',array($backUrl),array('class'=>'back-button'))
 =CHtml::hiddenField('backUrl',$currentUrl)
 .row.buttons
     =CHtml::checkBoxList('type',$type,array('Route'=>'Route','Place'=>'Place','Area'=>'Area'),array('separator'=>''));
@@ -8,7 +8,7 @@
     -$allCategories = DataExchange::module()->{"allCategory$mtype"}
     -if(count($allCategories)>0)
         .row
-            =CHtml::activeDropDownList($model,'category',CHtml::listData($allCategories,'id','name'));
+            =CHtml::activeCheckBoxList($model,'category',CHtml::listData($allCategories,'id','name'));
     :php
         if(isset($filters[$mtype]))
         {
@@ -18,3 +18,9 @@
             }
         }
 =CHtml::endForm();
+-foreach($realModels as $mtype=>$models)
+    %ul.#{$mtype}.list
+        -foreach($models as $model)
+            %li
+                =CHtml::activeHiddenField($model,'id',array('class'=>'id'))
+                =DataExchange::module()->getDataSource($model->info->format)->renderObjectList(array('model'=>$model))

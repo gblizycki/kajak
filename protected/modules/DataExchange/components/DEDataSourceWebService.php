@@ -10,5 +10,6 @@
  */
 abstract class DEDataSourceWebService extends DEAbstractDataSource
 {
+    public $provider;
 }
 

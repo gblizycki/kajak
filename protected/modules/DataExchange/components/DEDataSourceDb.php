@@ -36,6 +36,7 @@ abstract class DEDataSourceDb extends DEAbstractDataSource
     public function init()
     {
         $this->db = new CDbConnection($this->connectionString,  $this->username,  $this->password);
+        $this->db->charset = 'utf8';
     }
     /**
      * Return's database connection object

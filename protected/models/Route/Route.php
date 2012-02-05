@@ -8,58 +8,60 @@
  * @todo 
  * Created: 2011-12-21
  */
-class Route extends CMongoDocument
-{
+class Route extends CMongoDocument {
 
     /**
      * @var MongoId Author id (@see User) 
      */
     public $authorId;
+
     /**
      * @var MongoId Place category id (@see CategoryRoute)
      */
     public $category;
+
     /**
      * Route sections
      * @var array
      */
     public $sections;
-    
+
+    /**
+     * @var string format of datasource
+     */
+    public $format;
+
     /**
      * Returns the static model of the specified AR class.
      * @return UserRights the static model class
      */
-    public static function model($className=__CLASS__)
-    {
+    public static function model($className = __CLASS__) {
         return parent::model($className);
     }
 
     /**
      * @return string the associated collection name
      */
-    public function getCollectionName()
-    {
+    public function getCollectionName() {
         return 'route';
     }
 
     /**
      * @return array validation rules for model attributes.
      */
-    public function rules()
-    {
+    public function rules() {
         return array(
-            array('_id, authorId, category, info, style', 'safe'),
+            array('_id, authorId, category, info, style,sections', 'safe'),
         );
     }
 
     /**
      * @return array customized attribute labels (name=>label)
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return array(
-            'authorId'=>'Autor',
-            'category'=>'Kategoria',
+            'authorId' => 'Autor',
+            'category' => 'Kategoria',
         );
     }
 
@@ -67,8 +69,7 @@ class Route extends CMongoDocument
      * returns array of behaviors
      * @return array
      */
-    public function behaviors()
-    {
+    public function behaviors() {
         return array(
             'sections' => array(
                 'class' => 'ext.YiiMongoDbSuite.extra.EEmbeddedArraysBehavior',
@@ -89,8 +90,7 @@ class Route extends CMongoDocument
      * returns array of indexes
      * @return array
      */
-    public function indexes()
-    {
+    public function indexes() {
         return array(
             'points' => array(
                 // key array holds list of fields for index
@@ -102,34 +102,28 @@ class Route extends CMongoDocument
             ),
         );
     }
+
     /**
      * returns embedded documents
      * @return array
      */
-    public function embeddedDocuments()
-    {
+    public function embeddedDocuments() {
         return array(
             'info' => 'Info',
             'style' => 'Style',
         );
     }
-    
+
     /**
      * Simple search by attributes
      * @param array $pagination
      * @return CMongoDocumentDataProvider 
      */
-    public function search($pagination=array())
-    {
+    public function search($pagination = array()) {
         $criteria = new CMongoCriteria();
         $criteria->compare('_id', $this->_id, 'MongoId', false);
         $criteria->compare('authorId', $this->authorId, 'MongoId', false);
         $criteria->compare('category', $this->category, 'MongoId', false);
-        //info data filters
-        foreach($this->info->data as $field=>$value)
-        {
-            $criteria->compare('info.data.'.$field, $value);
-        }
         $sort = new CSort();
         $sort->attributes = array(
             'defaultOrder' => '_id DESC',
@@ -143,26 +137,41 @@ class Route extends CMongoDocument
                     'pagination' => $pagination,
                 ));
     }
-    
-    public function exportView()
-    {
+
+    public function exportView() {
         return array(
-            'id'=>  $this->id,
-            'author'=> (string)$this->authorId,
-            'category'=>  $this->category,
-            'points'=> $this->exportPoints(),
+            'id' => $this->id,
+            'author' => (string) $this->authorId,
+            'category' => $this->category,
+            'sections' => $this->exportSections(),
         );
     }
-    protected function exportPoints()
-    {
-        $points = array();
-        foreach($this->points as $point)
-        {
-            $points[$point->order] = $point->exportView();
+
+    protected function exportSections() {
+        $sections = array();
+        foreach ($this->sections as $section) {
+            $section->toArray();
+            $sections[$section->order] = $section->exportView();
+            $sections[$section->order]['id'] = $this->id;
         }
-        return $points;
+        return $sections;
+    }
+    public function getHiddenFields()
+    {
+        $fields = array();
+        foreach($this->sections as $index=>$section)
+        {
+            $fields['sections['.$index.'][order]'] = array('class'=>'order-section');
+            $fields = CMap::mergeArray($fields, $section->getHiddenFields($index));
+        }
+        return $fields;
+    }
+    public function save($runValidation = true, $attributes = null) {
+        parent::save($runValidation, $attributes);
+    }
+    public function getAla()
+    {
+        return null;
     }
 }
-
-
 

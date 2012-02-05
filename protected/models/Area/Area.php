@@ -157,6 +157,16 @@ class Area extends CMongoDocument {
         }
         return $points;
     }
-
+    public function getHiddenFields()
+    {
+        $fields = array();
+        foreach($this->points as $index=>$point)
+        {
+            $fields['points['.$index.'][location][0]']= array();
+            $fields['points['.$index.'][location][1]'] = array();
+            $fields['points['.$index.'][order]']= array('class'=>'order');
+        }
+        return $fields;
+    }
 }
 

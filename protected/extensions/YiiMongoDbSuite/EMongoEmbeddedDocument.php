@@ -72,15 +72,14 @@ abstract class EMongoEmbeddedDocument extends CModel
 	/**
 	 * @since v1.0.8
 	 */
-	protected function initEmbeddedDocuments()
+	public function initEmbeddedDocuments()
 	{
 		if(!$this->hasEmbeddedDocuments() || !$this->beforeEmbeddedDocsInit())
 			return false;
-
-		$this->_embedded = new CMap;
-		if(!isset(self::$_embeddedConfig[get_class($this)]))
-			self::$_embeddedConfig[get_class($this)] = $this->embeddedDocuments();
-		$this->afterEmbeddedDocsInit();
+                $this->_embedded = new CMap;
+                if(!isset(self::$_embeddedConfig[get_class($this)]))
+                        self::$_embeddedConfig[get_class($this)] = $this->embeddedDocuments();
+                $this->afterEmbeddedDocsInit();
 	}
 
 	/**

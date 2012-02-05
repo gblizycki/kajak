@@ -29,14 +29,14 @@ class ImporterController extends Controller
         }
         elseif($model instanceof DEDataSourceWebService)
         {
-            DataExchange::module()->save($ds, $model->import());
+            //DataExchange::module()->save($ds, $model->import());
+            $this->redirect(array('selectprovider', 'id' => $id));
         }
     }
 
     public function actionSelectDb($id)
     {
         $model = DataSource::model()->findByPk(new MongoId($id));
-        $de = DataExchange::module()->getDataSource($model->format);
         if (isset($_POST['username'],$_POST['password']))
         {
             $de = DataExchange::module()->getDataSource($model->format);
@@ -46,7 +46,7 @@ class ImporterController extends Controller
             //try{
                 //$de->connection->connectionStatus;
                 $data = $de->import();
-            var_dump($data['routes'][0]->points);die();
+            //var_dump($data['places'][0]->info);die();
             DataExchange::module()->save($model, $data);
                 Yii::app()->user->setFlash('top','Import successful');
                 $this->redirect(array('index'));
@@ -73,6 +73,21 @@ class ImporterController extends Controller
                 $this->redirect(array('index'));
         }
         $this->render('selectFile',array('model'=>$model));
+    }
+    
+    public function actionSelectProvider($id)
+    {
+        $model = DataSource::model()->findByPk(new MongoId($id));
+        if (isset($_POST['provider']))
+        {
+            $de = DataExchange::module()->getDataSource($model->format);
+            $de->provider = $_POST['provider'];
+            $data = $de->import();
+            DataExchange::module()->save($model, $data);
+                Yii::app()->user->setFlash('top','Import successful');
+                $this->redirect(array('index'));
+        }
+        $this->render('selectprovider',array('model'=>$model));
     }
 
 }

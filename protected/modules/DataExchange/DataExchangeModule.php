@@ -63,6 +63,7 @@ class DataExchangeModule extends CWebModule
         {
             $class = 'DE' . $format;
             $this->_dataSources[$format] = new $class();
+            $this->_dataSources[$format]->format = $format;
         }
         return $this->_dataSources[$format];
     }
@@ -70,7 +71,7 @@ class DataExchangeModule extends CWebModule
     {
         if (!isset($this->_categories['Area'][$name]))
         {
-            $this->_categories['Area'][$name] = $model = CategoryArea::model()->find(array('name',$name));
+            $this->_categories['Area'][$name] = $model = CategoryArea::model()->findByAttributes(array('name'=>$name));
         }
         return $this->_categories['Area'][$name];
     }
@@ -78,9 +79,17 @@ class DataExchangeModule extends CWebModule
     {
         if (!isset($this->_categories['Route'][$name]))
         {
-            $this->_categories['Route'][$name] = $model = CategoryRoute::model()->find(array('name',$name));
+            $this->_categories['Route'][$name] = $model = CategoryRoute::model()->findByAttributes(array('name'=>$name));
         }
         return $this->_categories['Route'][$name];
+    }
+    public function getCategoryPlace($name)
+    {
+        if (!isset($this->_categories['Place'][$name]))
+        {
+            $this->_categories['Place'][$name] = CategoryPlace::model()->findByAttributes(array('name'=>$name));
+        }
+        return $this->_categories['Place'][$name];
     }
     public function getAllCategoryRoute()
     {
@@ -109,18 +118,11 @@ class DataExchangeModule extends CWebModule
         }
         return $this->_categories['Area'];
     }
-    public function getCategoryPlace($name)
-    {
-        if (!isset($this->_categories['Place'][$name]))
-        {
-            $this->_categories['Place'][$name] = $model = CategoryRoute::model()->find(array('name',$name));
-        }
-        return $this->_categories['Place'][$name];
-    }
     
     
     private function saveObject(DataSource $dataSource, $object)
     {
+        $object->info->format = $dataSource->format;
         $object->save();
     }
 
@@ -135,6 +137,7 @@ class DataExchangeModule extends CWebModule
         $pendingObject = new $class;
         $pendingObject->unsetAttributes();
         $pendingObject->cloneObject($object);
+        $pendingObject->info->format = $dataSource->format;
         $pendingObject->save();
     }
     

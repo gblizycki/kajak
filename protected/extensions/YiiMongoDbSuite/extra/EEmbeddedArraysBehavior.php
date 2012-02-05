@@ -62,6 +62,10 @@ class EEmbeddedArraysBehavior extends EMongoDocumentBehavior
 		$this->parseExistingArray();
 	}
 
+        public function initEmbbededArray()
+        {
+            $this->parseExistingArray();
+        }
 	/**
 	 * @since v1.0
 	 */
@@ -74,6 +78,10 @@ class EEmbeddedArraysBehavior extends EMongoDocumentBehavior
 			{
 				$obj = new $this->arrayDocClassName;
 				$obj->setAttributes($doc, false);
+                                $obj->init();
+                                //experimental
+                                if($obj->hasEmbeddedDocuments())
+                                    $obj->initEmbeddedDocuments();
 				$arrayOfDocs[] = $obj;
 			}
 			$this->getOwner()->{$this->arrayPropertyName} = $arrayOfDocs;

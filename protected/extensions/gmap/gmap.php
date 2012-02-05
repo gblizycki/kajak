@@ -27,9 +27,9 @@ class gmap extends CWidget
         $cs = Yii::app()->getClientScript();
         //js
         $cs->registerCoreScript('jquery');
-        $cs->registerScriptFile("http://maps.google.com/maps/api/js?sensor=false");
-        $cs->registerScriptFile($this->baseUrl.'/gmap3'.($this->debug?'':'-min').'.js');
-        $cs->registerScriptFile($this->baseUrl.'/DEMap'.($this->debug?'':'-min').'.js');
+        $cs->registerScriptFile("http://maps.google.com/maps/api/js?sensor=false",  CClientScript::POS_END);
+        $cs->registerScriptFile($this->baseUrl.'/gmap3'.($this->debug?'':'-min').'.js',  CClientScript::POS_END);
+        $cs->registerScriptFile($this->baseUrl.'/DEMap'.($this->debug?'':'-min').'.js',  CClientScript::POS_END);
         //css & scss
         $cs->registerCssFile($this->baseUrl.'/DEMap.css');
         //init js

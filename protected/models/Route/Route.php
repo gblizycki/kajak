@@ -124,16 +124,9 @@ class Route extends CMongoDocument {
         $criteria->compare('_id', $this->_id, 'MongoId', false);
         $criteria->compare('authorId', $this->authorId, 'MongoId', false);
         $criteria->compare('category', $this->category, 'MongoId', false);
-        $sort = new CSort();
-        $sort->attributes = array(
-            'defaultOrder' => '_id DESC',
-            '_id',
-            'authorId',
-            'category',
-        );
+        $criteria->setSort(array('info.name'=>  CMongoCriteria::SORT_ASC));
         return new CMongoDocumentDataProvider(get_class($this), array(
                     'criteria' => $criteria,
-                    'sort' => $sort,
                     'pagination' => $pagination,
                 ));
     }

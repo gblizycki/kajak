@@ -1,4 +1,14 @@
 $filterColumnWidth = 200px;
+.filter
+{
+    .content
+    {
+        &.slideUp
+        {
+            display: none;
+        }
+    }
+}
 .filter.tree
 {
     width: $filterColumnWidth;

@@ -53,7 +53,7 @@ class Area extends CMongoDocument {
      */
     public function rules() {
         return array(
-            array('points, createDate, updateDate, info, style', 'safe')
+            array('points, createDate, updateDate, info, style,category', 'safe')
         );
     }
 
@@ -124,29 +124,29 @@ class Area extends CMongoDocument {
      */
     public function search($pagination = array()) {
         $criteria = new CMongoCriteria();
-        $criteria->compare('_id', $this->_id, 'MongoId', true);
+        $criteria->compare('_id', $this->_id, 'MongoId', false);
+        $criteria->compare('category', $this->category, 'MongoId', false);
         $criteria->compare('createDate', $this->createDate, 'MongoDate');
         $criteria->compare('updateDate', $this->updateDate, 'MongoDate');
-        $sort = new CSort();
-        $sort->attributes = array(
-            'defaultOrder' => '_id DESC',
-            '_id',
-            'createDate',
-            'updateDate',
-        );
+        $criteria->setSort(array('info.name'=>  CMongoCriteria::SORT_ASC));
         return new CMongoDocumentDataProvider(get_class($this), array(
                     'criteria' => $criteria,
-                    'sort' => $sort,
                     'pagination' => $pagination,
                 ));
     }
     
     public function exportView()
     {
-        return array(
-            'id'=>  $this->id,
-            'points'=> $this->exportPoints(),
-        );
+        $value = Yii::app()->cache->get(get_class($this).$this->id);
+        if($value===false)
+        {
+            $value = array(
+                'id'=>  $this->id,
+                'points'=> $this->exportPoints(),
+            );
+            Yii::app()->cache->set(get_class($this).$this->id,$value,5000);
+        }
+        return $value;
     }
     protected function exportPoints()
     {

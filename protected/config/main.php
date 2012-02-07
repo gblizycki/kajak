@@ -7,6 +7,7 @@ return array(
     'name' => 'Kajak',
     // preloading 'log' component
     'preload' => array('log'),
+    'language'=>'pl',
     // autoloading model and component classes
     'import' => array(
         'application.models.*',
@@ -110,7 +111,7 @@ return array(
             'ugly' => false,
             'style' => 'compressed',
             'debug' => 0,
-            'cache' => true,
+            'cache' => false,
             'fileExtension' => '.haml',
             'viewFileExtension' => '.php5',
             'useRuntimePath' => false,
@@ -150,10 +151,10 @@ return array(
                     'class' => 'CFileLogRoute',
                     'levels' => 'error, warning',
                 ),
-                 //array(
-                 //   'class'=>'CProfileLogRoute',
-                //    'report'=>'summary',
-                //),
+                 array(
+                    'class'=>'CProfileLogRoute',
+                    'report'=>'summary',
+                ),
             ),
         ),
         'cache'=> array(

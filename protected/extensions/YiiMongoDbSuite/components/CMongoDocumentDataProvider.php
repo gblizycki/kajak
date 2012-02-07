@@ -23,5 +23,24 @@ class CMongoDocumentDataProvider extends EMongoDocumentDataProvider {
         }
         return $this->model->findAll($this->_criteria)->toArray();
     }
+    
+    public function __toString() {
+        $string = '';
+        $criteria = $this->criteria;
+        $string.= $this->modelClass;
+        if(count($criteria->getSelect())>0)
+            $string.= CJSON::encode($this->criteria->getSelect());
+        if(count($criteria->getConditions())>0)
+            $string.= CJSON::encode($this->criteria->getConditions());
+        if(count($criteria->getSort())>0)
+            $string.= CJSON::encode($this->criteria->getSort());
+        if($criteria->getLimit()!=null)
+            $string.= CJSON::encode($this->criteria->getLimit());
+        if($criteria->getOffset()!=null)
+            $string.= CJSON::encode($this->criteria->getOffset());
+        if($criteria->getWorkingFields()!=null)
+            $string.= CJSON::encode($this->criteria->getWorkingFields());
+        return $string;
+    }
 }
 ?>

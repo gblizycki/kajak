@@ -19,11 +19,17 @@
             'jquery-ui.min.js'=>false,
         );
         echo CGoogleApi::init(); ?>
-        <?php echo CHtml::script(
+        <?php  CHtml::script(
             CGoogleApi::load('jquery','1.7.1')."\n".
             CGoogleApi::load('jqueryui',"1.8.16")
         ); ?>
+        
+        <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.1.min.js"></script>
+        <script src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.17/jquery-ui.min.js"></script>
         <script src="js/libs/modernizr-2.0.6.min.js"></script>
+        <script src="js/libs/async.min.js"></script>
+        <script src="js/libs/jstorage.js"></script>
+        <script src="js/libs/jquery.scrollTo-1.4.2-min.js"></script>
     </head>
     <body>
         <?php echo $content; ?>

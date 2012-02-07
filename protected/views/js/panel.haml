@@ -1,26 +1,40 @@
 =CHtml::beginForm(array('js/filter'),'get',array('class'=>'object-view'));
 -if(isset($backUrl))
-    =CHtml::link('Back',array($backUrl),array('class'=>'back-button'))
-=CHtml::hiddenField('backUrl',$currentUrl)
+    =CHtml::link('Back',array('js/filter?'.$backUrl),array('class'=>'back-button'))
+-if(isset($currentUrl))
+    =CHtml::hiddenField('backUrl',$currentUrl)
 .row.buttons
     =CHtml::checkBoxList('type',$type,array('Route'=>'Route','Place'=>'Place','Area'=>'Area'),array('separator'=>''));
 -foreach($models as $mtype=>$model)
-    -$allCategories = DataExchange::module()->{"allCategory$mtype"}
-    -if(count($allCategories)>0)
-        .row
-            =CHtml::activeCheckBoxList($model,'category',CHtml::listData($allCategories,'id','name'));
-    :php
-        if(isset($filters[$mtype]))
-        {
-            foreach($filters[$mtype] as $filter){
-                $this->widget(Yii::app()->filters->resolveClass($filter->class),CMap::mergeArray(array('model'=>$model,'attribute'=>$filter->attribute,'name'=>$filter->name)
-                    ,$filter->options));
-            }
-        }
+    .#{$mtype}.navigator
+        .name =Yii::t('panel', $mtype).':'
+        -$allCategories = DataExchange::module()->{"allCategory$mtype"}
+        -if(count($allCategories)>0)
+            .filter.categories
+                =CHtml::activeCheckBoxList($model,'category',CHtml::listData($allCategories,'id','name'),array('separator'=>'','template'=>'<div class="row">{label}{input}</div>'));
+            :php
+                if(isset($filters[$mtype]))
+                {
+                    foreach($filters[$mtype] as $filter){
+                        $this->widget(Yii::app()->filters->resolveClass($filter->class),CMap::mergeArray(array('model'=>$model,'attribute'=>$filter->attribute,'name'=>$filter->name)
+                            ,$filter->options));
+                    }
+                }
+//-foreach($models as $mtype=>$model)
+//    :php
+//        if(isset($filters[$mtype]))
+//        {
+//            foreach($filters[$mtype] as $filter){
+//                $this->widget(Yii::app()->filters->resolveClass($filter->class),CMap::mergeArray(array('model'=>$model,'attribute'=>$filter->attribute,'name'=>$filter->name)
+//                    ,$filter->options));
+//            }
+//        }
 =CHtml::endForm();
 -foreach($realModels as $mtype=>$models)
-    %ul.#{$mtype}.list
-        -foreach($models as $model)
-            %li
-                =CHtml::activeHiddenField($model,'id',array('class'=>'id'))
-                =DataExchange::module()->getDataSource($model->info->format)->renderObjectList(array('model'=>$model))
+    .objects
+        .name =Yii::t('panel',$mtype.' list')
+        %ul.#{$mtype}.list
+            -foreach($models as $model)
+                %li
+                    =CHtml::activeHiddenField($model,'id',array('class'=>'id'))
+                    =DataExchange::module()->getDataSource($model->info->format)->renderObjectList(array('model'=>$model))

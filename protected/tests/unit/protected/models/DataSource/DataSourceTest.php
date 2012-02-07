@@ -10,6 +10,7 @@ class DataSourceTest extends EMongoDbTestCase
     public $fixtures = array(
         'ds' => 'DataSource',
         'cat'=>'CategoryRoute',
+        'cat'=>'CategoryArea',
         'cat2'=>'CategoryPlace',
         'users' => 'User',
         

@@ -1,4 +1,6 @@
-.filter    
+.filter.#{$this->slideEnable?'slide':''}
+    -if($this->slideEnable)
+        =CHtml::hiddenField($this->inputId,$this->slide,array('class'=>'slide-value'))
     .name =$this->name
-    .content
-        = CHtml::activeDropDownList($this->model,$this->attribute,$this->data,$this->htmlOptions);
+    .content.#{$this->slideEnable&&$this->slide==0?'slideUp':''}
+        =CHtml::activeDropDownList($this->model,$this->attribute,$this->data,$this->htmlOptions);

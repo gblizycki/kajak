@@ -55,6 +55,7 @@ class DataExchangeModule extends CWebModule
                 else
                     $this->saveObjectPending($dataSource, $place);
             }
+            Yii::app()->cache->flush();
     }
 
     public function getDataSource($format)

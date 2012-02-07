@@ -133,23 +133,18 @@ class Place extends CMongoDocument
         $criteria->compare('category', $this->category , 'MongoId',false);
         $criteria->setLimit(1000);
         //$criteria->compare('category', $this->category, 'MongoId', true);
-        $sort = new CSort();
-        $sort->attributes = array(
-            'defaultOrder' => '_id DESC',
-            '_id',
-            'address',
-            'authorId',
-            'type',
-            'category',
-        );
+        $criteria->setSort(array('info.name'=>  CMongoCriteria::SORT_ASC));
         //$dependecy = new CDbCacheDependency('SELECT MAX(update_time) FROM {{post}}');
         return new CMongoDocumentDataProvider(get_class($this), array(
                     'criteria' => $criteria,
-                    'sort' => $sort,
                     'pagination' => $pagination,
                 ));
     }
     
+    public function exportAttributes()
+    {
+        
+    }
     public function exportView()
     {
         

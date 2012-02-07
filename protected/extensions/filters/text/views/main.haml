@@ -1,4 +1,6 @@
-.filter    
+.filter.#{$this->slideEnable?'slide':''}
+    -if($this->slideEnable)
+        =CHtml::hiddenField($this->inputId,$this->slide,array('class'=>'slide-value'))
     .name =$this->name
-    .content
+    .content.#{$this->slideEnable&&$this->slide==0?'slideUp':''}
         =CHtml::activeTextField($this->model,$this->attribute)

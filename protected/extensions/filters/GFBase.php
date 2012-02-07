@@ -12,10 +12,23 @@ abstract class GFBase extends CInputWidget
 {
     public $options = array();
     public $debug=true;
+    public $inputId;
+    public $slideEnable = false;
+    public $slide;
     private $assets;
     public function init()
     {
         parent::init();
+        if($this->slideEnable)
+        {
+            $this->inputId = str_replace(array('[',']','.'),array('-','',''),get_class($this->model).'-'.$this->attribute);
+            if(isset($_GET[$this->inputId]))
+                $this->slide = $_GET[$this->inputId];
+            elseif(isset($_POST[$this->inputId]))
+                $this->slide = $_POST[$this->inputId];
+            else
+                $this->slide = 1;
+        }
         if ($this->assets === null)
         {
             if ($this->debug)

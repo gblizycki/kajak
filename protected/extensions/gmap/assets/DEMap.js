@@ -39,6 +39,29 @@
         }
         return c;
     }
+    
+    
+    function Place(place)
+    {
+        $.extend(this, place);
+    }
+    /*Place.prototype.__defineGetter__('id', function(){
+        return this._id.$id;
+    });*/
+    function Area(area)
+    {
+        $.extend(this, area);
+    }
+    /*Area.prototype.__defineGetter__('id', function(){
+        return this._id.$id;
+    });*/
+    function Route(route)
+    {
+        $.extend(this, route);
+    }
+    /*Route.prototype.__defineGetter__('id', function(){
+        return this._id.$id;
+    });*/
     // undefined is used here as the undefined global variable in ECMAScript 3 is
     // mutable (ie. it can be changed by someone else). undefined isn't really being
     // passed in so we can ensure the value of it is truly undefined. In ES5, undefined
@@ -57,9 +80,24 @@
         data: {},
         routeLod: 11,
         debug: true,
+        debugCreate: false,
         panelId: '#DEMap-panel',
         mapId: '#DEMap-map',
-        autofit: true
+        autofit: true,
+        slideSpeed:'fase',
+        pageSize: {
+            pagesize:{
+                'Route':30,
+                'Area':20,
+                'Place':300
+            }
+        },
+        minZoom: 12,
+        scroll: {
+            duration: 0,
+            margin:true//,
+        //offset:{top:-20}
+        }
     };
 
     // The actual plugin constructor
@@ -114,6 +152,7 @@
         plugin.area.bindEvents();
         plugin.place.bindEvents();
         plugin.route.bindEvents();
+        plugin.filter.bindEvents();
     };
     Plugin.prototype.loadData = function (data)
     {
@@ -122,6 +161,7 @@
             url: plugin.options.baseUrl+'/js/filter',
             type: 'GET',
             dataType: 'JSON',
+            cache: true,
             data: {
                 type: ['Place']
             //Route: {
@@ -150,12 +190,15 @@
     Plugin.prototype.request.send = function()
     {
         plugin.request.start();
+        console.log();
         $.ajax({
-            url: $(plugin.panel).children('form').attr('action'),
-            data: $(plugin.panel).children('form').serialize(),
+            url: $(plugin.panel).children('form').attr('action'),//$(plugin.panel).children('form').attr('action'),
+            data: $(plugin.panel).children('form').serialize()+'&'+$.param(plugin.options.pageSize),
             dataType: 'JSON',
             success: plugin.request.process
         });
+        
+        
     }
     Plugin.prototype.request.sendEditForm = function()
     {
@@ -175,10 +218,7 @@
     }
     Plugin.prototype.request.end = function()
     {
-        if(plugin.options.autofit)
-            $(plugin.element).gmap3({
-                action: 'autofit'
-            });
+        plugin.map.autofit();
         $(plugin.container).removeClass('loading');
     }
     Plugin.prototype.request.process = function(data)
@@ -189,19 +229,122 @@
         $(plugin.element).gmap3({
             action: 'clear'
         });
+        plugin.objects = {};
+        plugin.objects.Route = [];
+        plugin.objects.Place = [];
+        plugin.objects.Area = [];
+        if(data.pages.length)
+        {
+            var form = $(plugin.panel).children('form').serializeArray();
+            var newForm = [];
+            $.each(form,function(index,element){
+                if(element.name!=='backUrl' && element.name!=='type[]') 
+                    newForm.push(element);    
+            });
+                
+            form = jQuery.param(newForm);//+'&'+$.param({size:data.size,page:element.page});
+            var requests = [];
+            //clean objects
+            plugin.counter = 0;
+            $.each(data.pages,function(index,element){
+                
+                var dataUrl = form+'&'+$.param({
+                    pagesize:data.pagesize,
+                    page:element[1],
+                    type:[element[0]]
+                });
+                $.jStorage.flush();
+                var request = $.jStorage.get(plugin.options.baseUrl+'/js/data&'+dataUrl);
+                if(!request)
+                {
+                    requests.push(function(){
+                        $.ajax({
+                            url: plugin.options.baseUrl+'/js/data',
+                            data:dataUrl,
+                            type: 'GET',
+                            dataType: 'JSON',
+                            cache: true,
+                            success:function(data){
+                                //$.jStorage.set(plugin.options.baseUrl+'/js/data&'+dataUrl, data);
+                                //$.jStorage.setTTL(plugin.options.baseUrl+'/js/data&'+dataUrl, 30000);
+                                if(data.objects.Route)
+                                    $.merge(plugin.objects.Route,data.objects.Route);
+                                if(data.objects.Area)
+                                    $.merge(plugin.objects.Area,data.objects.Area);
+                                if(data.objects.Place)
+                                    $.merge(plugin.objects.Place,data.objects.Place);
+                            }
+                        });
+                    }
+                    );
+                }
+                else
+                {
+                    requests.push(function(){
+                        data = request;
+                        if(data.objects.Route)
+                            $.merge(plugin.objects.Route,data.objects.Route);
+                        if(data.objects.Area)
+                            $.merge(plugin.objects.Area,data.objects.Area);
+                        if(data.objects.Place)
+                            $.merge(plugin.objects.Place,data.objects.Place);
+                    });
+                }
+                
+                
+            });
+            if(plugin.options.debug)
+                console.time("sending requests");
+            async.parallel(requests);
+            $(document).ajaxStop(function() {
+                if(plugin.objects.Route.length>0)
+                {
+                    if(plugin.options.debugCreate)console.time('creating routes');
+                    $.each(plugin.objects.Route,plugin.route.add);
+                    if(plugin.options.debugCreate)console.timeEnd('creating routes');
+                }
+                if(plugin.objects.Area.length>0)
+                {
+                    if(plugin.options.debugCreate)console.time('creating areas');
+                    $.each(plugin.objects.Area,plugin.area.add);
+                    if(plugin.options.debugCreate)console.timeEnd('creating areas');
+                }
+                if(plugin.objects.Place.length>0)
+                {
+                    if(plugin.options.debugCreate)console.time('creating places');
+                    plugin.place.addAll(plugin.objects.Place);
+                    if(plugin.options.debugCreate)console.timeEnd('creating places');
+                }
+                plugin.objects.Area = [];
+                plugin.objects.Place = [];
+                plugin.objects.Route = [];
+                plugin.map.zoomChanged();
+                plugin.map.autofit();
+                plugin.request.end();
+                console.timeEnd("sending requests");
+            });
+        }
+        else
+        {
+            console.log('no pages?');
+            plugin.objects.Area = [];
+            plugin.objects.Place = [];
+            plugin.objects.Route = [];
+            plugin.map.zoomChanged();
+            plugin.map.autofit();
+            plugin.request.end();
+        }
+            
+        
+    }
+    Plugin.prototype.request.processData = function(data)
+    {
         if(data.objects.Route)
             $.each(data.objects.Route,plugin.route.add);
         if(data.objects.Area)
             $.each(data.objects.Area,plugin.area.add);
         if(data.objects.Place)
-            //$.each(data.objects.Place,plugin.place.add);
             plugin.place.addAll(data.objects.Place);
-        plugin.map.zoomChanged();
-        if(plugin.options.autofit)
-            $(plugin.element).gmap3({
-                action: 'autofit'
-            });
-        plugin.request.end();
     }
     Plugin.prototype.request.processSingle = function(data)
     {
@@ -239,13 +382,22 @@
     }
     //Map object
     Plugin.prototype.map = {};
+    Plugin.prototype.map.autofit = function()
+    {
+        if(plugin.options.autofit)
+        {
+            $(plugin.element).gmap3({
+                action: 'autofit'
+            });
+            if($(plugin.element).gmap3('get').getZoom()>plugin.options.minZoom)
+                $(plugin.element).gmap3('get').setZoom(plugin.options.minZoom);
+        }
+    }
     Plugin.prototype.map.zoomChanged = function()
     {
         return;
         if($(plugin.element).gmap3('get').getZoom()<plugin.options.routeLod)
         {
-            //hide all markers
-                
             $.each(plugin.Route,function(index,route){
                 $.each(route.markers,function(index,marker){
                     if(marker.getVisible())
@@ -263,11 +415,52 @@
             });
         }
     }
+    //Filter object
+    Plugin.prototype.filter = {};
+    Plugin.prototype.filter.bindEvents = function()
+    {
+        $(document).on({
+            click: function(){
+                //select right
+                //google.maps.event.trigger(plugin.area.findAllByTag('Area-'+ $(this).find('input.id').val())[0],'click');
+                plugin.filter.slide($(this).parent().find('.content'),$(this).parent().find('.slide-value'));
+            }
+        },plugin.options.panelId+' .filter.slide .name');
+        $(document).on({
+            click: function(){
+                //select right
+                //google.maps.event.trigger(plugin.area.findAllByTag('Area-'+ $(this).find('input.id').val())[0],'click');
+                $(this).toggleClass('up').siblings('ul.list').slideToggle();
+            }
+        },plugin.options.panelId+' .objects>.name');
+    }
+    Plugin.prototype.filter.slide = function(element,valueElement)
+    {
+        $(element).slideToggle(plugin.options.slideSpeed,function(){
+            var value = $(valueElement).val();
+            if(value==1)
+            {
+                $(element).parent().addClass('up');
+                value=0;
+            }
+            else
+            {
+                value=1;
+                $(element).parent().removeClass('up');
+            }
+            $(valueElement).val(value);
+        });
+    }
+
     
     //Route object
     Plugin.prototype.route = {};
     Plugin.prototype.route.add = function(index,route)
     {
+        route = new Route(route);
+        $.each(route.sections,function(index,element){
+            element.id=route.id
+        });
         $.each(route.sections,plugin.route.section.add);
     }
     Plugin.prototype.route.addSingle = function(index,route)
@@ -292,11 +485,22 @@
             success: plugin.request.processEdit
         });
     }
+    Plugin.prototype.route.view = function(id)
+    {
+        plugin.request.start();
+        $.ajax({
+            url: plugin.options.baseUrl+'/js/viewRoute',
+            data: {
+                id:id,
+                backUrl:$(plugin.panel).find('input#backUrl').val()
+            },
+            dataType: 'JSON',
+            success: plugin.request.processSingle
+        });
+    }
     Plugin.prototype.route.bindEvents = function()
     {
         //bind list with proper object
-        if(plugin.options.debug)
-            console.log('Binding route events');
         $(document).on({
             click: function(event){
                 //select right
@@ -343,10 +547,10 @@
         section.element = $(plugin.panel).find('ul.Route.list li input[value='+section.id+']').parent();
         $.each(section.points,function(index){
             point = this;
-            path[index] = [this.latitude,this.longitude];
+            path[point.order] = [this.latitude,this.longitude];
             $(plugin.element).gmap3({
                 action: 'addMarker',
-                latLng: path[index],
+                latLng: path[point.order],
                 marker:{
                     options:{
                         icon:new google.maps.MarkerImage(plugin.options.iconUrl, new google.maps.Size(32, 37), new google.maps.Point((parseInt(this.order)+1)*32, 0)),
@@ -368,7 +572,8 @@
                 strokeOpacity: 1.0,
                 strokeWeight: 3,
                 //editable: true,
-                geodesic: true
+                geodesic: true,
+                zIndex: 100
             },
             path:path,
             data: section,
@@ -383,7 +588,6 @@
                 mouseout: plugin.route.section.mouseout
             }
         });
-        console.log(section);
     }
     Plugin.prototype.route.section.addSingle = function(index,section)
     {
@@ -599,7 +803,12 @@
     {
 
         if(data.element)
+        {
             $(data.element).addClass('hover');
+            if(event && $(data.element).is(':visible'))
+                $(plugin.panel).scrollTo(data.element,plugin.options.scroll);
+        }
+            
         polyline.setOptions({
             strokeWeight: $(plugin.element).gmap3('get').getZoom()*2,
             strokeColor: 'green'
@@ -643,19 +852,6 @@
         });
         return name;
     }
-    Plugin.prototype.route.view = function(id)
-    {
-        plugin.request.start();
-        $.ajax({
-            url: plugin.options.baseUrl+'/js/viewRoute',
-            data: {
-                id:id,
-                backUrl:$(plugin.panel).find('input#backUrl').val()
-            },
-            dataType: 'JSON',
-            success: plugin.request.processSingle
-        });
-    }
     
     //Area object
     Plugin.prototype.area = {};
@@ -675,7 +871,8 @@
                 strokeOpacity: 1.0,
                 strokeWeight: 2,
                 fillColor: "#FF0000",
-                fillOpacity: 0.35
+                fillOpacity: 0.35,
+                zIndex: 1
             },
             paths:path,
             tag: 'Area-'+area.id,
@@ -744,7 +941,13 @@
     Plugin.prototype.area.mouseover = function(polygon,event,data)
     {
         if(data.element)
+        {
             $(data.element).addClass('hover');
+            if(event && $(data.element).is(':visible'))
+                $(plugin.panel).scrollTo(data.element,plugin.options.scroll);
+        }
+        //scroll to this element
+        
         polygon.setOptions({
             strokeWeight: 10
         });
@@ -759,9 +962,6 @@
     }
     Plugin.prototype.area.bindEvents = function()
     {
-        //bind list with proper object
-        if(plugin.options.debug)
-            console.log('Binding area events');
         $(document).on({
             click: function(){
                 //select right
@@ -849,7 +1049,6 @@
                     $('#DEMap-panel form input[name="Area[points]['+realName+'][order]"]').val(newindex);
                     //add form elements!
                     polyline.getAt(eindex).data.order = newindex;
-                //console.log(newindex);
                 }
             }
             var maxPos = this.getLength()+10;
@@ -902,19 +1101,97 @@
     }
     //Place
     Plugin.prototype.place = {};
+    
+    Plugin.prototype.place.options = {};
+    Plugin.prototype.place.create = function(place,scenario)
+    {
+        //set options & events based on place, category or defaults
+        return {
+            latLng: [place.location.latitude,place.location.longitude],
+            data: $.extend(place,{element:$(plugin.panel).find('ul.Place.list li input[value='+place.id+']').parent()}),
+            tag: 'Place-'+place.id,
+            options: $.extend(true,plugin.place.options[scenario](),place.options),
+            callback: function(marker){place.marker = marker},
+            events: plugin.place.events[scenario]()
+        };
+    }
+    
+    
+    Plugin.prototype.place.options.list= function(){
+        return {
+            clickable: true,
+            icon:{
+                size:{
+                    width:8,
+                    height:8
+                },
+                url: plugin.options.iconUrl,
+                origin:{
+                    x:3232,
+                    y:0
+                }
+            },
+            title:null,
+            visible:true,
+            zIndex:1000
+        };
+    };  
+    Plugin.prototype.place.options.single = function(){
+        return {
+            clickable: false,
+            icon:{
+                size:{
+                    width:22,
+                    height:32
+                },
+                url: plugin.options.iconUrl,
+                origin:{
+                    x:3242,
+                    y:0
+                }
+            },
+            title:null,
+            visible:true,
+            zIndex:1000
+        };
+    };
+    Plugin.prototype.place.options.edit = function(){
+        return {
+            clickable: false,
+            draggable: true,
+            icon:null,
+            title:null,
+            visible:true,
+            zIndex:1000
+        };
+    };
+    
+    Plugin.prototype.place.events = {};
+    Plugin.prototype.place.events.list = function(){
+        return {
+            click: plugin.place.click,
+            rightclick: plugin.place.rightclick,
+            mouseover: plugin.place.mouseover,
+            mouseout: plugin.place.mouseout
+        };
+    };
+    Plugin.prototype.place.events.single = function(){
+        return {};
+    };
+    Plugin.prototype.place.events.edit = function(){
+        return {
+            dragend: plugin.place.drag
+        };
+    };
+
     Plugin.prototype.place.addAll = function(places)
     {
         var markers = [];
+        var scenario = 'list';
         $.each(places,function(index,place){
-            markers.push({
-                latLng:[place.location.latitude,place.location.longitude],
-                data: place,
-                tag: 'Place-'+place.id,
-                callback: function(marker){
-                    place.marker = marker;
-                }
-            });
-            place.element = $(plugin.panel).find('ul.Place.list li input[value='+place.id+']').parent();
+            markers.push(
+                plugin.place.create(place,scenario)
+            );
         });
         $(plugin.element).gmap3(
         {
@@ -924,34 +1201,8 @@
             maxZoom: 10,
             marker:
             {
-                events:{
-                    click: plugin.place.click,
-                    rightclick: plugin.place.rightclick,
-                    mouseover: plugin.place.mouseover,
-                    mouseout: plugin.place.mouseout
-                }
-            },
-            clusters:{
-                // This style will be used for clusters with more than 0 markers
-                0: {
-                    content: '<div class="cluster cluster-1">CLUSTER_COUNT</div>',
-                    width: 53,
-                    height: 52
-                },
-                // This style will be used for clusters with more than 20 markers
-                20: {
-                    content: '<div class="cluster cluster-2">CLUSTER_COUNT</div>',
-                    width: 56,
-                    height: 55
-                },
-                // This style will be used for clusters with more than 50 markers
-                50: {
-                    content: '<div class="cluster cluster-3">CLUSTER_COUNT</div>',
-                    width: 66,
-                    height: 65
-                }
+                events: plugin.place.events[scenario]()
             }
-            
         });
     }
     Plugin.prototype.place.view = function(id)
@@ -969,33 +1220,11 @@
     }
     Plugin.prototype.place.add = function(index,place)
     {
-        $(plugin.element).gmap3(
-        {
-            action: 'addMarker',
-            latLng:[place.location.latitude,place.location.longitude],
-            data: place,
-            callback: function(marker){
-                place.marker = marker;
-            },
-            events: {
-                click: plugin.place.click
-            }
-        });
+        $(plugin.element).gmap3($.extend({action: 'addMarker'},plugin.place.create(place,'list')));
     }
     Plugin.prototype.place.addSingle = function(index,place)
     {
-        $(plugin.element).gmap3(
-        {
-            action: 'addMarker',
-            latLng:[place.location.latitude,place.location.longitude],
-            data: place,
-            callback: function(marker){
-                place.marker = marker;
-            },
-            events: {
-                click: plugin.place.click
-            }
-        });
+        $(plugin.element).gmap3($.extend({action: 'addMarker'},plugin.place.create(place,'single')));
     }
     Plugin.prototype.place.click = function(marker,event,data)
     {
@@ -1007,19 +1236,26 @@
     }
     Plugin.prototype.place.mouseover = function(marker,event,data)
     {
-        /*if(data.element)
+        if(data.element)
+        {
             $(data.element).addClass('hover');
-        marker.setOptions({
-            flat: true
-        });*/
+            if(event && $(data.element).is(':visible'))
+                $(plugin.panel).scrollTo(data.element,plugin.options.scroll);
+            $(plugin.element).gmap3({
+                action:'get'
+            }).panToBounds(new google.maps.LatLngBounds().extend(marker.position));
+            marker.setOptions({
+                icon:new google.maps.MarkerImage(plugin.options.iconUrl, new google.maps.Size(22, 32), new google.maps.Point(3242, 0))
+            });
+        }
     }
     Plugin.prototype.place.mouseout = function(marker,event,data)
     {
-        /*if(data.element)
+        if(data.element)
             $(data.element).removeClass('hover');
         marker.setOptions({
-            flat: false
-        });*/
+            icon:new google.maps.MarkerImage(plugin.options.iconUrl, new google.maps.Size(8, 8), new google.maps.Point(3232, 0))
+        });
     }
     Plugin.prototype.place.edit = function(id)
     {
@@ -1037,20 +1273,8 @@
     }
     Plugin.prototype.place.addEdit = function(index,place)
     {
-        $(plugin.element).gmap3(
-        {
-            action: 'addMarker',
-            latLng:[place.location.latitude,place.location.longitude],
-            data: place,
-            options:
-            {
-                draggable: true
-            },
-            events: {
-                dragend: plugin.place.drag
-            }
-        });
-    }
+        $(plugin.element).gmap3($.extend({action: 'addMarker'},plugin.place.create(place,'edit')));
+}
     
     Plugin.prototype.place.drag = function(marker)
     {
@@ -1059,9 +1283,9 @@
     }
     Plugin.prototype.place.bindEvents = function()
     {
-    //bind list with proper object
-    /*if(plugin.options.debug)
-            console.log('Binding place events');
+        //bind list with proper object
+        /*if(plugin.options.debug)
+            console.log('Binding place events');*/
         $(document).on({
             click: function(){
                 //select right
@@ -1069,7 +1293,9 @@
             },
             mouseenter: function(){
                 //alert('enter');
+                
                 $.each(plugin.place.findAllByTag('Place-'+ $(this).find('input.id').val()),function(index,element){
+                    console.log(element);
                     google.maps.event.trigger(element,'mouseover');
                 });
                 
@@ -1080,7 +1306,7 @@
                     google.maps.event.trigger(element,'mouseout');
                 });
             }
-        },plugin.options.panelId+' ul.Place.list li');*/
+        },plugin.options.panelId+' ul.Place.list li');
     }
     Plugin.prototype.place.findByTag = function(tag)
     {
@@ -1094,21 +1320,15 @@
     {
         //console.log($(plugin.element).gmap3({action:'get',tag:tag,name:'marker',all:true}));
         //return $(plugin.element).gmap3({action:'get',name:'marker',tag:tag,all:true});
-        var markers = [];
-        for(var i=0;i<plugin.markers.length;i++)
-        {
-            marker = plugin.markers[i];
-            if(marker.tag==tag)
-            {
-                markers.push(marker);
-            }
-        }
-        console.log(markers);
-        return markers;
+        console.log(tag);
+        return $(plugin.element).gmap3({
+            action:'get',
+            name:'marker',
+            tag:tag,
+            all:true
+        });
     }
-    
-    
-    
+        
     //
     $.fn[pluginName] = function ( options ) {
         return this.each(function () {

@@ -1,7 +1,9 @@
-.filter.tree
+.filter.tree.#{$this->slideEnable?'slide':''}
+    -if($this->slideEnable)
+        =CHtml::hiddenField($this->inputId,$this->slide,array('class'=>'slide-value'))
     -if($this->formModel!=null)
         =CHtml::activeHiddenField($this->formModel,$this->formModelAttribute,array('class'=>'filter-field'))
     .name = $this->name
-    .content
+    .content.#{$this->slideEnable&&$this->slide==0?'slideUp':''}
         -foreach($this->data as $element)
             -$this->render('_category',array('element'=>$element))

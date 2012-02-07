@@ -85,6 +85,7 @@ class CMongoCriteria extends EMongoCriteria
    }
    return $value;
  }
+ 
 }
 
 ?>

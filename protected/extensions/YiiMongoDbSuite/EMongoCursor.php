@@ -146,7 +146,7 @@ implements Iterator, Countable
 	 */
 	public function offset($offset)
 	{
-		$this->_cursor->offset($offset);
+		$this->_cursor->skip($offset);
 	}
 
 	/**

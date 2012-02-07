@@ -16,7 +16,8 @@ abstract class DEAbstractDataSource extends CWidget {
         if(!isset($data['model']))
             throw new CHttpException('404','No model to render');
         $class = str_replace('Pending', '', get_class($data['model']));
-        return $this->{'render' . $class}($data,$return);
+        $return = $this->renderObjectLayout($data);
+        return $return.$this->{'render' . $class}($data,$return);
     }
 
     public function renderObjectForm($data=array(),$return=true) {
@@ -133,6 +134,12 @@ abstract class DEAbstractDataSource extends CWidget {
     {
         return '<div class="row">'.CHtml::submitButton('Zapisz').'</div>';
     }
-
+    protected function renderObjectLayout($data)
+    {
+        $return = '';
+        if(isset($data['backUrl']))
+        $return.= CHtml::link('Back',array($data['backUrl']),array('class'=>'back-button'));
+        return $return;
+    }
 }
 

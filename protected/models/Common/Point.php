@@ -27,6 +27,7 @@ class Point extends CMongoEmbeddedDocument
      */
     public $order;
 
+    public $style;
     /**
      * returns embedded documents
      * @return array
@@ -35,7 +36,6 @@ class Point extends CMongoEmbeddedDocument
     {
         return array(
             'info' => 'Info',
-            'style' => 'Style',
         );
     }
 
@@ -57,6 +57,7 @@ class Point extends CMongoEmbeddedDocument
                 'attributes' => array(
                     'location' => 'GeoPoint',
                     'places' => 'array.MongoId',
+                    'style'=>'array',
                 ),
             ),
         );

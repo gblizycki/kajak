@@ -38,17 +38,14 @@ class RouteController extends Controller
     {
         $model = new Route;
         $model->info = new Info;
-        $model->style = new Style;
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
 
-        if (isset($_POST['Route']) || isset($_POST['Info']) || isset($_POST['Style']))
+        if (isset($_POST['Route']) || isset($_POST['Info']))
         {
             $model->attributes = $_POST['Route'];
             if (isset($_POST['Info']))
                 $model->info->attributes = $_POST['Info'];
-            if (isset($_POST['Style']))
-                $model->style->attributes = $_POST['Style'];
             if ($model->save())
                 $this->redirect(array('view', 'id' => $model->_id));
         }
@@ -70,13 +67,11 @@ class RouteController extends Controller
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
 
-        if (isset($_POST['Route']) || isset($_POST['Info']) || isset($_POST['Style']))
+        if (isset($_POST['Route']) || isset($_POST['Info']))
         {
             $model->attributes = $_POST['Route'];
             if (isset($_POST['Info']))
                 $model->info->attributes = $_POST['Info'];
-            if (isset($_POST['Style']))
-                $model->style->attributes = $_POST['Style'];
             if ($model->save())
                 $this->redirect(array('view', 'id' => $model->_id));
         }

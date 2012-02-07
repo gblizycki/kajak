@@ -31,6 +31,7 @@ class PlacePending extends ObjectPending
      */
     public $category;
 
+    public $style;
     /**
      * Returns the static model of the specified AR class.
      * @return UserRights the static model class
@@ -85,6 +86,7 @@ class PlacePending extends ObjectPending
                     'authorId' => 'MongoId',
                     'type' => 'string',
                     'category' => 'MongoId',
+                    'style'=>'array'
                 ),
             ),
         ));
@@ -116,7 +118,6 @@ class PlacePending extends ObjectPending
     {
         return CMap::mergeArray(parent::embeddedDocuments(), array(
             'info' => 'Info',
-            'style' => 'Style',
             'location' => 'Point',
         ));
     }

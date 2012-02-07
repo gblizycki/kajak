@@ -30,6 +30,8 @@ abstract class Category extends CMongoDocument
      * @var array Array of filters (@see Filter)
      */
     public $filters;
+    
+    public $style;
 
     /**
      * @return array validation rules for model attributes.
@@ -66,6 +68,7 @@ abstract class Category extends CMongoDocument
                     'name' => 'string',
                     'description' => 'string',
                     'title' => 'string',
+                    'style'=>'array',
                 ),
             ),
             'filters' => array(
@@ -93,7 +96,6 @@ abstract class Category extends CMongoDocument
     public function embeddedDocuments()
     {
         return array(
-            'style' => 'Style',
         );
     }
 

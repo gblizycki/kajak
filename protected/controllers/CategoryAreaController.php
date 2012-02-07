@@ -38,15 +38,12 @@ class CategoryAreaController extends Controller
     public function actionCreate()
     {
         $model = new CategoryArea;
-        $model->style = new Style;
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
 
-        if (isset($_POST['CategoryArea']) || isset($_POST['Style']))
+        if (isset($_POST['CategoryArea']))
         {
             $model->attributes = $_POST['CategoryArea'];
-            if (isset($_POST['Style']))
-                $model->style->attributes = $_POST['Style'];
             if ($model->save())
                 $this->redirect(array('view', 'id' => $model->_id));
         }
@@ -68,11 +65,9 @@ class CategoryAreaController extends Controller
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
 
-        if (isset($_POST['CategoryArea']) || isset($_POST['Style']))
+        if (isset($_POST['CategoryArea']))
         {
             $model->attributes = $_POST['CategoryArea'];
-            if (isset($_POST['Style']))
-                $model->style->attributes = $_POST['Style'];
             if ($model->save())
                 $this->redirect(array('view', 'id' => $model->_id));
         }

@@ -30,6 +30,8 @@ class Route extends CMongoDocument {
      * @var string format of datasource
      */
     public $format;
+    
+    public $style;
 
     /**
      * Returns the static model of the specified AR class.
@@ -81,6 +83,7 @@ class Route extends CMongoDocument {
                 'attributes' => array(
                     'authorId' => 'MongoId',
                     'category' => 'MongoId',
+                    'style'=>'array'
                 ),
             ),
         );
@@ -110,7 +113,6 @@ class Route extends CMongoDocument {
     public function embeddedDocuments() {
         return array(
             'info' => 'Info',
-            'style' => 'Style',
         );
     }
 

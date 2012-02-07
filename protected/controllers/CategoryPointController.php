@@ -37,15 +37,12 @@ class CategoryPointController extends Controller
     public function actionCreate()
     {
         $model = new CategoryPoint;
-        $model->style = new Style;
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
 
-        if (isset($_POST['CategoryPoint']) || isset($_POST['Style']))
+        if (isset($_POST['CategoryPoint']))
         {
             $model->attributes = $_POST['CategoryPoint'];
-            if (isset($_POST['Style']))
-                $model->style->attributes = $_POST['Style'];
             if ($model->save())
                 $this->redirect(array('view', 'id' => $model->_id));
         }
@@ -67,11 +64,8 @@ class CategoryPointController extends Controller
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
 
-        if (isset($_POST['CategoryPoint']) || isset($_POST['Style']))
+        if (isset($_POST['CategoryPoint']))
         {
-            $model->attributes = $_POST['CategoryPoint'];
-            if (isset($_POST['Style']))
-                $model->style->attributes = $_POST['Style'];
             $model->attributes = $_POST['CategoryPoint'];
             if ($model->save())
                 $this->redirect(array('view', 'id' => $model->_id));

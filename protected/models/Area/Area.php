@@ -32,6 +32,12 @@ class Area extends CMongoDocument {
      * @var MongoId Area category id (@see CategoryArea)
      */
     public $category;
+    
+    /**
+     *
+     * @var array
+     */
+    public $style;
 
     /**
      * Returns the static model of the specified AR class.
@@ -86,6 +92,14 @@ class Area extends CMongoDocument {
                 'setUpdateOnCreate' => true,
                 'timestampExpression' => 'new MongoDate()'
             ),
+            'MongoTypes' => array(
+                'class' => 'CMongoTypeBehavior',
+                'attributes' => array(
+                    'createDate' => 'MongoDate',
+                    'updateDate' => 'MongoDate',
+                    'style' => 'array',
+                ),
+            ),
         );
     }
 
@@ -113,7 +127,6 @@ class Area extends CMongoDocument {
     public function embeddedDocuments() {
         return array(
             'info' => 'Info',
-            'style' => 'Style',
         );
     }
 

@@ -28,6 +28,8 @@ class AreaPending extends ObjectPending
      * @var MongoDate
      */
     public $updateDate;
+    
+    public $style;
 
     /**
      * Returns the static model of the specified AR class.
@@ -87,6 +89,14 @@ class AreaPending extends ObjectPending
                 'setUpdateOnCreate' => true,
                 'timestampExpression' => 'new MongoDate()'
             ),
+            'MongoTypes' => array(
+                'class' => 'CMongoTypeBehavior',
+                'attributes' => array(
+                    'createDate' => 'MongoDate',
+                    'updateDate' => 'MongoDate',
+                    'style' => 'array',
+                ),
+            ),
         ));
     }
 
@@ -116,7 +126,6 @@ class AreaPending extends ObjectPending
     {
         return CMap::mergeArray(parent::embeddedDocuments(), array(
             'info' => 'Info',
-            'style' => 'Style',
         ));
     }
 

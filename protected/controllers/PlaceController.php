@@ -38,18 +38,15 @@ class PlaceController extends Controller
     {
         $model = new Place;
         $model->info = new Info;
-        $model->style = new Style;
         $model->location = new Point;
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
 
-        if (isset($_POST['Place']) || isset($_POST['Info']) || isset($_POST['Style']) || isset($_POST['Point']))
+        if (isset($_POST['Place']) || isset($_POST['Info']) || isset($_POST['Style']))
         {
             $model->attributes = $_POST['Place'];
             if (isset($_POST['Info']))
                 $model->info->attributes = $_POST['Info'];
-            if (isset($_POST['Style']))
-                $model->style->attributes = $_POST['Style'];
             if (isset($_POST['Point']))
                 $model->style->attributes = $_POST['Point'];
             if ($model->save())
@@ -73,13 +70,11 @@ class PlaceController extends Controller
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
 
-        if (isset($_POST['Place']) || isset($_POST['Info']) || isset($_POST['Style']) || isset($_POST['Point']))
+        if (isset($_POST['Place']) || isset($_POST['Info']) || isset($_POST['Point']))
         {
             $model->attributes = $_POST['Place'];
             if (isset($_POST['Info']))
                 $model->info->attributes = $_POST['Info'];
-            if (isset($_POST['Style']))
-                $model->style->attributes = $_POST['Style'];
             if (isset($_POST['Point']))
                 $model->style->attributes = $_POST['Point'];
             if ($model->save())

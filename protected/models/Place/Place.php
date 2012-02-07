@@ -30,6 +30,8 @@ class Place extends CMongoDocument
      * @var array.MongoId Place category id (@see CategoryPlace)
      */
     public $category;
+    
+    public $style;
     /**
      * Returns the static model of the specified AR class.
      * @return UserRights the static model class
@@ -82,6 +84,7 @@ class Place extends CMongoDocument
                 'attributes' => array(
                     'address' => 'string',
                     'category' => 'array.MongoId',
+                    'style'=>'array'
                 ),
             ),
         );
@@ -113,7 +116,6 @@ class Place extends CMongoDocument
     {
         return array(
             'info' => 'Info',
-            'style' => 'Style',
             'location' => 'Point',
         );
     }

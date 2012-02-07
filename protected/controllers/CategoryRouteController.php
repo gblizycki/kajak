@@ -37,15 +37,12 @@ class CategoryRouteController extends Controller
     public function actionCreate()
     {
         $model = new CategoryRoute;
-        $model->style = new Style;
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
 
-        if (isset($_POST['CategoryRoute']) || isset($_POST['Style']))
+        if (isset($_POST['CategoryRoute']))
         {
             $model->attributes = $_POST['CategoryRoute'];
-            if (isset($_POST['Style']))
-                $model->style->attributes = $_POST['Style'];
             if ($model->save())
                 $this->redirect(array('view', 'id' => $model->_id));
         }
@@ -67,11 +64,9 @@ class CategoryRouteController extends Controller
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
 
-        if (isset($_POST['CategoryRoute']) || isset($_POST['Style']))
+        if (isset($_POST['CategoryRoute']))
         {
             $model->attributes = $_POST['CategoryRoute'];
-            if (isset($_POST['Style']))
-                $model->style->attributes = $_POST['Style'];
             if ($model->save())
                 $this->redirect(array('view', 'id' => $model->_id));
         }

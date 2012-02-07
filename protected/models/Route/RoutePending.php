@@ -26,6 +26,8 @@ class RoutePending extends ObjectPending
      */
     public $points;
     
+    public $style;
+    
     /**
      * Returns the static model of the specified AR class.
      * @return UserRights the static model class
@@ -49,7 +51,7 @@ class RoutePending extends ObjectPending
     public function rules()
     {
         return CMap::mergeArray(parent::rules(), array(
-            array('authorId, category', 'safe'),
+            array('authorId, category,style', 'safe'),
         ));
     }
 
@@ -81,6 +83,7 @@ class RoutePending extends ObjectPending
                 'attributes' => array(
                     'authorId' => 'MongoId',
                     'category' => 'MongoId',
+                    'style'=>'array',
                 ),
             ),
         ));
@@ -111,7 +114,6 @@ class RoutePending extends ObjectPending
     {
         return CMap::mergeArray(parent::embeddedDocuments(), array(
             'info' => 'Info',
-            'style' => 'Style',
         ));
     }
     

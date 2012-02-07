@@ -20,6 +20,7 @@ class Section extends CMongoEmbeddedDocument
      * @var int 
      */
     public $order;
+    public $style;
     /**
      * returns embedded documents
      * @return array
@@ -28,7 +29,6 @@ class Section extends CMongoEmbeddedDocument
     {
         return array(
             'info' => 'Info',
-            'style' => 'Style',
         );
     }
 
@@ -47,14 +47,15 @@ class Section extends CMongoEmbeddedDocument
             'MongoTypes' => array(
                 'class' => 'CMongoTypeBehavior',
                 'attributes' => array(
-                    'order'=>'int'
+                    'order'=>'int',
+                    'style'=>'array'
                 ),
             ),
         );
     }
     public function rules() {
         return array(
-            array('order, points','safe'),
+            array('order, points,style','safe'),
         );
     }
     /**

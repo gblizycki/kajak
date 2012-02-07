@@ -99,7 +99,14 @@
         //offset:{top:-20}
         }
     };
-
+    Plugin.prototype.place = {
+        options:{
+            list:{},
+            single:{},
+            edit:{}
+    },
+    events:{}
+    };
     // The actual plugin constructor
     function Plugin( element, options ) {
         this.element = element;
@@ -293,35 +300,15 @@
                 
                 
             });
-            if(plugin.options.debug)
-                console.time("sending requests");
             async.parallel(requests);
             $(document).ajaxStop(function() {
-                if(plugin.objects.Route.length>0)
-                {
-                    if(plugin.options.debugCreate)console.time('creating routes');
-                    $.each(plugin.objects.Route,plugin.route.add);
-                    if(plugin.options.debugCreate)console.timeEnd('creating routes');
-                }
-                if(plugin.objects.Area.length>0)
-                {
-                    if(plugin.options.debugCreate)console.time('creating areas');
-                    $.each(plugin.objects.Area,plugin.area.add);
-                    if(plugin.options.debugCreate)console.timeEnd('creating areas');
-                }
-                if(plugin.objects.Place.length>0)
-                {
-                    if(plugin.options.debugCreate)console.time('creating places');
-                    plugin.place.addAll(plugin.objects.Place);
-                    if(plugin.options.debugCreate)console.timeEnd('creating places');
-                }
+                plugin.request.processData();
                 plugin.objects.Area = [];
                 plugin.objects.Place = [];
                 plugin.objects.Route = [];
                 plugin.map.zoomChanged();
                 plugin.map.autofit();
                 plugin.request.end();
-                console.timeEnd("sending requests");
             });
         }
         else
@@ -337,14 +324,30 @@
             
         
     }
-    Plugin.prototype.request.processData = function(data)
+    Plugin.prototype.request.processData = function(scenario)
     {
-        if(data.objects.Route)
-            $.each(data.objects.Route,plugin.route.add);
-        if(data.objects.Area)
-            $.each(data.objects.Area,plugin.area.add);
-        if(data.objects.Place)
-            plugin.place.addAll(data.objects.Place);
+        //set appropriate scenario
+        if(scenario===undefined)
+            scenario = 'list';
+        
+        if(plugin.objects.Route.length>0)
+        {
+            if(plugin.options.debugCreate)console.time('creating routes');
+            $.each(plugin.objects.Route,plugin.route.add);
+            if(plugin.options.debugCreate)console.timeEnd('creating routes');
+        }
+        if(plugin.objects.Area.length>0)
+        {
+            if(plugin.options.debugCreate)console.time('creating areas');
+            $.each(plugin.objects.Area,plugin.area.add);
+            if(plugin.options.debugCreate)console.timeEnd('creating areas');
+        }
+        if(plugin.objects.Place.length>0)
+        {
+            if(plugin.options.debugCreate)console.time('creating places');
+            plugin.place.add(plugin.objects.Place,'list');
+            if(plugin.options.debugCreate)console.timeEnd('creating places');
+        }
     }
     Plugin.prototype.request.processSingle = function(data)
     {
@@ -358,7 +361,8 @@
         if(data.objects.Area)
             $.each(data.objects.Area,plugin.area.addSingle);
         if(data.objects.Place)
-            $.each(data.objects.Place,plugin.place.addSingle);
+            plugin.place.add(data.objects.Place,'single');
+            
         //plugin.place.addAll(data.objects.Place);
         plugin.map.zoomChanged();
         plugin.request.end();
@@ -375,7 +379,7 @@
         if(data.objects.Area)
             $.each(data.objects.Area,plugin.area.addEdit);
         if(data.objects.Place)
-            $.each(data.objects.Place,plugin.place.addEdit);
+            plugin.place.add(data.objects.Place,'edit');
         //plugin.place.addAll(data.objects.Place);
         plugin.map.zoomChanged();
         plugin.request.end();
@@ -471,6 +475,7 @@
     {
         $.each(route.sections,plugin.route.section.addEdit);
     }
+    
     Plugin.prototype.route.edit = function(id)
     {
         plugin.request.start();
@@ -1099,243 +1104,279 @@
             all:true
         });
     }
-    //Place
-    Plugin.prototype.place = {};
-    
-    Plugin.prototype.place.options = {};
-    Plugin.prototype.place.create = function(place,scenario)
-    {
-        //set options & events based on place, category or defaults
-        return {
-            latLng: [place.location.latitude,place.location.longitude],
-            data: $.extend(place,{element:$(plugin.panel).find('ul.Place.list li input[value='+place.id+']').parent()}),
-            tag: 'Place-'+place.id,
-            options: $.extend(true,plugin.place.options[scenario](),place.options),
-            callback: function(marker){place.marker = marker},
-            events: plugin.place.events[scenario]()
-        };
-    }
-    
-    
-    Plugin.prototype.place.options.list= function(){
-        return {
-            clickable: true,
-            icon:{
-                size:{
-                    width:8,
-                    height:8
-                },
-                url: plugin.options.iconUrl,
-                origin:{
-                    x:3232,
-                    y:0
-                }
-            },
-            title:null,
-            visible:true,
-            zIndex:1000
-        };
-    };  
-    Plugin.prototype.place.options.single = function(){
-        return {
-            clickable: false,
-            icon:{
-                size:{
-                    width:22,
-                    height:32
-                },
-                url: plugin.options.iconUrl,
-                origin:{
-                    x:3242,
-                    y:0
-                }
-            },
-            title:null,
-            visible:true,
-            zIndex:1000
-        };
-    };
-    Plugin.prototype.place.options.edit = function(){
-        return {
-            clickable: false,
-            draggable: true,
-            icon:null,
-            title:null,
-            visible:true,
-            zIndex:1000
-        };
-    };
-    
-    Plugin.prototype.place.events = {};
-    Plugin.prototype.place.events.list = function(){
-        return {
-            click: plugin.place.click,
-            rightclick: plugin.place.rightclick,
-            mouseover: plugin.place.mouseover,
-            mouseout: plugin.place.mouseout
-        };
-    };
-    Plugin.prototype.place.events.single = function(){
-        return {};
-    };
-    Plugin.prototype.place.events.edit = function(){
-        return {
-            dragend: plugin.place.drag
-        };
-    };
 
-    Plugin.prototype.place.addAll = function(places)
-    {
-        var markers = [];
-        var scenario = 'list';
-        $.each(places,function(index,place){
-            markers.push(
-                plugin.place.create(place,scenario)
-            );
-        });
-        $(plugin.element).gmap3(
-        {
-            action: 'addMarkers',
-            markers: markers,
-            radius:50,
-            maxZoom: 10,
-            marker:
-            {
-                events: plugin.place.events[scenario]()
-            }
-        });
-    }
-    Plugin.prototype.place.view = function(id)
-    {
-        plugin.request.start();
-        $.ajax({
-            url: plugin.options.baseUrl+'/js/viewPlace',
-            data: {
-                id:id,
-                backUrl:$(plugin.panel).find('input#backUrl').val()
+Plugin.prototype.place.create = function(place,scenario)
+{
+    //set options & events based on place, category or defaults
+    //@TODO add category to extend
+    if(place.style===undefined)
+        place.style={};
+    if(place.style.normal===undefined)
+        place.style.normal={};
+    if(place.style.hover===undefined)
+        place.style.hover={};
+    return {
+        latLng: [place.location.latitude,place.location.longitude],
+        data: $.extend(place,{
+            element:$(plugin.panel).find('ul.Place.list li input[value='+place.id+']').parent(),
+            normalOptions: $.extend(true,plugin.place.options[scenario].normal(),place.style.normal),
+            hoverOptions: $.extend(true,plugin.place.options[scenario].hover(),place.style.normal)
+        }),
+        tag: 'Place-'+place.id,
+        options: $.extend(true,plugin.place.options[scenario].normal(),place.options),
+        callback: function(marker){
+            place.marker = marker
             },
-            dataType: 'JSON',
-            success: plugin.request.processSingle
-        });
-    }
-    Plugin.prototype.place.add = function(index,place)
-    {
-        $(plugin.element).gmap3($.extend({action: 'addMarker'},plugin.place.create(place,'list')));
-    }
-    Plugin.prototype.place.addSingle = function(index,place)
-    {
-        $(plugin.element).gmap3($.extend({action: 'addMarker'},plugin.place.create(place,'single')));
-    }
-    Plugin.prototype.place.click = function(marker,event,data)
-    {
-        plugin.place.view(data.id);
-    }
-    Plugin.prototype.place.rightclick = function(marker,event,data)
-    {
-        plugin.place.edit(data.id);
-    }
-    Plugin.prototype.place.mouseover = function(marker,event,data)
-    {
-        if(data.element)
-        {
-            $(data.element).addClass('hover');
-            if(event && $(data.element).is(':visible'))
-                $(plugin.panel).scrollTo(data.element,plugin.options.scroll);
-            $(plugin.element).gmap3({
-                action:'get'
-            }).panToBounds(new google.maps.LatLngBounds().extend(marker.position));
-            marker.setOptions({
-                icon:new google.maps.MarkerImage(plugin.options.iconUrl, new google.maps.Size(22, 32), new google.maps.Point(3242, 0))
+        events: plugin.place.events[scenario]()
+            
+    };
+}
+/*Place default styles*/
+Plugin.prototype.place.options.list.normal= function(){
+    return {
+        clickable: true,
+        icon:{
+            size:{
+                width:8,
+                height:8
+            },
+            url: plugin.options.iconUrl,
+            origin:{
+                x:3232,
+                y:0
+            }
+        },
+        title:null,
+        visible:true,
+        zIndex:1000
+    };
+};  
+Plugin.prototype.place.options.list.hover = function(){
+    return {
+        clickable: true,
+        icon:{
+            size:{
+                width:22,
+                height:32
+            },
+            url: plugin.options.iconUrl,
+            origin:{
+                x:3242,
+                y:0
+            }
+        },
+        title:null,
+        visible:true,
+        zIndex:1000
+    };
+};  
+Plugin.prototype.place.options.single.normal = function(){
+    return {
+        clickable: false,
+        icon:{
+            size:{
+                width:22,
+                height:32
+            },
+            url: plugin.options.iconUrl,
+            origin:{
+                x:3242,
+                y:0
+            }
+        },
+        title:null,
+        visible:true,
+        zIndex:1000
+    };
+};
+Plugin.prototype.place.options.single.hover = function(){
+    return {
+        clickable: false,
+        icon:{
+            size:{
+                width:22,
+                height:32
+            },
+            url: plugin.options.iconUrl,
+            origin:{
+                x:3242,
+                y:0
+            }
+        },
+        title:null,
+        visible:true,
+        zIndex:1000
+    };
+};
+Plugin.prototype.place.options.edit.normal = function(){
+    return {
+        clickable: false,
+        draggable: true,
+        icon:null,
+        title:null,
+        visible:true,
+        zIndex:1000
+    };
+};
+Plugin.prototype.place.options.edit.hover = function(){
+    return {
+        clickable: false,
+        draggable: true,
+        icon:null,
+        title:null,
+        visible:true,
+        zIndex:1000
+    };
+};
+/*Place default events*/
+Plugin.prototype.place.events.list = function(){
+    return {
+        click: plugin.place.click,
+        rightclick: plugin.place.rightclick,
+        mouseover: plugin.place.mouseover,
+        mouseout: plugin.place.mouseout
+    };
+};
+Plugin.prototype.place.events.single = function(){
+    return {};
+};
+Plugin.prototype.place.events.edit = function(){
+    return {
+        dragend: plugin.place.drag
+    };
+};
+/*Place adding*/
+Plugin.prototype.place.add = function(places,scenario)
+{
+    async.forEach(places, function(place){
+        $(plugin.element).gmap3($.extend({
+            action: 'addMarker'
+        },plugin.place.create(place,scenario)));
+    }, function(err){
+        console.log(err);
+    });
+
+}
+/*Place misc functions*/
+Plugin.prototype.place.bindEvents = function()
+{
+    //bind list with proper object
+    /*if(plugin.options.debug)
+            console.log('Binding place events');*/
+    $(document).on({
+        click: function(){
+            //select right
+            google.maps.event.trigger(plugin.place.findAllByTag('Place-'+ $(this).find('input.id').val())[0],'click');
+        },
+        mouseenter: function(){
+            //alert('enter');
+                
+            $.each(plugin.place.findAllByTag('Place-'+ $(this).find('input.id').val()),function(index,element){
+                google.maps.event.trigger(element,'mouseover');
+            });
+                
+        },
+        mouseleave: function(){
+            //alert('leave');
+            $.each(plugin.place.findAllByTag('Place-'+ $(this).find('input.id').val()),function(index,element){
+                google.maps.event.trigger(element,'mouseout');
             });
         }
-    }
-    Plugin.prototype.place.mouseout = function(marker,event,data)
-    {
-        if(data.element)
-            $(data.element).removeClass('hover');
-        marker.setOptions({
-            icon:new google.maps.MarkerImage(plugin.options.iconUrl, new google.maps.Size(8, 8), new google.maps.Point(3232, 0))
-        });
-    }
-    Plugin.prototype.place.edit = function(id)
-    {
-        plugin.request.start();
-        $.ajax({
-            url: plugin.options.baseUrl+'/js/editPlace',
-            type: 'GET',
-            data: {
-                id:id,
-                backUrl:$(plugin.panel).find('input#backUrl').val()
-            },
-            dataType: 'JSON',
-            success: plugin.request.processEdit
-        });
-    }
-    Plugin.prototype.place.addEdit = function(index,place)
-    {
-        $(plugin.element).gmap3($.extend({action: 'addMarker'},plugin.place.create(place,'edit')));
+    },plugin.options.panelId+' ul.Place.list li');
 }
-    
-    Plugin.prototype.place.drag = function(marker)
+Plugin.prototype.place.findByTag = function(tag)
+{
+    return $(plugin.element).gmap3({
+        action:'get',
+        name:'markers',
+        tag:tag
+    });
+}
+Plugin.prototype.place.findAllByTag = function(tag)
+{
+    //console.log($(plugin.element).gmap3({action:'get',tag:tag,name:'marker',all:true}));
+    //return $(plugin.element).gmap3({action:'get',name:'marker',tag:tag,all:true});
+    return $(plugin.element).gmap3({
+        action:'get',
+        name:'marker',
+        tag:tag,
+        all:true
+    });
+}
+/*Place actions*/
+Plugin.prototype.place.view = function(id)
+{
+    plugin.request.start();
+    $.ajax({
+        url: plugin.options.baseUrl+'/js/viewPlace',
+        data: {
+            id:id,
+            backUrl:$(plugin.panel).find('input#backUrl').val()
+        },
+        dataType: 'JSON',
+        success: plugin.request.processSingle
+    });
+}
+Plugin.prototype.place.edit = function(id)
+{
+    plugin.request.start();
+    $.ajax({
+        url: plugin.options.baseUrl+'/js/editPlace',
+        type: 'GET',
+        data: {
+            id:id,
+            backUrl:$(plugin.panel).find('input#backUrl').val()
+        },
+        dataType: 'JSON',
+        success: plugin.request.processEdit
+    });
+}
+/*Place event functions*/
+Plugin.prototype.place.click = function(marker,event,data)
+{
+    plugin.place.view(data.id);
+}
+Plugin.prototype.place.rightclick = function(marker,event,data)
+{
+    plugin.place.edit(data.id);
+}
+Plugin.prototype.place.mouseover = function(marker,event,data)
+{
+    if(data.element)
     {
-        $(plugin.panel).find('.latitude').val(marker.position.Oa);
-        $(plugin.panel).find('.longitude').val(marker.position.Pa);
+        $(data.element).addClass('hover');
+        if(event && $(data.element).is(':visible'))
+            $(plugin.panel).scrollTo(data.element,plugin.options.scroll);
+        $(plugin.element).gmap3({
+            action:'get'
+        }).panToBounds(new google.maps.LatLngBounds().extend(marker.position));
+            
+        marker.setOptions(
+            data.hoverOptions
+            );
     }
-    Plugin.prototype.place.bindEvents = function()
-    {
-        //bind list with proper object
-        /*if(plugin.options.debug)
-            console.log('Binding place events');*/
-        $(document).on({
-            click: function(){
-                //select right
-                google.maps.event.trigger(plugin.place.findAllByTag('Place-'+ $(this).find('input.id').val())[0],'click');
-            },
-            mouseenter: function(){
-                //alert('enter');
-                
-                $.each(plugin.place.findAllByTag('Place-'+ $(this).find('input.id').val()),function(index,element){
-                    console.log(element);
-                    google.maps.event.trigger(element,'mouseover');
-                });
-                
-            },
-            mouseleave: function(){
-                //alert('leave');
-                $.each(plugin.place.findAllByTag('Place-'+ $(this).find('input.id').val()),function(index,element){
-                    google.maps.event.trigger(element,'mouseout');
-                });
-            }
-        },plugin.options.panelId+' ul.Place.list li');
-    }
-    Plugin.prototype.place.findByTag = function(tag)
-    {
-        return $(plugin.element).gmap3({
-            action:'get',
-            name:'markers',
-            tag:tag
-        });
-    }
-    Plugin.prototype.place.findAllByTag = function(tag)
-    {
-        //console.log($(plugin.element).gmap3({action:'get',tag:tag,name:'marker',all:true}));
-        //return $(plugin.element).gmap3({action:'get',name:'marker',tag:tag,all:true});
-        console.log(tag);
-        return $(plugin.element).gmap3({
-            action:'get',
-            name:'marker',
-            tag:tag,
-            all:true
-        });
-    }
+}
+Plugin.prototype.place.mouseout = function(marker,event,data)
+{
+    if(data.element)
+        $(data.element).removeClass('hover');
+    marker.setOptions(
+        data.normalOptions
+        );
+}
+Plugin.prototype.place.drag = function(marker)
+{
+    $(plugin.panel).find('.latitude').val(marker.position.Oa);
+    $(plugin.panel).find('.longitude').val(marker.position.Pa);
+}
         
-    //
-    $.fn[pluginName] = function ( options ) {
-        return this.each(function () {
-            if (!$.data(this, 'plugin_' + pluginName)) {
-                $.data(this, 'plugin_' + pluginName, new Plugin( this, options ));
-            }
-        });
-    }
+//
+$.fn[pluginName] = function ( options ) {
+    return this.each(function () {
+        if (!$.data(this, 'plugin_' + pluginName)) {
+            $.data(this, 'plugin_' + pluginName, new Plugin( this, options ));
+        }
+    });
+}
 
 })( jQuery, window, document );

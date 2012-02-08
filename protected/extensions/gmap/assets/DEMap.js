@@ -2,7 +2,6 @@
 // scripts and/or other plugins which may not be closed properly.
 ;
 (function ( $, window, document, undefined ) {
-
     //define some helpers
     Array.max = function( array ){
         return Math.max.apply( Math, array );
@@ -147,7 +146,7 @@
         this.init();
         this.loadData(this.options.data);
     }
-
+    
     Plugin.prototype.init = function () {
         // Place initialization logic here
         // You already have access to the DOM element and the options via the instance, 
@@ -184,6 +183,7 @@
         plugin.place.bindEvents();
         plugin.route.bindEvents();
         plugin.filter.bindEvents();
+        plugin.user = new User($.parseJSON($.cookie('DEMap-username')));
     };
     Plugin.prototype.loadData = function (data)
     {
@@ -205,6 +205,17 @@
     Plugin.prototype.renderPanel = function(data)
     {
         $(plugin.panel).html(data);
+    }
+    //User
+    User = function(user){
+        $.extend(this, user);
+    };
+    User.prototype.canEdit = function(){
+        if(!this.roles)
+            return false;
+        if(this.roles.Admin || this.roles.Moderator)
+            return true;
+        return false;
     }
     //Request object
     Plugin.prototype.request = {};
@@ -655,7 +666,7 @@
     Plugin.prototype.route.section.events.list = function(){
         return {
             click: plugin.route.section.click,
-            rightclick: plugin.route.section.rightclick,
+            rightclick: plugin.user.canEdit()?plugin.route.section.rightclick:null,
             mouseover: plugin.route.section.mouseover,
             mouseout: plugin.route.section.mouseout
         };
@@ -931,7 +942,7 @@ Plugin.prototype.area.options.edit.hover = function(){
 Plugin.prototype.area.events.list = function(){
     return {
         click: plugin.area.click,
-        rightclick: plugin.area.rightclick,
+        rightclick: plugin.user.canEdit()?plugin.area.rightclick:null,
         mouseover: plugin.area.mouseover,
         mouseout: plugin.area.mouseout
     };
@@ -1243,7 +1254,7 @@ Plugin.prototype.place.options.edit.hover = function(){
 Plugin.prototype.place.events.list = function(){
     return {
         click: plugin.place.click,
-        rightclick: plugin.place.rightclick,
+        rightclick: plugin.user.canEdit()?plugin.place.rightclick:null,
         mouseover: plugin.place.mouseover,
         mouseout: plugin.place.mouseout
     };

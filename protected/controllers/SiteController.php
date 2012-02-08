@@ -50,6 +50,7 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
+        $this->layout = 'admin';
         $model = new LoginForm;
 
         // if it is ajax validation request
@@ -86,6 +87,12 @@ class SiteController extends Controller
     {
         $this->layout ='map';
         $this->render('index');
+    }
+    
+    public function actionAdmin()
+    {
+        $this->layout = 'admin';
+        $this->render('admin');
     }
 
 }

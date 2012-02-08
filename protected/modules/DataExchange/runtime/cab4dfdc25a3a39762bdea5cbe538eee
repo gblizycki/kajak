@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<splywww wersja='3'>
+<szlak id="77" nazwa="Stara Rzeka - Południowy Kanał Obry" wersja="2">
+<opis>Nizinny szlak kajakowy będący alternatywą dla pobliskiej Pętli Konwaliowej, zdecydowanie mniej uczęszczany niż ona sama. Stosunkowo łatwo dostępny w poszczególnych etapach dzięki czemu można go sobie dostosować do własnych potrzeb. Przepłynąłem go solo w dniu 01.05.2010 r i zajęło mi to 9 godzin. Szlak miejscami jest mocno zarośnięty (Nobel dla miejscowego RZGW w dziedzinie gospodarki wodami) i zmusza do mozolnego, ręcznego przeciągania się przez gęste trzcinowiska.
+Poszczególne odcinki spływu na różnych mapach noszą różne nazwy np. Stara Rzeka wg obwodów rybackich jest obwodem nr VIII.11 zwanym tam Kanałem Kaszczorskim, dolny odcinek Południowego Kanału Obry nazywany jest czasem Obrzycą itp. 
+Opisany odcinek ma 38 km ale można go sobie dowolnie poćwiartować - miejsc do "dzikiego" biwakowania jest tu bowiem pod dostatkiem a i dostęp do szlaku z lądu to umożliwia.</opis> 
+  <odcinek id="318" typ="mieszany" nazwa="Rudno - Wilcze" 
+      uciazliwosc="U2" trudnosc="ZWA" 
+      malowniczosc="**" czystosc="KL2" 
+      kolejnosc="8"> 
+  <opis>Odcinek kanałowo - jeziorowy. Końcowy odcinek kanału (od mostu w Rudnie) bardzo malowniczy - stare drzewa wyrastające prosto z rzeki. Brzegi jezior zalesione. Warto wpłynąć na malownicze jezioro Wilcze, jest tam sporo miejsc biwakowych zarówno dzikich jak i zorganizowanych.</opis>
+    <punkt id="2736" miejscowosc="Wilcze" 
+      ns="52.020002" we="15.976907" km="0" etykieta="" 
+      kolejnosc="29"> 
+    <opispunktu typ="bar" kolejnosc="-1">Plaża w Wilczu oraz bar i sklep. Wygodne miejsce wodowania kajaków.</opispunktu> 
+    </punkt>
+    <punkt id="2735" miejscowosc="Wilcze" 
+      ns="52.014252" we="15.973097" km="0.73" etykieta="" 
+      kolejnosc="28"> 
+    <opispunktu typ="przenoska" kolejnosc="-1">Przenoska z lewej lub prawej strony - 5m.</opispunktu> 
+    <opispunktu typ="most" kolejnosc="-1">Zawalony drewniany mostek.</opispunktu> 
+    <opispunktu typ="wypływ" kolejnosc="-1">Wypływ na jezioro Wilcze.</opispunktu> 
+    </punkt>
+    <punkt id="2734" miejscowosc="Wilcze" 
+      ns="52.012432" we="15.97187" km="0.96" etykieta="" 
+      kolejnosc="27"> 
+    <opispunktu typ="ujście" kolejnosc="-1">Wypływ z jeziora Rudniańskiego na kanałek łączący je z jeziorem Wilcze.</opispunktu> 
+    </punkt>
+    <punkt id="2733" miejscowosc="Rudno" 
+      ns="52.004361" we="15.981659" km="2.11" etykieta="" 
+      kolejnosc="26"> 
+    <opispunktu typ="ujście" kolejnosc="-1">Połączenie ze szlakiem rzeki Obrzycy.</opispunktu> 
+    <opispunktu typ="wypływ" kolejnosc="-1">Wypływ na jezioro Rudniańskie.</opispunktu> 
+    </punkt>
+    <punkt id="2732" miejscowosc="Rudno" 
+      ns="52.006847" we="15.985619" km="2.52" etykieta="" 
+      kolejnosc="25"> 
+    <opispunktu typ="most" kolejnosc="-1">Most drogowy, wygodne miejsce wodowania kajaków.</opispunktu> 
+    <opispunktu typ="sklep" kolejnosc="-1">Sklep w Rudnie.</opispunktu> 
+    </punkt>
+  </odcinek>
+  <odcinek id="317" typ="kanał" nazwa="Południowy Kanał Obry" 
+      uciazliwosc="U1" trudnosc="ZWA" 
+      malowniczosc="**" czystosc="KL2" 
+      kolejnosc="7"> 
+  <opis>Leśny odcinek kanału, sporo dzikiej zwierzyny, wiele śladów prac hydrotechnicznych bobrów.</opis>
+    <punkt id="2731" miejscowosc="Rudno" 
+      ns="52.006952" we="16.002719" km="3.72" etykieta="" 
+      kolejnosc="24"> 
+    <opispunktu typ="przenoska" kolejnosc="-1">Przenoska prawą lub lewą stroną około 50m.</opispunktu> 
+    <opispunktu typ="jaz" kolejnosc="-1">Jaz o wysokości 3m.</opispunktu> 
+    </punkt>
+    <punkt id="2730" miejscowosc="Rudno" 
+      ns="52.006158" we="16.015774" km="4.65" etykieta="" 
+      kolejnosc="23"> 
+    <opispunktu typ="most" kolejnosc="-1">Most na drodze gruntowej.</opispunktu> 
+    </punkt>
+    <punkt id="2729" miejscowosc="Świętno" 
+      ns="52.000182" we="16.024321" km="5.6" etykieta="" 
+      kolejnosc="22"> 
+    <opispunktu typ="most" kolejnosc="-1">Bardzo ładny most kolejowy na lini Wolsztyn - Nowa Sól.</opispunktu> 
+    </punkt>
+    <punkt id="2728" miejscowosc="Świętno" 
+      ns="51.997899" we="16.028902" km="6.01" etykieta="" 
+      kolejnosc="21"> 
+    <opispunktu typ="most" kolejnosc="-1">Most drogowy pomiędzy Wolsztynem a Nową Solą. Wygodne miejsce wodowania kajaków.</opispunktu> 
+    <opispunktu typ="bar" kolejnosc="-1">Bar przy drodze z parkingiem.</opispunktu> 
+    </punkt>
+  </odcinek>
+  <odcinek id="316" typ="kanał" nazwa="Południowy Kanał Obry" 
+      uciazliwosc="U1" trudnosc="ZWA" 
+      malowniczosc="*" czystosc="KL2" 
+      kolejnosc="6"> 
+  <opis>Odcinek szerokiego kanału, łąki, pola....</opis>
+    <punkt id="2727" miejscowosc="Bagno" 
+      ns="51.973719" we="16.05438" km="9.63" etykieta="" 
+      kolejnosc="20"> 
+    <opispunktu typ="most" kolejnosc="-1">Most na drodze gruntowej.</opispunktu> 
+    </punkt>
+    <punkt id="2726" miejscowosc="Łupice" 
+      ns="51.987145" we="16.091893" km="12.64" etykieta="" 
+      kolejnosc="19"> 
+    <opispunktu typ="most" kolejnosc="-1">Most na drodze gruntowej.</opispunktu> 
+    </punkt>
+    <punkt id="2725" miejscowosc="Łupice" 
+      ns="51.994963" we="16.105987" km="13.95" etykieta="" 
+      kolejnosc="18"> 
+    <opispunktu typ="jaz" kolejnosc="-1">Jaz o wysokości 0,5m do spłynięcia.</opispunktu> 
+    </punkt>
+  </odcinek>
+  <odcinek id="315" typ="kanał" nazwa="Łącznik KK - SKO" 
+      uciazliwosc="U4" trudnosc="ZWA" 
+      malowniczosc="-" czystosc="KL2" 
+      kolejnosc="5"> 
+  <opis>Odcinek całkowicie zarośnięty trzciną. W większości odcinka brak możliwości użycia wioseł. Można 3 km pokonać lądem, ja zdecydowałem się na "ręczne" przeciąganie się przez trzcinowisko.</opis>
+    <punkt id="2724" miejscowosc="Łupice" 
+      ns="51.99552" we="16.106996" km="14.02" etykieta="" 
+      kolejnosc="17"> 
+    <opispunktu typ="ujście" kolejnosc="-1">Wypływ do Południowego Kanału Obry.</opispunktu> 
+    </punkt>
+    <punkt id="2723" miejscowosc="Mochy" 
+      ns="51.989192" we="16.146262" km="16.84" etykieta="" 
+      kolejnosc="16"> 
+    <opispunktu typ="most" kolejnosc="-1">Most na drodze gruntowej.</opispunktu> 
+    </punkt>
+  </odcinek>
+  <odcinek id="314" typ="kanał" nazwa="Kanał Kaszczorski" 
+      uciazliwosc="U1" trudnosc="ZWA" 
+      malowniczosc="**" czystosc="KL2" 
+      kolejnosc="4"> 
+  <opis>Ładniejszy odcinek Kanału Kaszczorskiego, zadrzewiony, przegłębiony, sporo dzikiej zwierzyny i ptactwa.</opis>
+    <punkt id="2722" miejscowosc="Mochy" 
+      ns="51.988452" we="16.148141" km="17" etykieta="" 
+      kolejnosc="15"> 
+    <opispunktu typ="wypływ" kolejnosc="-1">Rozdwojenie kanału: prosto w kierunku Mochów,  my płyniemy w lewo w kierunku widocznego mostu.</opispunktu> 
+    </punkt>
+    <punkt id="2721" miejscowosc="Kaszczor" 
+      ns="51.958495" we="16.162474" km="21.28" etykieta="" 
+      kolejnosc="14"> 
+    <opispunktu typ="sklep" kolejnosc="-1">Sklepy w Kaszczorze.</opispunktu> 
+    <opispunktu typ="most" kolejnosc="-1">Most drogowy, wygodne miejsce wodowania kajaków.</opispunktu> 
+    </punkt>
+  </odcinek>
+  <odcinek id="313" typ="kanał" nazwa="Kanał Kaszczorski" 
+      uciazliwosc="U1" trudnosc="ZWA" 
+      malowniczosc="*" czystosc="KL2" 
+      kolejnosc="3"> 
+  <opis>Odcinek kanału z zatrzcinionymi brzegami.</opis>
+    <punkt id="2720" miejscowosc="Wieleń" 
+      ns="51.952298" we="16.18086" km="23.8" etykieta="" 
+      kolejnosc="13"> 
+    <opispunktu typ="przenoska" kolejnosc="-1">Przenoska lewą stroną 20m.</opispunktu> 
+    <opispunktu typ="jaz" kolejnosc="-1">Jaz piętrzący wody jeziora Wieleńskiego o wysokości 0,7 m.</opispunktu> 
+    <opispunktu typ="sklep" kolejnosc="-1">Sklep w Wieleniu.</opispunktu> 
+    <opispunktu typ="most" kolejnosc="-1">Most drogowy, wygodne miejsce wodowania kajaków.</opispunktu> 
+    </punkt>
+  </odcinek>
+  <odcinek id="312" typ="mieszany" nazwa="Przemęcki PK" 
+      uciazliwosc="U1" trudnosc="ZWA" 
+      malowniczosc="**" czystosc="KL2" 
+      kolejnosc="2"> 
+  <opis>Odcinek jeziorowo - kanałowy</opis>
+    <punkt id="2719" miejscowosc="Wieleń" 
+      ns="51.952066" we="16.184655" km="24.07" etykieta="" 
+      kolejnosc="12"> 
+    <opispunktu typ="wypływ" kolejnosc="-1">Wypływ z jeziora Wieleńskiego na Kanał Kaszczorski.</opispunktu> 
+    </punkt>
+    <punkt id="2718" miejscowosc="Brenno" 
+      ns="51.937143" we="16.204647" km="26.27" etykieta="" 
+      kolejnosc="11"> 
+    <opispunktu typ="wypływ" kolejnosc="-1">Wypływ na jezioro Trzytoniowe oraz Wieleńskie.</opispunktu> 
+    </punkt>
+    <punkt id="2717" miejscowosc="Brenno" 
+      ns="51.932048" we="16.207678" km="26.96" etykieta="" 
+      kolejnosc="10"> 
+    <opispunktu typ="wypływ" kolejnosc="-1">Wypływ z jeziora Breńskiego.</opispunktu> 
+    </punkt>
+    <punkt id="2716" miejscowosc="Brenno" 
+      ns="51.929912" we="16.215378" km="27.57" etykieta="" 
+      kolejnosc="9"> 
+    <opispunktu typ="wypływ" kolejnosc="-1">Wypływ na jezioro Breńskie.</opispunktu> 
+    </punkt>
+    <punkt id="2715" miejscowosc="Brenno" 
+      ns="51.932414" we="16.217268" km="27.88" etykieta="" 
+      kolejnosc="8"> 
+    <opispunktu typ="wypływ" kolejnosc="-1">Wypływ z jeziora Białego.</opispunktu> 
+    </punkt>
+    <punkt id="2714" miejscowosc="Brenno" 
+      ns="51.93091" we="16.240325" km="29.67" etykieta="" 
+      kolejnosc="7"> 
+    <opispunktu typ="wypływ" kolejnosc="-1">Wypływ na jezioro Miałkie oraz Białe.</opispunktu> 
+    <opispunktu typ="niebezpieczeństwo" kolejnosc="-1">Jezioro jest bardzo płytkie i bardzo muliste, absolutnie nie należy opuszczać kajaka !</opispunktu> 
+    </punkt>
+    <punkt id="2713" miejscowosc="Miastko" 
+      ns="51.929704" we="16.254351" km="30.76" etykieta="" 
+      kolejnosc="6"> 
+    <opispunktu typ="most" kolejnosc="-1">Most drogowy, wygodne miejsce wodowania kajaków.</opispunktu> 
+    <opispunktu typ="uwaga" kolejnosc="-1">Odcinek kanału w pobliżu mostu permanentnie wykorzystywany jest przez wędkarzy, najczęściej niechętnych kajakarzom.</opispunktu> 
+    </punkt>
+    <punkt id="2712" miejscowosc="Zaborówiec" 
+      ns="51.921719" we="16.25874" km="31.7" etykieta="" 
+      kolejnosc="5"> 
+    <opispunktu typ="wypływ" kolejnosc="-1">Wypływ na jezioro Lincjusz.</opispunktu> 
+    </punkt>
+  </odcinek>
+  <odcinek id="311" typ="rzeka" nazwa="Stara Rzeka" 
+      uciazliwosc="U2" trudnosc="ZWA" 
+      malowniczosc="**" czystosc="KL2" 
+      kolejnosc="1"> 
+  <opis>Odcinek rzeki lekko zarośnięty z kilkonastoma powalonymi drzewami, wszystkie zwałki udało mi się pokonać bez wychodzenia na ląd.</opis>
+    <punkt id="2711" miejscowosc="Zaborówiec" 
+      ns="51.916201" we="16.253895" km="32.46" etykieta="" 
+      kolejnosc="4"> 
+    <opispunktu typ="most" kolejnosc="-1">Most drogowy, wygodne miejsce wodowania kajaków.</opispunktu> 
+    </punkt>
+    <punkt id="2710" miejscowosc="Zaborówiec" 
+      ns="51.902902" we="16.246443" km="34.14" etykieta="" 
+      kolejnosc="3"> 
+    <opispunktu typ="most" kolejnosc="-1">Most betonowy.</opispunktu> 
+    </punkt>
+    <punkt id="2709" miejscowosc="Lgiń" 
+      ns="51.892772" we="16.245405" km="35.43" etykieta="" 
+      kolejnosc="2"> 
+    <opispunktu typ="uwaga" kolejnosc="-1">W poprzek koryta wbite 3 rzędy pali oraz liczne głazy w wodzie. Wszystko to jest stosunkowo płytko i nie jest widoczne na powierzchni wody.</opispunktu> 
+    <opispunktu typ="przenoska" kolejnosc="-1">Przenoska 20m z prawej strony - przez pokrzywy.</opispunktu> 
+    <opispunktu typ="niebezpieczeństwo" kolejnosc="-1">Płynąć ostrożnie, zwłaszcza szklakami i składakami. Przy mętnej wodzie przeszkoda jest bardzo słabo widoczna.</opispunktu> 
+    </punkt>
+  </odcinek>
+  <odcinek id="310" typ="jezioro" nazwa="Lgińskie Duże" 
+      uciazliwosc="U1" trudnosc="ZWA" 
+      malowniczosc="**" czystosc="KL2" 
+      kolejnosc="0"> 
+  <opis></opis>
+    <punkt id="2708" miejscowosc="Lgiń" 
+      ns="51.891223" we="16.245957" km="35.59" etykieta="" 
+      kolejnosc="1"> 
+    <opispunktu typ="wypływ" kolejnosc="-1">Wypływ z jeziora Lgińsko Duże.</opispunktu> 
+    </punkt>
+    <punkt id="2707" miejscowosc="Lgiń" 
+      ns="51.87526" we="16.230755" km="37.73" etykieta="" 
+      kolejnosc="0"> 
+    <opispunktu typ="sklep" kolejnosc="-1">Sklepy w Lginiu.</opispunktu> 
+    <opispunktu typ="most" kolejnosc="-1">Most drogowy pomiędzy Wschową a Wolsztynem, wygodne miejsce wodowania kajaków. Droga przechodzi pomiędzy dwoma jeziorami: Lgińsko Małe i Lgińsko Duże. Rzeczka łącząca obydwa jeziora nie jest głęboka, warto jednak nią spłynąć kilkadziesiąt metrów do Lgińska Dużego.
+W przypadku małej ilości wody w rzeczce, jadąc od strony Wschowy skręcamy w leśną drogę w prawo, która po 200m doprowadza nas do jeziora. Ewentualnie można rozpocząć spływ na plaży głównej w centrum Lginia.</opispunktu> 
+    </punkt>
+  </odcinek>
+</szlak>
+</splywww>

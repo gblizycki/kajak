@@ -17,9 +17,10 @@ class CMongoCacheDependency extends CCacheDependency{
     public $order;
     private $_db;
     
-    public function __construct($model=null,$attribute=null) {
+    public function __construct($model=null,$attribute=null,$order=null) {
         $this->model = $model;
         $this->attribute = $attribute;
+        $this->order = $order;
     }
     
     public function __sleep() {
@@ -27,7 +28,7 @@ class CMongoCacheDependency extends CCacheDependency{
         return array_keys((array)  $this);
     }
     protected function generateDependentData() {
-        if($this->model!==null && $this->attribute!==null)
+        if($this->model!==null && $this->attribute!==null && $this->order!==null)
         {
             $db = $this->getDbConnection();
             $criteria = new EMongoCriteria();

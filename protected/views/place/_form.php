@@ -27,11 +27,6 @@
 		<?php echo $form->error($model,'type'); ?>
 	</div>
 
-	<div class="row">
-		<?php echo $form->labelEx($model,'category'); ?>
-		<?php echo $form->textField($model,'category'); ?>
-		<?php echo $form->error($model,'category'); ?>
-	</div>
 
 	<div class="row">
                 <?php echo $form->labelEx($model,'info'); ?>
@@ -43,10 +38,6 @@
 		<?php $this->renderPartial('/style/_form',array('form'=>$form,'model'=>$model));?>
 	</div>
         
-        <div class="row">
-		<?php echo $form->labelEx($model,'location'); ?>
-		<?php $this->renderPartial('/point/_form',array('form'=>$form,'model'=>$model->location));?>
-	</div>
 
 	<div class="row buttons">
 		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>

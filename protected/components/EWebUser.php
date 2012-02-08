@@ -27,6 +27,23 @@ class EWebUser extends RWebUser
         parent::login($identity, $duration);
         
     }
+    
+    public function afterLogin($fromCookie) {
+        $cookie = new CHttpCookie('DEMap-username', CJSON::encode(
+                array(
+                    'username'=>  $this->getName(),
+                    'roles'=>Rights::getAssignedRoles($this->id),
+                )
+                ));
+        $cookie->expire = time()+3600;
+        Yii::app()->request->cookies['DEMap-username'] = $cookie;
+        
+        parent::afterLogin($fromCookie);
+    }
+    public function afterLogout() {
+        unset(Yii::app()->request->cookies['DEMap-username']);
+        parent::afterLogout();
+    }
 
 }
 

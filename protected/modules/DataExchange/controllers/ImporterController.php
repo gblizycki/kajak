@@ -2,7 +2,7 @@
 
 class ImporterController extends Controller
 {
-    public $layout = 'admin';
+    public $layout = '//layouts/admin';
     public function actionIndex()
     {
 

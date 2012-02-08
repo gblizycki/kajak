@@ -32,7 +32,9 @@ return array(
         'rights' => array(
             'debug' => true,
             //'install'=>true,
-            'superuserName'=>'gary@silme.pl',
+            'layout'=>'//layouts/admin-rights',
+            'appLayout'=>'//layouts/admin',
+            'superuserName'=>'Admin',
             'enableBizRuleData' => true,
             'userClass' => 'User',
             'userNameColumn' => 'email',

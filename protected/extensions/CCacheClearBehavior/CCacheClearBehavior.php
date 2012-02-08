@@ -6,6 +6,7 @@ class CCacheClearBehavior extends CMongoDocumentBehavior {
     public function afterSave($event)
     {
         Yii::app()->{$this->cacheId}->flush();
+        return true;
     }
 }
 

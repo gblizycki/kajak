@@ -30,6 +30,7 @@
         <script src="js/libs/async.min.js"></script>
         <script src="js/libs/jstorage.js"></script>
         <script src="js/libs/jquery.scrollTo-1.4.2-min.js"></script>
+        <script src="js/libs/jquery.cookie.js"></script>
     </head>
     <body>
         <?php echo $content; ?>

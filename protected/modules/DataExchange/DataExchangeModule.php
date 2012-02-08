@@ -124,6 +124,7 @@ class DataExchangeModule extends CWebModule
     private function saveObject(DataSource $dataSource, $object)
     {
         $object->info->format = $dataSource->format;
+        $object->validate();
         $object->save();
     }
 

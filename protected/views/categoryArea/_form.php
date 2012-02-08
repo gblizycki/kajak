@@ -29,7 +29,7 @@
         
 	<div class="row">
 		<?php echo $form->labelEx($model,'style'); ?>
-		<?php $this->renderPartial('/style/_form',array('form'=>$form,'model'=>$model->style));?>
+		<?php $this->renderPartial('/style/_form',array('form'=>$form,'model'=>$model));?>
 	</div>
 
 	<div class="row buttons">

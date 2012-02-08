@@ -17,7 +17,8 @@ class JSController extends Controller {
         $objects = array();
         $models = array();
         $filters = array();
-        $pages= array();
+        $pages = array();
+        $categoriesExport = array();
         //select good object types
         if (isset($_GET['type']))
             $type = $_GET['type'];
@@ -31,7 +32,7 @@ class JSController extends Controller {
         if (isset($_GET['pagesize']))
             $size = $_GET['pagesize'];
         else
-            $size = array('Route'=>30,'Area'=>30,'Place'=>50);
+            $size = array('Route' => 30, 'Area' => 30, 'Place' => 50);
         $filterObjects = array();
         foreach ($type as $t) {
             //select object of $t type
@@ -66,6 +67,7 @@ class JSController extends Controller {
                 //many categories, gather all possible filters ?
                 foreach ($categories as $category) {
                     $cat = CMongoDocument::model('Category' . $t)->findByPk(new MongoId($category));
+                    $categoriesExport[$t][$cat->id] = $this->array_filter_recursive($cat->{'export' . ucfirst($scenario)}());
                     if ($cat != null && count($cat->filters) > 0)
                         $filters[$t] = CMap::mergeArray($filters[$t], $cat->filters);
                 }
@@ -74,6 +76,7 @@ class JSController extends Controller {
 
                 //one category, select filter from this category
                 $cat = CMongoDocument::model('Category' . $t)->findByPk(new MongoId($categories));
+                $categoriesExport[$t][$cat->id] = $this->array_filter_recursive($cat->{'export' . ucfirst($scenario)}());
                 if (count($cat->filters) > 0)
                     $filters[$t] = CMap::mergeArray($filters[$t], $cat->filters);
             }
@@ -83,7 +86,7 @@ class JSController extends Controller {
                 $filter->setFilter($criteria, $obj);
             }
             $oldCriteria = $dp->getCriteria();
-            $criteria->select(array('_id','info.name','info.description','info.format'));
+            $criteria->select(array('_id', 'info.name', 'info.description', 'info.format'));
             $criteria = $criteria->mergeWith($oldCriteria);
             $dp->setCriteria($criteria);
             Yii::endProfile('filters');
@@ -91,42 +94,42 @@ class JSController extends Controller {
             //$objects[$t] = $dp->data;
             $objects[$t] = $obj->findAll($criteria);
             Yii::endProfile('loaddata');
-            $pageCount = ceil($obj->findAll($criteria)->count()/$size[$t]);
-            
-            for($i =0;$i<$pageCount;$i++)
-            {
-                $pages[] = array($t,$i);
+            $pageCount = ceil($obj->findAll($criteria)->count() / $size[$t]);
+
+            for ($i = 0; $i < $pageCount; $i++) {
+                $pages[] = array($t, $i);
             }
             $models[$t] = $objects[$t];
             $filterObjects[$t] = $obj;
         }
         $currentUrl = $_GET;
         unset($currentUrl['backUrl']);
-        $currentUrl = '/js/filter?'.http_build_query($currentUrl);
+        $currentUrl = '/js/filter?' . http_build_query($currentUrl);
         $backUrl = null;
         $panel = $this->renderPartial('panel', array('filters' => $filters, 'objects' => $objects, 'type' => $type,
-            'models' => $filterObjects,'backUrl' => $backUrl,'currentUrl'=>$currentUrl, 'realModels' => $models), true, true);
-        echo CJSON::encode(array('panel' => $panel,'pages'=>$pages,'pagesize'=>$size));
+            'models' => $filterObjects, 'backUrl' => $backUrl, 'currentUrl' => $currentUrl, 'realModels' => $models), true, true);
+        echo CJSON::encode(array('panel' => $panel, 'pages' => $pages, 'pagesize' => $size, 'categories' => $categoriesExport));
     }
-    public function actionData()
-    {
+
+    public function actionData() {
         //quick cacheing solution $_GET => json as key in cache
         $cacheQuickId = json_encode($_GET);
         $value = Yii::app()->cache->get($cacheQuickId);
+        $value=false;
         //$value=false;
-        if($value!==false)
-        {
-            echo $value;return;
+        if ($value !== false) {
+            echo $value;
+            return;
         }
         $objects = array();
         $models = array();
-        
+        $categoriesExport = array();
         //select good object types
         if (isset($_GET['type']))
             $type = $_GET['type'];
         else
             $type = array();
-        
+
         if (isset($_GET['page']))
             $page = $_GET['page'];
         else
@@ -134,10 +137,10 @@ class JSController extends Controller {
         if (isset($_GET['pagesize']))
             $size = $_GET['pagesize'];
         else
-            $size = array('Route'=>30,'Area'=>30,'Place'=>50);
-        
+            $size = array('Route' => 30, 'Area' => 30, 'Place' => 50);
+
         foreach ($type as $t) {
-            
+
             Yii::beginProfile('rest');
             $obj = CMongoDocument::model($t);
 
@@ -147,10 +150,9 @@ class JSController extends Controller {
             //get filters from selected category
             if (is_array($obj->category)) {
                 //many categories, gather all possible filters ?
-                
             } elseif ($obj->category != null) {
                 //one category, select filter from this category
-                
+
                 $filters[$t] = CMongoDocument::model('Category' . $t)->findByPk(new MongoId($obj->category))->filters;
             } else {
                 //try to get one category from 
@@ -181,7 +183,7 @@ class JSController extends Controller {
                     $filters[$t] = CMap::mergeArray($filters[$t], $cat->filters);
             }
 
-            
+
             $criteria = new CMongoCriteria($dp->getCriteria());
             foreach ($filters[$t] as $filter) {
                 $filter->setFilter($criteria, $obj);
@@ -189,72 +191,71 @@ class JSController extends Controller {
             $oldCriteria = $dp->getCriteria();
             $criteria = $criteria->mergeWith($oldCriteria);
             $criteria->setLimit($size[$t]);
-            $criteria->setOffset($page*$size[$t]);
+            $criteria->setOffset($page * $size[$t]);
             $dp->setCriteria($criteria);
-            
+
             Yii::endProfile('rest');
-            
+
             $obj->setUseCursor(true);
             //
             //$objects[$t]->limit($size[$t]);
             //$objects[$t]->offset($page*$size[$t]);
             //var_dump(count($objects[$t]));
-            $scenario ='view';
+            $scenario = 'view';
             //var_dump(json_encode($_GET));die();
-            $value = Yii::app()->cache->get('export'.(string)$dp);
-            if($value===false)
-            {
-            //var_dump($objects[$t]->current()->id);
-            Yii::beginProfile('data2');
-            //$objects[$t] = $dp->data;
-            $objects[$t] = $obj->findAll($criteria);
-            Yii::endProfile('data2');
+            $dependecy = new CMongoCacheDependency(CMongoDocument::model($t),'updateDate');
             
-            /*Yii::beginProfile('data1');
-            $objects[$t] = $obj->findAll($criteria)->toArray();
-            $cursor = $objects[$t];
-            $objects[$t] = array();
-                foreach ($cursor as $obji) {
-                    $objects[$t][] = $this->array_filter_recursive($obji->{'export' . ucfirst($scenario)}());
-                }
-            ///var_dump($objects[$t][0]->id);
-            Yii::endProfile('data1');
-            
-            
-            Yii::beginProfile('data0');
-            $objects[$t] = $obj->findAll($criteria);
-            $cursor = $objects[$t];
-            $objects[$t] = array();
-                foreach ($cursor as $obji) {
-                    $objects[$t][] = $this->array_filter_recursive($obji->{'export' . ucfirst($scenario)}());
-                }
-            //$objects[$t]->next();
-            Yii::endProfile('data0');*/
-            Yii::beginProfile('export');
-            
+            $value = Yii::app()->cache->get('export' . (string) $dp);
+            if ($value === false) {
+                //var_dump($objects[$t]->current()->id);
+                Yii::beginProfile('data2');
+                //$objects[$t] = $dp->data;
+                $objects[$t] = $obj->findAll($criteria);
+                Yii::endProfile('data2');
+
+                /* Yii::beginProfile('data1');
+                  $objects[$t] = $obj->findAll($criteria)->toArray();
+                  $cursor = $objects[$t];
+                  $objects[$t] = array();
+                  foreach ($cursor as $obji) {
+                  $objects[$t][] = $this->array_filter_recursive($obji->{'export' . ucfirst($scenario)}());
+                  }
+                  ///var_dump($objects[$t][0]->id);
+                  Yii::endProfile('data1');
+
+
+                  Yii::beginProfile('data0');
+                  $objects[$t] = $obj->findAll($criteria);
+                  $cursor = $objects[$t];
+                  $objects[$t] = array();
+                  foreach ($cursor as $obji) {
+                  $objects[$t][] = $this->array_filter_recursive($obji->{'export' . ucfirst($scenario)}());
+                  }
+                  //$objects[$t]->next();
+                  Yii::endProfile('data0'); */
+                Yii::beginProfile('export');
+
                 $cursor = $objects[$t];
                 $objects[$t] = array();
                 foreach ($cursor as $obji) {
                     $objects[$t][] = $this->array_filter_recursive($obji->{'export' . ucfirst($scenario)}());
                 }
-                Yii::app()->cache->set('export'.(string)$dp,$objects[$t],5000);
-            }
-            else
-            {
+                Yii::app()->cache->set('export' . (string) $dp, $objects[$t], 5000);
+            } else {
                 $objects[$t] = $value;
             }
             Yii::endProfile('export');
         }
         Yii::beginProfile('json2');
         $encoded = json_encode(array('objects' => $objects));
-        Yii::app()->cache->set($cacheQuickId,$encoded);
+        Yii::app()->cache->set($cacheQuickId, $encoded);
         echo $encoded;
         Yii::endProfile('json2');
-        /*Yii::beginProfile('json');
-        echo CJSON::encode(array('objects' => $objects));
-        Yii::endProfile('json');*/
-        
+        /* Yii::beginProfile('json');
+          echo CJSON::encode(array('objects' => $objects));
+          Yii::endProfile('json'); */
     }
+
     public function actionViewArea($id) {
         $objects = array();
         $model = $this->loadArea($id);
@@ -264,7 +265,9 @@ class JSController extends Controller {
         foreach ($objects['Area'] as $index => $object) {
             $objects['Area'][$index] = $this->array_filter_recursive($object->exportView());
         }
-        echo CJSON::encode(array('objects' => $objects,
+        $category = CategoryArea::model()->findByPk(new MongoId($model->category));
+        //var_dump($category);die();
+        echo CJSON::encode(array('objects' => $objects, 'categories' => array('Area' => array($category->id => $category->exportView())),
             'panel' => $dataSource->renderObject(array('model' => $model, 'backUrl' => $backUrl))));
     }
 
@@ -278,7 +281,13 @@ class JSController extends Controller {
         foreach ($objects['Place'] as $index => $object) {
             $objects['Place'][$index] = $this->array_filter_recursive($object->exportView());
         }
-        echo CJSON::encode(array('objects' => $objects,
+        //export categories
+        $exportCategories = array();
+        foreach ($model->category as $category) {
+            $cat = CategoryPlace::model()->findByPk($category);
+            $exportCategories['Place'][$cat->id] = $cat->exportView();
+        }
+        echo CJSON::encode(array('objects' => $objects, 'categories' => $exportCategories,
             'panel' => $dataSource->renderObject(array('model' => $model, 'currentUrl' => 'filter?' . Yii::app()->request->queryString, 'backUrl' => $backUrl))));
     }
 
@@ -292,7 +301,9 @@ class JSController extends Controller {
         foreach ($objects['Route'] as $index => $object) {
             $objects['Route'][$index] = $this->array_filter_recursive($object->exportView());
         }
-        echo CJSON::encode(array('objects' => $objects,
+
+        $category = CategoryRoute::model()->findByPk($model->category);
+        echo CJSON::encode(array('objects' => $objects, 'categories' => array('Route' => array($category->id => $category->exportView())),
             'panel' => $dataSource->renderObject(array('model' => $model, 'currentUrl' => 'filter?' . Yii::app()->request->queryString, 'backUrl' => $backUrl))));
     }
 
@@ -315,11 +326,18 @@ class JSController extends Controller {
         }
         $objects['Route'][] = $model;
         $dataSource = DataExchange::module()->getDataSource($model->info->format);
-        $backUrl = isset($_GET['backUrl']) ? $_GET['backUrl'] : null;
+         if (isset($_GET['backUrl'])) {
+            $backUrl = $_GET['backUrl'];
+        } elseif (isset($_POST['backUrl'])) {
+            $backUrl = $_POST['backUrl'];
+        } else {
+            $backUrl = null;
+        }
         foreach ($objects['Route'] as $index => $object) {
             $objects['Route'][$index] = $this->array_filter_recursive($object->exportView());
         }
-        echo CJSON::encode(array('objects' => $objects,
+        $category = CategoryRoute::model()->findByPk($model->category);
+        echo CJSON::encode(array('objects' => $objects, 'categories' => array('Route' => array($category->id => $category->exportView())),
             'panel' => $dataSource->renderObjectForm(array('model' => $model, 'currentUrl' => $backUrl, 'backUrl' => $backUrl))));
     }
 
@@ -348,7 +366,12 @@ class JSController extends Controller {
         foreach ($objects['Place'] as $index => $object) {
             $objects['Place'][$index] = $this->array_filter_recursive($object->exportView());
         }
-        echo CJSON::encode(array('objects' => $objects,
+        $exportCategories = array();
+        foreach ($model->category as $category) {
+            $cat = CategoryPlace::model()->findByPk($category);
+            $exportCategories['Place'][$cat->id] = $cat->exportView();
+        }
+        echo CJSON::encode(array('objects' => $objects, 'categories' => $exportCategories,
             'panel' => $dataSource->renderObjectForm(array('model' => $model, 'currentUrl' => $backUrl, 'backUrl' => $backUrl))));
     }
 
@@ -379,7 +402,8 @@ class JSController extends Controller {
         foreach ($objects['Area'] as $index => $object) {
             $objects['Area'][$index] = $this->array_filter_recursive($object->exportView());
         }
-        echo CJSON::encode(array('objects' => $objects,
+        $category = CategoryArea::model()->findByPk(new MongoId($model->category));
+        echo CJSON::encode(array('objects' => $objects, 'categories' => array('Area' => array($category->id => $category->exportView())),
             'panel' => $dataSource->renderObjectForm(array('model' => $model, 'currentUrl' => $backUrl, 'backUrl' => $backUrl))));
     }
 

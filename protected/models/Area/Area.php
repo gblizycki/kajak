@@ -80,6 +80,10 @@ class Area extends CMongoDocument {
      */
     public function behaviors() {
         return array(
+            'cachceclear'=>array(
+                'class'=>'ext.CCacheClearBehavior.CCacheClearBehavior',
+                'cacheId'=>'cache',
+            ),
             'points' => array(
                 'class' => 'ext.YiiMongoDbSuite.extra.EEmbeddedArraysBehavior',
                 'arrayPropertyName' => 'points',
@@ -156,6 +160,7 @@ class Area extends CMongoDocument {
             $value = array(
                 'id'=>  $this->id,
                 'points'=> $this->exportPoints(),
+                'category'=>  (string)$this->category
             );
             Yii::app()->cache->set(get_class($this).$this->id,$value,5000);
         }

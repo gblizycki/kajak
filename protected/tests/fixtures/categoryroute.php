@@ -7,6 +7,20 @@ return array(
         'name' => 'Kajak',
         'description'=>'Trasy kajakowe',
         'title'=>'Kajakowe',
+        'style'=>array(
+            'list'=>array(
+                'normal'=>array(
+                    'strokeColor'=>'#fff',
+                    'strokeOpacity'=>'1',
+                    'strokeWeight'=>'2',
+                ),
+                'hover'=>array(
+                    'strokeColor'=>'#f0f',
+                    'strokeOpacity'=>'1',
+                    'strokeWeight'=>'4',
+                )
+            )
+        ),
         'filters'=>array(
             array('name'=>'Nazwa','attribute'=>'info[name]','class'=>'text','order'=>1,'type'=>'string','partialMatch'=>true,'options'=>array(
                 'slideEnable'=>true

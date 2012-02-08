@@ -221,7 +221,6 @@
     Plugin.prototype.request.send = function()
     {
         plugin.request.start();
-        console.log();
         $.ajax({
             url: $(plugin.panel).children('form').attr('action'),//$(plugin.panel).children('form').attr('action'),
             data: $(plugin.panel).children('form').serialize()+'&'+$.param(plugin.options.pageSize),
@@ -255,11 +254,18 @@
     Plugin.prototype.request.process = function(data)
     {
         plugin.renderPanel(data.panel);
+        plugin.categories = {
+            Route:[],
+            Area:[],
+            Place:[]
+        };
+        plugin.request.processCategories(data.categories);
         $(plugin.panel).find('.buttons').buttonset();
         //clear all objects from map
         $(plugin.element).gmap3({
             action: 'clear'
         });
+        
         plugin.objects = {};
         plugin.objects.Route = [];
         plugin.objects.Place = [];
@@ -337,7 +343,7 @@
         }
         else
         {
-            console.log('no pages?');
+            //console.log('no pages?');
             plugin.objects.Area = [];
             plugin.objects.Place = [];
             plugin.objects.Route = [];
@@ -347,6 +353,10 @@
         }
             
         
+    }
+    Plugin.prototype.request.processCategories = function(categories)
+    {
+        $.extend(plugin.categories,categories);
     }
     Plugin.prototype.request.processData = function(scenario)
     {
@@ -378,6 +388,12 @@
     Plugin.prototype.request.processSingle = function(data)
     {
         plugin.renderPanel(data.panel);
+        plugin.categories = {
+            Route:[],
+            Area:[],
+            Place:[]
+        };
+        plugin.request.processCategories(data.categories);
         //clear all objects from map
         $(plugin.element).gmap3({
             action: 'clear'
@@ -396,6 +412,12 @@
     Plugin.prototype.request.processEdit = function(data)
     {
         plugin.renderPanel(data.panel);
+        plugin.categories = {
+            Route:[],
+            Area:[],
+            Place:[]
+        };
+        plugin.request.processCategories(data.categories);
         //clear all objects from map
         $(plugin.element).gmap3({
             action: 'clear'
@@ -487,12 +509,6 @@
     Plugin.prototype.route.section.create = function(section,scenario)
     {
         //set options & events based on place, category or defaults
-        if(section.style===undefined)
-            section.style={};
-        if(section.style.normal===undefined)
-            section.style.normal={};
-        if(section.style.hover===undefined)
-            section.style.hover={};
         //create path for section
         var path = [];
         $.each(section.points,function(index,element){
@@ -504,11 +520,11 @@
             path:path,
             data: $.extend(section,{
                 element:$(plugin.panel).find('ul.Route.list li input[value='+section.id+']').parent(),
-                normalOptions: $.extend(true,plugin.route.section.options[scenario].normal(),section.style.normal),
-                hoverOptions: $.extend(true,plugin.route.section.options[scenario].hover(),section.style.hover)
+                normalOptions: $.extend(true,plugin.route.section.options[scenario].normal(),plugin.route.getCategory(section.category,scenario).normal,section.style[scenario].normal),
+                hoverOptions: $.extend(true,plugin.route.section.options[scenario].hover(),plugin.route.getCategory(section.category,scenario).hover,section.style[scenario].hover)
             }),
             tag: 'Route-'+section.id,
-            options: $.extend(true,plugin.route.section.options[scenario].normal(),section.options),
+            options: $.extend(true,plugin.route.section.options[scenario].normal(),plugin.route.getCategory(section.category,scenario).normal,section.style[scenario].normal),
             callback: function(polyline){
                 section.polyline = polyline;
                 if(scenario==='edit')
@@ -527,6 +543,13 @@
             data:point
         });
     }
+    /*Get category*/
+    Plugin.prototype.route.getCategory = function(id,scenario)
+    {
+        if(plugin.categories.Route[id].style[scenario])
+            return plugin.categories.Route[id].style[scenario];
+        return {};
+    }
     //Route polygon editable events registering
     Plugin.prototype.route.section.createEventListener = function(polyline)
     {
@@ -535,12 +558,10 @@
         google.maps.event.addListener(polyline.getPath(), 'remove_at',plugin.route.section.remove_at);
     }
     Plugin.prototype.route.section.set_at = function(index,point){
-        console.log(point);
         var realName = plugin.route.findRealName(point.data.order,point.data.section.order);
         var realNameSection = plugin.route.findRealNameSection(point.data.section.order);
-
-        $('#DEMap-panel form input[name="Route[sections]['+realNameSection+'][points]['+realName+'][location][1]"]').val(parseFloat(this.getAt(index).Oa));
-        $('#DEMap-panel form input[name="Route[sections]['+realNameSection+'][points]['+realName+'][location][0]"]').val(parseFloat(this.getAt(index).Pa));
+        $('#DEMap-panel form input[name="Route[sections]['+realNameSection+'][points]['+realName+'][location][1]"]').val(parseFloat(this.getAt(index).lat()));
+        $('#DEMap-panel form input[name="Route[sections]['+realNameSection+'][points]['+realName+'][location][0]"]').val(parseFloat(this.getAt(index).lng()));
         this.getAt(index).data = point.data
     }
     Plugin.prototype.route.section.insert_at = function(index)
@@ -549,8 +570,8 @@
         point = this.getAt(index);
         point.data = jQuery.extend({}, this.getAt(index-1).data);
         point.data.order = parseInt(this.getAt(index-1).data.order)+1;
-        point.data.longitude = point.Pa; 
-        point.data.latitude = point.Oa;
+        point.data.longitude = point.lng(); 
+        point.data.latitude = point.lat();
 
         for(var iback=this.getLength()-1;iback>=0;iback--)
         {
@@ -570,8 +591,8 @@
         var maxPos = this.getLength()+10;
         var form  =[];
         form.push('<input class="order section-'+point.data.section.order+'" name="Route[sections]['+realNameSection+'][points]['+maxPos+'][order]" type="hidden" value="'+point.data.order+'">');
-        form.push('<input class="section-'+point.data.section.order+'" name="Route[sections]['+realNameSection+'][points]['+maxPos+'][location][0]" type="hidden" value="'+point.Pa+'">');
-        form.push('<input class="section-'+point.data.section.order+'" name="Route[sections]['+realNameSection+'][points]['+maxPos+'][location][1]" type="hidden" value="'+point.Oa+'">');
+        form.push('<input class="section-'+point.data.section.order+'" name="Route[sections]['+realNameSection+'][points]['+maxPos+'][location][0]" type="hidden" value="'+point.lng()+'">');
+        form.push('<input class="section-'+point.data.section.order+'" name="Route[sections]['+realNameSection+'][points]['+maxPos+'][location][1]" type="hidden" value="'+point.lat()+'">');
         point.info = maxPos;
         $('#DEMap-panel form').append(form.join(''));
     }
@@ -661,672 +682,703 @@
         async.forEach(sections, function(section){
             //@TODO add inheritance of route style in create method
             //@TODO creating markers for sections
-            console.log($.extend({
-                action: 'addPolyline'
-            },plugin.route.section.create(section,scenario)));
             section.id = route.id;
-            $(plugin.element).gmap3($.extend({
-                action: 'addPolyline'
-            },plugin.route.section.create(section,scenario)));
-        }, function(err){
-            console.log(err,'error');
-        });
-    }
-    Plugin.prototype.route.edit = function(id)
+            section.category = route.category;
+            if(section.style===undefined)
+                section.style = {};
+            if(section.style.list===undefined)
+                section.style.list={
+                    normal:{},
+                    hover:{}
+            };
+        if(section.style.edit===undefined)
+            section.style.edit={
+                normal:{},
+                hover:{}
+        };
+        if(section.style.single===undefined)
+            section.style.single={
+                normal:{},
+                hover:{}
+        };
+    if(route.style)
     {
-        plugin.request.start();
-        $.ajax({
-            url: plugin.options.baseUrl+'/js/editRoute',
-            type: 'GET',
-            data: {
-                id:id,
-                backUrl:$(plugin.panel).find('input#backUrl').val()
-            },
-            dataType: 'JSON',
-            success: plugin.request.processEdit
-        });
+        section.style = $.extend(true,{},route.style,section.style);
     }
-    Plugin.prototype.route.view = function(id)
-    {
-        plugin.request.start();
-        $.ajax({
-            url: plugin.options.baseUrl+'/js/viewRoute',
-            data: {
-                id:id,
-                backUrl:$(plugin.panel).find('input#backUrl').val()
-            },
-            dataType: 'JSON',
-            success: plugin.request.processSingle
-        });
-    }
-    /*Route events*/
-    Plugin.prototype.route.section.click = function(polyline,event,data)
-    {
-        plugin.route.view(data.id);
-    }
-    Plugin.prototype.route.section.rightclick = function(polyline,event,data)
-    {
-        plugin.route.edit(data.id);
-    }
-    Plugin.prototype.route.section.mouseover = function(polyline,event,data)
-    {
-
-        if(data.element)
-        {
-            $(data.element).addClass('hover');
-            if(event && $(data.element).is(':visible'))
-                $(plugin.panel).scrollTo(data.element,plugin.options.scroll);
-        }
-            
-        polyline.setOptions(data.hoverOptions);
-    }
-    Plugin.prototype.route.section.mouseout = function(polyline,event,data)
-    {
-        if(data.element)
-            $(data.element).removeClass('hover');
-        polyline.setOptions(data.normalOptions);
-    }
-    /*Route misc functions*/
-    Plugin.prototype.route.findRealName = function(order,section)
-    {
-        var name = undefined;
-        order = parseInt(order);
-        $('#DEMap-panel form input.order.section-'+section).each(function(index,element){
-            if(parseInt($(element).val())===order)
-            {
-                name = $(element).attr('name');
-                name = name.substring(name.indexOf('[points]')+'[points]'.length+1,name.lastIndexOf('[order]')-1);
-            }
-        });
-        if(name===undefined)
-            console.log(order,section);
-        return name;
-    }
-    Plugin.prototype.route.findRealNameSection = function(order)
-    {
-        var name = undefined;
-        $('#DEMap-panel form input.order-section').each(function(index,element){
-
-            if($(element).val()==order)
-            {
-                name = $(element).attr('name');
-                name = name.substring(name.indexOf('[sections]')+'[sections]'.length+1,name.lastIndexOf('[order]')-1);
-            }
-        });
-        return name;
-    }
-    Plugin.prototype.route.bindEvents = function()
-    {
-        //bind list with proper object
-        $(document).on({
-            click: function(event){
-                //select right
-                google.maps.event.trigger(plugin.route.findAllByTag('Route-'+ $(this).find('input.id').val())[0],'click');
-            },
-            mouseenter: function(){
-                //alert('enter');
-                $.each(plugin.route.findAllByTag('Route-'+ $(this).find('input.id').val()),function(index,element){
-                    google.maps.event.trigger(element,'mouseover');
-                });
                 
-            },
-            mouseleave: function(){
-                //alert('leave');
-                $.each(plugin.route.findAllByTag('Route-'+ $(this).find('input.id').val()),function(index,element){
-                    google.maps.event.trigger(element,'mouseout');
-                });
-            }
-        },plugin.options.panelId+' ul.Route.list li');
-    }
-    Plugin.prototype.route.findAllByTag = function(tag)
+    $(plugin.element).gmap3($.extend({
+        action: 'addPolyline'
+    },plugin.route.section.create(section,scenario)));
+}, function(err){
+    console.log(err,'error');
+});
+}
+Plugin.prototype.route.edit = function(id)
+{
+    plugin.request.start();
+    $.ajax({
+        url: plugin.options.baseUrl+'/js/editRoute',
+        type: 'GET',
+        data: {
+            id:id,
+            backUrl:$(plugin.panel).find('input#backUrl').val()
+        },
+        dataType: 'JSON',
+        success: plugin.request.processEdit
+    });
+}
+Plugin.prototype.route.view = function(id)
+{
+    plugin.request.start();
+    $.ajax({
+        url: plugin.options.baseUrl+'/js/viewRoute',
+        data: {
+            id:id,
+            backUrl:$(plugin.panel).find('input#backUrl').val()
+        },
+        dataType: 'JSON',
+        success: plugin.request.processSingle
+    });
+}
+/*Route events*/
+Plugin.prototype.route.section.click = function(polyline,event,data)
+{
+    plugin.route.view(data.id);
+}
+Plugin.prototype.route.section.rightclick = function(polyline,event,data)
+{
+    plugin.route.edit(data.id);
+}
+Plugin.prototype.route.section.mouseover = function(polyline,event,data)
+{
+    if(data.element)
     {
-        return $(plugin.element).gmap3({
-            action:'get',
-            name:'polyline',
-            tag:tag,
-            all:true
-        });
+        $(data.element).addClass('hover');
+        if(event && $(data.element).is(':visible'))
+            $(plugin.panel).scrollTo(data.element,plugin.options.scroll);
     }
-    
-    
-    //Area object
-    /*Area create*/
-    Plugin.prototype.area.create = function(area,scenario)
-    {
-        //set options & events based on place, category or defaults
-        if(area.style===undefined)
-            area.style={};
-        if(area.style.normal===undefined)
-            area.style.normal={};
-        if(area.style.hover===undefined)
-            area.style.hover={};
-        //create area polygon path's
-        var path = [];
-        $.each(area.points,function(index,element){
-            element.index = index;
-            path.push(plugin.area.createPoint(element,scenario));
-        });
-        return {
-            paths:path,
-            data: $.extend(area,{
-                element:$(plugin.panel).find('ul.Area.list li input[value='+area.id+']').parent(),
-                normalOptions: $.extend(true,plugin.area.options[scenario].normal(),area.style.normal),
-                hoverOptions: $.extend(true,plugin.area.options[scenario].hover(),area.style.hover)
-            }),
-            tag: 'Area-'+area.id,
-            options: $.extend(true,plugin.area.options[scenario].normal(),area.options),
-            callback: function(polygon){
-                area.polygon = polygon;
-                if(scenario==='edit')
-                {
-                    plugin.area.createEventListener(polygon);
-                }
-            },
-            events: plugin.area.events[scenario]()
-        };
-    }
-    Plugin.prototype.area.createPoint = function(point,scenario,index)
-    {
-        return $.extend(new google.maps.LatLng(point.latitude,point.longitude),{
-            index:index,
-            data:point
-        });
-    }
-    /*Area default styles*/
-    Plugin.prototype.area.options.list.normal= function(){
-        return {
-            strokeColor: "#ff00ff",
-            strokeOpacity: 1.0,
-            strokeWeight: 2,
-            fillColor: "#FF0000",
-            fillOpacity: 0.35,
-            zIndex: 1
-        };
-    };  
-    Plugin.prototype.area.options.list.hover = function(){
-        return {
-            strokeColor: "#FFFFF0",
-            fillOpacity: 0.56
-        };
-    };  
-    Plugin.prototype.area.options.single.normal = function(){
-        return {
-            strokeColor: "#FF00F0",
-            strokeOpacity: 1.0,
-            strokeWeight: 2,
-            fillColor: "#FF0000",
-            fillOpacity: 0.35,
-            zIndex: 1
-        };
-    };
-    Plugin.prototype.area.options.single.hover = function(){
-        return {
-            strokeColor: "#FF00F0"
-        };
-    };
-    Plugin.prototype.area.options.edit.normal = function(){
-        return {
-            editable:true,
-            strokeColor: "#FF00F0",
-            strokeOpacity: 1.0,
-            strokeWeight: 2,
-            fillColor: "#FF0000",
-            fillOpacity: 0.35,
-            zIndex: 1
-        };
-    };
-    Plugin.prototype.area.options.edit.hover = function(){
-        return {
-            strokeColor: "#FF00F0"
-        };
-    };
-    /*Area default events*/
-    Plugin.prototype.area.events.list = function(){
-        return {
-            click: plugin.area.click,
-            rightclick: plugin.area.rightclick,
-            mouseover: plugin.area.mouseover,
-            mouseout: plugin.area.mouseout
-        };
-    };
-    Plugin.prototype.area.events.single = function(){
-        return {};
-    };
-    Plugin.prototype.area.events.edit = function(){
-        return {
             
-        };
-    };
-    //Area polygon editable events registering
-    Plugin.prototype.area.createEventListener = function(polygon)
-    {
-        google.maps.event.addListener(polygon.getPaths().getAt(0), 'set_at',plugin.area.set_at);
-        google.maps.event.addListener(polygon.getPaths().getAt(0), 'insert_at',plugin.area.insert_at);
-        google.maps.event.addListener(polygon.getPaths().getAt(0), 'remove_at',plugin.area.remove_at);
-    }
-    Plugin.prototype.area.set_at = function(index,point){
-        var realName = plugin.area.findRealName(point.data.order);
-        $('#DEMap-panel form input[name="Area[points]['+realName+'][location][1]"]').val(parseFloat(this.getAt(index).Oa));
-        $('#DEMap-panel form input[name="Area[points]['+realName+'][location][0]"]').val(parseFloat(this.getAt(index).Pa));
-        this.getAt(index).data = point.data
-    }
-    Plugin.prototype.area.insert_at = function(index){
-        var polyline = this;
-        point = this.getAt(index);
-        point.data = jQuery.extend({}, this.getAt(index-1).data);
-        point.data.order = parseInt(this.getAt(index-1).data.order)+1;
-        point.data.longitude = point.Pa; 
-        point.data.latitude = point.Oa;
-
-        for(var iback=this.getLength()-1;iback>=0;iback--)
+    polyline.setOptions(data.hoverOptions);
+}
+Plugin.prototype.route.section.mouseout = function(polyline,event,data)
+{
+    if(data.element)
+        $(data.element).removeClass('hover');
+    polyline.setOptions(data.normalOptions);
+}
+/*Route misc functions*/
+Plugin.prototype.route.findRealName = function(order,section)
+{
+    var name = undefined;
+    order = parseInt(order);
+    $('#DEMap-panel form input.order.section-'+section).each(function(index,element){
+        if(parseInt($(element).val())===order)
         {
-            eindex = iback;
-            element = this.getAt(eindex);
-            if(eindex>index)
-            {
-                var newindex = parseInt(element.data.order)+1;
-                var realName = plugin.area.findRealName(element.data.order);
-                $('#DEMap-panel form input[name="Area[points]['+realName+'][order]"]').val(newindex);
-                //add form elements!
-                polyline.getAt(eindex).data.order = newindex;
-            }
+            name = $(element).attr('name');
+            name = name.substring(name.indexOf('[points]')+'[points]'.length+1,name.lastIndexOf('[order]')-1);
         }
-        var maxPos = this.getLength()+10;
-        var form  =[];
-        form.push('<input class="order " name="Area[points]['+maxPos+'][order]" type="hidden" value="'+point.data.order+'">');
-        form.push('<input name="Area[points]['+maxPos+'][location][0]" type="hidden" value="'+point.Pa+'">');
-        form.push('<input name="Area[points]['+maxPos+'][location][1]" type="hidden" value="'+point.Oa+'">');
-        point.index = point.data.order;
-        $('#DEMap-panel form').append(form.join(''));
-    }
-    Plugin.prototype.area.remove_at = function(index,point){
-        console.log(point);
+    });
+    if(name===undefined)
+        console.log(order,section);
+    return name;
+}
+Plugin.prototype.route.findRealNameSection = function(order)
+{
+    var name = undefined;
+    $('#DEMap-panel form input.order-section').each(function(index,element){
 
-        var realName = plugin.area.findRealName(point.index);
-        $('#DEMap-panel form input[name="Area[points]['+realName+'][location][0]"]').remove();
-        $('#DEMap-panel form input[name="Area[points]['+realName+'][location][1]"]').remove();
-        $('#DEMap-panel form input[name="Area[points]['+realName+'][order]"]').remove();
-    }
-    /*Area actions*/
-    Plugin.prototype.area.add = function(areas,scenario)
+        if($(element).val()==order)
+        {
+            name = $(element).attr('name');
+            name = name.substring(name.indexOf('[sections]')+'[sections]'.length+1,name.lastIndexOf('[order]')-1);
+        }
+    });
+    return name;
+}
+Plugin.prototype.route.bindEvents = function()
+{
+    //bind list with proper object
+    $(document).on({
+        click: function(event){
+            //select right
+            google.maps.event.trigger(plugin.route.findAllByTag('Route-'+ $(this).find('input.id').val())[0],'click');
+        },
+        mouseenter: function(){
+            //alert('enter');
+            $.each(plugin.route.findAllByTag('Route-'+ $(this).find('input.id').val()),function(index,element){
+                google.maps.event.trigger(element,'mouseover');
+            });
+                
+        },
+        mouseleave: function(){
+            //alert('leave');
+            $.each(plugin.route.findAllByTag('Route-'+ $(this).find('input.id').val()),function(index,element){
+                google.maps.event.trigger(element,'mouseout');
+            });
+        }
+    },plugin.options.panelId+' ul.Route.list li');
+}
+Plugin.prototype.route.findAllByTag = function(tag)
+{
+    return $(plugin.element).gmap3({
+        action:'get',
+        name:'polyline',
+        tag:tag,
+        all:true
+    });
+}
+    
+    
+//Area object
+/*Area create*/
+Plugin.prototype.area.create = function(area,scenario)
+{
+    //set options & events based on place, category or defaults
+    if(area.style===undefined)
+        area.style={};
+    if(area.style.normal===undefined)
+        area.style.normal={};
+    if(area.style.hover===undefined)
+        area.style.hover={};
+    //create area polygon path's
+    var path = [];
+    $.each(area.points,function(index,element){
+        element.index = index;
+        path.push(plugin.area.createPoint(element,scenario));
+    });
+    return {
+        paths:path,
+        data: $.extend(area,{
+            element:$(plugin.panel).find('ul.Area.list li input[value='+area.id+']').parent(),
+            normalOptions: $.extend(true,plugin.area.options[scenario].normal(),plugin.area.getCategory(area.category,scenario).normal,area.style.normal),
+            hoverOptions: $.extend(true,plugin.area.options[scenario].hover(),plugin.area.getCategory(area.category,scenario).hover,area.style.hover)
+        }),
+        tag: 'Area-'+area.id,
+        options: $.extend(true,plugin.area.options[scenario].normal(),plugin.area.getCategory(area.category,scenario).normal,area.options),
+        callback: function(polygon){
+            area.polygon = polygon;
+            if(scenario==='edit')
+            {
+                plugin.area.createEventListener(polygon);
+            }
+        },
+        events: plugin.area.events[scenario]()
+    };
+}
+Plugin.prototype.area.createPoint = function(point,scenario,index)
+{
+    return $.extend(new google.maps.LatLng(point.latitude,point.longitude),{
+        index:index,
+        data:point
+    });
+}
+Plugin.prototype.area.getCategory = function(id,scenario)
+{
+    if(id!==undefined && plugin.categories.Area[id] && plugin.categories.Area[id].style[scenario])
+        return plugin.categories.Area[id].style[scenario];
+    return {};
+}
+/*Area default styles*/
+Plugin.prototype.area.options.list.normal= function(){
+    return {
+        strokeColor: "#ff00ff",
+        strokeOpacity: 1.0,
+        strokeWeight: "2",
+        fillColor: "#FF0000",
+        fillOpacity: 0.35,
+        zIndex: 1
+    };
+};  
+Plugin.prototype.area.options.list.hover = function(){
+    return {
+        strokeColor: "#FFFFF0",
+        strokeWeight: "10",
+        fillOpacity: 0.56
+    };
+};  
+Plugin.prototype.area.options.single.normal = function(){
+    return {
+        strokeColor: "#FF00F0",
+        strokeOpacity: 1.0,
+        strokeWeight: 2,
+        fillColor: "#FF0000",
+        fillOpacity: 0.35,
+        zIndex: 1
+    };
+};
+Plugin.prototype.area.options.single.hover = function(){
+    return {
+        strokeColor: "#FF00F0"
+    };
+};
+Plugin.prototype.area.options.edit.normal = function(){
+    return {
+        editable:true,
+        strokeColor: "#FF00F0",
+        strokeOpacity: 1.0,
+        strokeWeight: 2,
+        fillColor: "#FF0000",
+        fillOpacity: 0.35,
+        zIndex: 1
+    };
+};
+Plugin.prototype.area.options.edit.hover = function(){
+    return {
+        strokeColor: "#FF00F0"
+    };
+};
+/*Area default events*/
+Plugin.prototype.area.events.list = function(){
+    return {
+        click: plugin.area.click,
+        rightclick: plugin.area.rightclick,
+        mouseover: plugin.area.mouseover,
+        mouseout: plugin.area.mouseout
+    };
+};
+Plugin.prototype.area.events.single = function(){
+    return {};
+};
+Plugin.prototype.area.events.edit = function(){
+    return {
+            
+    };
+};
+//Area polygon editable events registering
+Plugin.prototype.area.createEventListener = function(polygon)
+{
+    google.maps.event.addListener(polygon.getPaths().getAt(0), 'set_at',plugin.area.set_at);
+    google.maps.event.addListener(polygon.getPaths().getAt(0), 'insert_at',plugin.area.insert_at);
+    google.maps.event.addListener(polygon.getPaths().getAt(0), 'remove_at',plugin.area.remove_at);
+}
+Plugin.prototype.area.set_at = function(index,point){
+    var realName = plugin.area.findRealName(point.data.order);
+    $('#DEMap-panel form input[name="Area[points]['+realName+'][location][1]"]').val(parseFloat(this.getAt(index).lat()));
+    $('#DEMap-panel form input[name="Area[points]['+realName+'][location][0]"]').val(parseFloat(this.getAt(index).lng()));
+    this.getAt(index).data = point.data
+}
+Plugin.prototype.area.insert_at = function(index){
+    var polyline = this;
+    point = this.getAt(index);
+    point.data = jQuery.extend({}, this.getAt(index-1).data);
+    point.data.order = parseInt(this.getAt(index-1).data.order)+1;
+    point.data.longitude = point.lng(); 
+    point.data.latitude = point.lat();
+
+    for(var iback=this.getLength()-1;iback>=0;iback--)
     {
-        async.forEach(areas, function(area){
-            $(plugin.element).gmap3($.extend({
-                action: 'addPolygon'
-            },plugin.area.create(area,scenario)));
-        }, function(err){
-            console.log(err,'error');
-        });
+        eindex = iback;
+        element = this.getAt(eindex);
+        if(eindex>index)
+        {
+            var newindex = parseInt(element.data.order)+1;
+            var realName = plugin.area.findRealName(element.data.order);
+            $('#DEMap-panel form input[name="Area[points]['+realName+'][order]"]').val(newindex);
+            //add form elements!
+            polyline.getAt(eindex).data.order = newindex;
+        }
+    }
+    var maxPos = this.getLength()+10;
+    var form  =[];
+    form.push('<input class="order " name="Area[points]['+maxPos+'][order]" type="hidden" value="'+point.data.order+'">');
+    form.push('<input name="Area[points]['+maxPos+'][location][0]" type="hidden" value="'+point.lng()+'">');
+    form.push('<input name="Area[points]['+maxPos+'][location][1]" type="hidden" value="'+point.lat()+'">');
+    point.index = point.data.order;
+    $('#DEMap-panel form').append(form.join(''));
+}
+Plugin.prototype.area.remove_at = function(index,point){
+
+    var realName = plugin.area.findRealName(point.index);
+    $('#DEMap-panel form input[name="Area[points]['+realName+'][location][0]"]').remove();
+    $('#DEMap-panel form input[name="Area[points]['+realName+'][location][1]"]').remove();
+    $('#DEMap-panel form input[name="Area[points]['+realName+'][order]"]').remove();
+}
+/*Area actions*/
+Plugin.prototype.area.add = function(areas,scenario)
+{
+    async.forEach(areas, function(area){
+        $(plugin.element).gmap3($.extend({
+            action: 'addPolygon'
+        },plugin.area.create(area,scenario)));
+    }, function(err){
+        console.log(err,'error');
+    });
         
-    }
-    Plugin.prototype.area.edit = function(id)
+}
+Plugin.prototype.area.edit = function(id)
+{
+    plugin.request.start();
+    $.ajax({
+        url: plugin.options.baseUrl+'/js/editArea',
+        type: 'GET',
+        data: {
+            id:id,
+            backUrl:$(plugin.panel).find('input#backUrl').val()
+        },
+        dataType: 'JSON',
+        success: plugin.request.processEdit
+    });
+}
+Plugin.prototype.area.view = function(id)
+{
+    plugin.request.start();
+    $.ajax({
+        url: plugin.options.baseUrl+'/js/viewArea',
+        data: {
+            id:id,
+            backUrl:$(plugin.panel).find('input#backUrl').val()
+        },
+        dataType: 'JSON',
+        success: plugin.request.processSingle
+    });
+}
+/*Area events*/
+Plugin.prototype.area.click = function(polygon,event,data)
+{
+    plugin.area.view(data.id);
+}
+Plugin.prototype.area.rightclick = function(polygon,event,data)
+{
+    plugin.area.edit(data.id);
+}
+Plugin.prototype.area.mouseover = function(polygon,event,data)
+{
+    if(data.element)
     {
-        plugin.request.start();
-        $.ajax({
-            url: plugin.options.baseUrl+'/js/editArea',
-            type: 'GET',
-            data: {
-                id:id,
-                backUrl:$(plugin.panel).find('input#backUrl').val()
-            },
-            dataType: 'JSON',
-            success: plugin.request.processEdit
-        });
+        $(data.element).addClass('hover');
+        if(event && $(data.element).is(':visible'))
+            $(plugin.panel).scrollTo(data.element,plugin.options.scroll);
     }
-    Plugin.prototype.area.view = function(id)
-    {
-        plugin.request.start();
-        $.ajax({
-            url: plugin.options.baseUrl+'/js/viewArea',
-            data: {
-                id:id,
-                backUrl:$(plugin.panel).find('input#backUrl').val()
-            },
-            dataType: 'JSON',
-            success: plugin.request.processSingle
-        });
-    }
-    /*Area events*/
-    Plugin.prototype.area.click = function(polygon,event,data)
-    {
-        plugin.area.view(data.id);
-    }
-    Plugin.prototype.area.rightclick = function(polygon,event,data)
-    {
-        plugin.area.edit(data.id);
-    }
-    Plugin.prototype.area.mouseover = function(polygon,event,data)
-    {
-        if(data.element)
+    //scroll to this element
+    polygon.setOptions(data.hoverOptions);
+}
+Plugin.prototype.area.mouseout = function(polygon,event,data)
+{
+    if(data.element)
+        $(data.element).removeClass('hover');
+    polygon.setOptions(data.normalOptions);
+}
+/*Area misc functions*/
+Plugin.prototype.area.findRealName = function(order)
+{
+    var name = undefined;
+    order = parseInt(order);
+    $('#DEMap-panel form input.order').each(function(index,element){
+        if(parseInt($(element).val())===order)
         {
-            $(data.element).addClass('hover');
-            if(event && $(data.element).is(':visible'))
-                $(plugin.panel).scrollTo(data.element,plugin.options.scroll);
+            name = $(element).attr('name');
+            name = name.substring(name.indexOf('[points]')+'[points]'.length+1,name.lastIndexOf('[order]')-1);
         }
-        //scroll to this element
+    });
+    if(name===undefined)
+        console.log(order);
+    return name;
+}
+Plugin.prototype.area.findAllByTag = function(tag)
+{
+    return $(plugin.element).gmap3({
+        action:'get',
+        name:'polygon',
+        tag:tag,
+        all:true
+    });
+}
+Plugin.prototype.area.bindEvents = function()
+{
+    $(document).on({
+        click: function(){
+            //select right
+            google.maps.event.trigger(plugin.area.findAllByTag('Area-'+ $(this).find('input.id').val())[0],'click');
+        },
+        mouseenter: function(){
+            //alert('enter');
+            $.each(plugin.area.findAllByTag('Area-'+ $(this).find('input.id').val()),function(index,element){
+                google.maps.event.trigger(element,'mouseover');
+            });
 
-        polygon.setOptions(data.hoverOptions);
-    }
-    Plugin.prototype.area.mouseout = function(polygon,event,data)
-    {
-        if(data.element)
-            $(data.element).removeClass('hover');
-        polygon.setOptions(data.normalOptions);
-    }
-    /*Area misc functions*/
-    Plugin.prototype.area.findRealName = function(order)
-    {
-        var name = undefined;
-        order = parseInt(order);
-        $('#DEMap-panel form input.order').each(function(index,element){
-            if(parseInt($(element).val())===order)
-            {
-                name = $(element).attr('name');
-                name = name.substring(name.indexOf('[points]')+'[points]'.length+1,name.lastIndexOf('[order]')-1);
-            }
-        });
-        if(name===undefined)
-            console.log(order);
-        return name;
-    }
-    Plugin.prototype.area.findAllByTag = function(tag)
-    {
-        return $(plugin.element).gmap3({
-            action:'get',
-            name:'polygon',
-            tag:tag,
-            all:true
-        });
-    }
-    Plugin.prototype.area.bindEvents = function()
-    {
-        $(document).on({
-            click: function(){
-                //select right
-                google.maps.event.trigger(plugin.area.findAllByTag('Area-'+ $(this).find('input.id').val())[0],'click');
-            },
-            mouseenter: function(){
-                //alert('enter');
-                $.each(plugin.area.findAllByTag('Area-'+ $(this).find('input.id').val()),function(index,element){
-                    google.maps.event.trigger(element,'mouseover');
-                });
-
-            },
-            mouseleave: function(){
-                //alert('leave');
-                $.each(plugin.area.findAllByTag('Area-'+ $(this).find('input.id').val()),function(index,element){
-                    google.maps.event.trigger(element,'mouseout');
-                });
-            }
-        },plugin.options.panelId+' ul.Area.list li');
-    }
+        },
+        mouseleave: function(){
+            //alert('leave');
+            $.each(plugin.area.findAllByTag('Area-'+ $(this).find('input.id').val()),function(index,element){
+                google.maps.event.trigger(element,'mouseout');
+            });
+        }
+    },plugin.options.panelId+' ul.Area.list li');
+}
 
 
 
-    /*Create place*/
-    Plugin.prototype.place.create = function(place,scenario)
-    {
-        //set options & events based on place, category or defaults
-        //@TODO add category to extend
-        if(place.style===undefined)
-            place.style={};
-        if(place.style.normal===undefined)
-            place.style.normal={};
-        if(place.style.hover===undefined)
-            place.style.hover={};
-        return {
-            latLng: [place.location.latitude,place.location.longitude],
-            data: $.extend(place,{
-                element:$(plugin.panel).find('ul.Place.list li input[value='+place.id+']').parent(),
-                normalOptions: $.extend(true,plugin.place.options[scenario].normal(),place.style.normal),
-                hoverOptions: $.extend(true,plugin.place.options[scenario].hover(),place.style.hover)
-            }),
-            tag: 'Place-'+place.id,
-            options: $.extend(true,plugin.place.options[scenario].normal(),place.options),
-            callback: function(marker){
-                place.marker = marker
-            },
-            events: plugin.place.events[scenario]()
+/*Create place*/
+Plugin.prototype.place.create = function(place,scenario)
+{
+    //set options & events based on place, category or defaults
+    //@TODO add category to extend
+    if(place.style===undefined)
+        place.style={};
+    if(place.style.normal===undefined)
+        place.style.normal={};
+    if(place.style.hover===undefined)
+        place.style.hover={};
+    return {
+        latLng: [place.location.latitude,place.location.longitude],
+        data: $.extend(place,{
+            element:$(plugin.panel).find('ul.Place.list li input[value='+place.id+']').parent(),
+            normalOptions: $.extend(true,plugin.place.options[scenario].normal(),place.style.normal),
+            hoverOptions: $.extend(true,plugin.place.options[scenario].hover(),place.style.hover)
+        }),
+        tag: 'Place-'+place.id,
+        options: $.extend(true,plugin.place.options[scenario].normal(),place.options),
+        callback: function(marker){
+            place.marker = marker
+        },
+        events: plugin.place.events[scenario]()
             
-        };
-    }
-    /*Place default styles*/
-    Plugin.prototype.place.options.list.normal= function(){
-        return {
-            clickable: true,
-            icon:{
-                size:{
-                    width:8,
-                    height:8
-                },
-                url: plugin.options.iconUrl,
-                origin:{
-                    x:3232,
-                    y:0
-                }
+    };
+}
+//@TODO solve many categories problem
+Plugin.prototype.place.getCategory = function(id,scenario)
+{
+    if(plugin.categories.Place[id].style[scenario])
+        return plugin.categories.Place[id].style[scenario];
+    return {};
+}
+/*Place default styles*/
+Plugin.prototype.place.options.list.normal= function(){
+    return {
+        clickable: true,
+        icon:{
+            size:{
+                width:8,
+                height:8
             },
-            title:null,
-            visible:true,
-            zIndex:1000
-        };
-    };  
-    Plugin.prototype.place.options.list.hover = function(){
-        return {
-            clickable: true,
-            icon:{
-                size:{
-                    width:22,
-                    height:32
-                },
-                url: plugin.options.iconUrl,
-                origin:{
-                    x:3242,
-                    y:0
-                }
-            },
-            title:null,
-            visible:true,
-            zIndex:1000
-        };
-    };  
-    Plugin.prototype.place.options.single.normal = function(){
-        return {
-            clickable: false,
-            icon:{
-                size:{
-                    width:22,
-                    height:32
-                },
-                url: plugin.options.iconUrl,
-                origin:{
-                    x:3242,
-                    y:0
-                }
-            },
-            title:null,
-            visible:true,
-            zIndex:1000
-        };
-    };
-    Plugin.prototype.place.options.single.hover = function(){
-        return {
-            clickable: false,
-            icon:{
-                size:{
-                    width:22,
-                    height:32
-                },
-                url: plugin.options.iconUrl,
-                origin:{
-                    x:3242,
-                    y:0
-                }
-            },
-            title:null,
-            visible:true,
-            zIndex:1000
-        };
-    };
-    Plugin.prototype.place.options.edit.normal = function(){
-        return {
-            clickable: false,
-            draggable: true,
-            icon:null,
-            title:null,
-            visible:true,
-            zIndex:1000
-        };
-    };
-    Plugin.prototype.place.options.edit.hover = function(){
-        return {
-            clickable: false,
-            draggable: true,
-            icon:null,
-            title:null,
-            visible:true,
-            zIndex:1000
-        };
-    };
-    /*Place default events*/
-    Plugin.prototype.place.events.list = function(){
-        return {
-            click: plugin.place.click,
-            rightclick: plugin.place.rightclick,
-            mouseover: plugin.place.mouseover,
-            mouseout: plugin.place.mouseout
-        };
-    };
-    Plugin.prototype.place.events.single = function(){
-        return {};
-    };
-    Plugin.prototype.place.events.edit = function(){
-        return {
-            dragend: plugin.place.drag
-        };
-    };
-    /*Place adding*/
-    Plugin.prototype.place.add = function(places,scenario)
-    {
-        async.forEach(places, function(place){
-            $(plugin.element).gmap3($.extend({
-                action: 'addMarker'
-            },plugin.place.create(place,scenario)));
-        }, function(err){
-            console.log(err);
-        });
-
-    }
-    /*Place misc functions*/
-    Plugin.prototype.place.bindEvents = function()
-    {
-        //bind list with proper object
-        /*if(plugin.options.debug)
-            console.log('Binding place events');*/
-        $(document).on({
-            click: function(){
-                //select right
-                google.maps.event.trigger(plugin.place.findAllByTag('Place-'+ $(this).find('input.id').val())[0],'click');
-            },
-            mouseenter: function(){
-                //alert('enter');
-                
-                $.each(plugin.place.findAllByTag('Place-'+ $(this).find('input.id').val()),function(index,element){
-                    google.maps.event.trigger(element,'mouseover');
-                });
-                
-            },
-            mouseleave: function(){
-                //alert('leave');
-                $.each(plugin.place.findAllByTag('Place-'+ $(this).find('input.id').val()),function(index,element){
-                    google.maps.event.trigger(element,'mouseout');
-                });
+            url: plugin.options.iconUrl,
+            origin:{
+                x:3232,
+                y:0
             }
-        },plugin.options.panelId+' ul.Place.list li');
-    }
-    Plugin.prototype.place.findAllByTag = function(tag)
-    {
-        //console.log($(plugin.element).gmap3({action:'get',tag:tag,name:'marker',all:true}));
-        //return $(plugin.element).gmap3({action:'get',name:'marker',tag:tag,all:true});
-        return $(plugin.element).gmap3({
-            action:'get',
-            name:'marker',
-            tag:tag,
-            all:true
-        });
-    }
-    /*Place actions*/
-    Plugin.prototype.place.view = function(id)
-    {
-        plugin.request.start();
-        $.ajax({
-            url: plugin.options.baseUrl+'/js/viewPlace',
-            data: {
-                id:id,
-                backUrl:$(plugin.panel).find('input#backUrl').val()
+        },
+        title:null,
+        visible:true,
+        zIndex:1000
+    };
+};  
+Plugin.prototype.place.options.list.hover = function(){
+    return {
+        clickable: true,
+        icon:{
+            size:{
+                width:22,
+                height:32
             },
-            dataType: 'JSON',
-            success: plugin.request.processSingle
-        });
-    }
-    Plugin.prototype.place.edit = function(id)
-    {
-        plugin.request.start();
-        $.ajax({
-            url: plugin.options.baseUrl+'/js/editPlace',
-            type: 'GET',
-            data: {
-                id:id,
-                backUrl:$(plugin.panel).find('input#backUrl').val()
+            url: plugin.options.iconUrl,
+            origin:{
+                x:3242,
+                y:0
+            }
+        },
+        title:null,
+        visible:true,
+        zIndex:1000
+    };
+};  
+Plugin.prototype.place.options.single.normal = function(){
+    return {
+        clickable: false,
+        icon:{
+            size:{
+                width:22,
+                height:32
             },
-            dataType: 'JSON',
-            success: plugin.request.processEdit
-        });
-    }
-    /*Place event functions*/
-    Plugin.prototype.place.click = function(marker,event,data)
-    {
-        plugin.place.view(data.id);
-    }
-    Plugin.prototype.place.rightclick = function(marker,event,data)
-    {
-        plugin.place.edit(data.id);
-    }
-    Plugin.prototype.place.mouseover = function(marker,event,data)
-    {
-        if(data.element)
-        {
-            $(data.element).addClass('hover');
-            if(event && $(data.element).is(':visible'))
-                $(plugin.panel).scrollTo(data.element,plugin.options.scroll);
-            $(plugin.element).gmap3({
-                action:'get'
-            }).panToBounds(new google.maps.LatLngBounds().extend(marker.position));
-            marker.setOptions(
-                data.hoverOptions
-                );
+            url: plugin.options.iconUrl,
+            origin:{
+                x:3242,
+                y:0
+            }
+        },
+        title:null,
+        visible:true,
+        zIndex:1000
+    };
+};
+Plugin.prototype.place.options.single.hover = function(){
+    return {
+        clickable: false,
+        icon:{
+            size:{
+                width:22,
+                height:32
+            },
+            url: plugin.options.iconUrl,
+            origin:{
+                x:3242,
+                y:0
+            }
+        },
+        title:null,
+        visible:true,
+        zIndex:1000
+    };
+};
+Plugin.prototype.place.options.edit.normal = function(){
+    return {
+        clickable: false,
+        draggable: true,
+        icon:null,
+        title:null,
+        visible:true,
+        zIndex:1000
+    };
+};
+Plugin.prototype.place.options.edit.hover = function(){
+    return {
+        clickable: false,
+        draggable: true,
+        icon:null,
+        title:null,
+        visible:true,
+        zIndex:1000
+    };
+};
+/*Place default events*/
+Plugin.prototype.place.events.list = function(){
+    return {
+        click: plugin.place.click,
+        rightclick: plugin.place.rightclick,
+        mouseover: plugin.place.mouseover,
+        mouseout: plugin.place.mouseout
+    };
+};
+Plugin.prototype.place.events.single = function(){
+    return {};
+};
+Plugin.prototype.place.events.edit = function(){
+    return {
+        dragend: plugin.place.drag
+    };
+};
+/*Place adding*/
+Plugin.prototype.place.add = function(places,scenario)
+{
+    async.forEach(places, function(place){
+        $(plugin.element).gmap3($.extend({
+            action: 'addMarker'
+        },plugin.place.create(place,scenario)));
+    }, function(err){
+        console.log(err);
+    });
+
+}
+/*Place misc functions*/
+Plugin.prototype.place.bindEvents = function()
+{
+    //bind list with proper object
+    /*if(plugin.options.debug)
+            console.log('Binding place events');*/
+    $(document).on({
+        click: function(){
+            //select right
+            google.maps.event.trigger(plugin.place.findAllByTag('Place-'+ $(this).find('input.id').val())[0],'click');
+        },
+        mouseenter: function(){
+            //alert('enter');
+                
+            $.each(plugin.place.findAllByTag('Place-'+ $(this).find('input.id').val()),function(index,element){
+                google.maps.event.trigger(element,'mouseover');
+            });
+                
+        },
+        mouseleave: function(){
+            //alert('leave');
+            $.each(plugin.place.findAllByTag('Place-'+ $(this).find('input.id').val()),function(index,element){
+                google.maps.event.trigger(element,'mouseout');
+            });
         }
-    }
-    Plugin.prototype.place.mouseout = function(marker,event,data)
+    },plugin.options.panelId+' ul.Place.list li');
+}
+Plugin.prototype.place.findAllByTag = function(tag)
+{
+    //console.log($(plugin.element).gmap3({action:'get',tag:tag,name:'marker',all:true}));
+    //return $(plugin.element).gmap3({action:'get',name:'marker',tag:tag,all:true});
+    return $(plugin.element).gmap3({
+        action:'get',
+        name:'marker',
+        tag:tag,
+        all:true
+    });
+}
+/*Place actions*/
+Plugin.prototype.place.view = function(id)
+{
+    plugin.request.start();
+    $.ajax({
+        url: plugin.options.baseUrl+'/js/viewPlace',
+        data: {
+            id:id,
+            backUrl:$(plugin.panel).find('input#backUrl').val()
+        },
+        dataType: 'JSON',
+        success: plugin.request.processSingle
+    });
+}
+Plugin.prototype.place.edit = function(id)
+{
+    plugin.request.start();
+    $.ajax({
+        url: plugin.options.baseUrl+'/js/editPlace',
+        type: 'GET',
+        data: {
+            id:id,
+            backUrl:$(plugin.panel).find('input#backUrl').val()
+        },
+        dataType: 'JSON',
+        success: plugin.request.processEdit
+    });
+}
+/*Place event functions*/
+Plugin.prototype.place.click = function(marker,event,data)
+{
+    plugin.place.view(data.id);
+}
+Plugin.prototype.place.rightclick = function(marker,event,data)
+{
+    plugin.place.edit(data.id);
+}
+Plugin.prototype.place.mouseover = function(marker,event,data)
+{
+    if(data.element)
     {
-        if(data.element)
-            $(data.element).removeClass('hover');
+        $(data.element).addClass('hover');
+        if(event && $(data.element).is(':visible'))
+            $(plugin.panel).scrollTo(data.element,plugin.options.scroll);
+        $(plugin.element).gmap3({
+            action:'get'
+        }).panToBounds(new google.maps.LatLngBounds().extend(marker.position));
         marker.setOptions(
-            data.normalOptions
+            data.hoverOptions
             );
     }
-    Plugin.prototype.place.drag = function(marker)
-    {
-        $(plugin.panel).find('.latitude').val(marker.position.Oa);
-        $(plugin.panel).find('.longitude').val(marker.position.Pa);
-    }
+}
+Plugin.prototype.place.mouseout = function(marker,event,data)
+{
+    if(data.element)
+        $(data.element).removeClass('hover');
+    marker.setOptions(
+        data.normalOptions
+        );
+}
+Plugin.prototype.place.drag = function(marker)
+{
+    $(plugin.panel).find('.latitude').val(marker.position.lat());
+    $(plugin.panel).find('.longitude').val(marker.position.lng());
+}
         
-    //
-    $.fn[pluginName] = function ( options ) {
-        return this.each(function () {
-            if (!$.data(this, 'plugin_' + pluginName)) {
-                $.data(this, 'plugin_' + pluginName, new Plugin( this, options ));
-            }
-        });
-    }
+//
+$.fn[pluginName] = function ( options ) {
+    return this.each(function () {
+        if (!$.data(this, 'plugin_' + pluginName)) {
+            $.data(this, 'plugin_' + pluginName, new Plugin( this, options ));
+        }
+    });
+}
 
 })( jQuery, window, document );

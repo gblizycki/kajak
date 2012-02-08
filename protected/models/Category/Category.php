@@ -39,7 +39,8 @@ abstract class Category extends CMongoDocument
     public function rules()
     {
         return array(
-            array('_id, name, description, title', 'safe'),
+            array('style','ext.JSONInput.JSONValidator'),
+            array('_id, name, description, title,style', 'safe'),
         );
     }
 
@@ -62,6 +63,10 @@ abstract class Category extends CMongoDocument
     public function behaviors()
     {
         return array(
+            'cachceclear'=>array(
+                'class'=>'ext.CCacheClearBehavior.CCacheClearBehavior',
+                'cacheId'=>'cache',
+            ),
             'MongoTypes' => array(
                 'class' => 'CMongoTypeBehavior',
                 'attributes' => array(
@@ -124,6 +129,14 @@ abstract class Category extends CMongoDocument
                     'sort' => $sort,
                     'pagination' => $pagination,
                 ));
+    }
+    
+    public function exportView()
+    {
+        return array(
+            'name'=>  $this->name,
+            'style'=>  $this->style
+        );
     }
 
 }

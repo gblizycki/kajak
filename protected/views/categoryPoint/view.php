@@ -20,8 +20,6 @@ $this->menu=array(
 		'name',
 		'description',
 		'title',
-		'filters',
 		'_id',
-		'style',
 	),
 )); ?>

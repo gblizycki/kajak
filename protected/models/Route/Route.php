@@ -33,6 +33,17 @@ class Route extends CMongoDocument {
     
     public $style;
 
+        /**
+     * Create date
+     * @var MongoDate
+     */
+    public $createDate;
+
+    /**
+     * Modyfication/update date
+     * @var MongoDate
+     */
+    public $updateDate;
     /**
      * Returns the static model of the specified AR class.
      * @return UserRights the static model class
@@ -53,7 +64,8 @@ class Route extends CMongoDocument {
      */
     public function rules() {
         return array(
-            array('_id, authorId, category, info, style,sections', 'safe'),
+            array('style','ext.JSONInput.JSONValidator'),
+            array('_id, authorId, category, info, style,sections,createDate,updateDate', 'safe'),
         );
     }
 
@@ -73,6 +85,10 @@ class Route extends CMongoDocument {
      */
     public function behaviors() {
         return array(
+            'cachceclear'=>array(
+                'class'=>'ext.CCacheClearBehavior.CCacheClearBehavior',
+                'cacheId'=>'cache',
+            ),
             'sections' => array(
                 'class' => 'ext.YiiMongoDbSuite.extra.EEmbeddedArraysBehavior',
                 'arrayPropertyName' => 'sections',
@@ -85,6 +101,13 @@ class Route extends CMongoDocument {
                     'category' => 'MongoId',
                     'style'=>'array'
                 ),
+            ),
+            'timestamp' => array(
+                'class' => 'zii.behaviors.CTimestampBehavior',
+                'createAttribute' => 'createDate',
+                'updateAttribute' => 'updateDate',
+                'setUpdateOnCreate' => true,
+                'timestampExpression' => 'new MongoDate()'
             ),
         );
     }
@@ -137,8 +160,9 @@ class Route extends CMongoDocument {
         return array(
             'id' => $this->id,
             'author' => (string) $this->authorId,
-            'category' => $this->category,
+            'category' => (string)$this->category,
             'sections' => $this->exportSections(),
+            'style'=>  $this->style,
         );
     }
 

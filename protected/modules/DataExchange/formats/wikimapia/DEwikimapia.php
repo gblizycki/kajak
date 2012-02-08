@@ -52,6 +52,7 @@ class DEwikimapia extends DEDataSourceWebService implements DEImporter {
                     continue;
                 }
                 $model = new Area();
+                $model->category = rand(0,1)?DataExchange::module()->getCategoryArea('Las')->id:DataExchange::module()->getCategoryArea('Pustynia')->id;
                 $model->info->name = (string) $xml->title;
                 if ($model->info->name == null)
                     $model->info->name = (string) $xml->name;

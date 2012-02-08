@@ -32,6 +32,18 @@ class Place extends CMongoDocument
     public $category;
     
     public $style;
+    
+        /**
+     * Create date
+     * @var MongoDate
+     */
+    public $createDate;
+
+    /**
+     * Modyfication/update date
+     * @var MongoDate
+     */
+    public $updateDate;
     /**
      * Returns the static model of the specified AR class.
      * @return UserRights the static model class
@@ -55,7 +67,7 @@ class Place extends CMongoDocument
     public function rules()
     {
         return array(
-            array('address, authorId, type, category,info, style,location', 'safe'),
+            array('address, authorId, type, category,info, style,location,createDate,updateDate', 'safe'),
         );
     }
 
@@ -79,6 +91,10 @@ class Place extends CMongoDocument
     public function behaviors()
     {
         return array(
+            'cachceclear'=>array(
+                'class'=>'ext.CCacheClearBehavior.CCacheClearBehavior',
+                'cacheId'=>'cache',
+            ),
             'MongoTypes' => array(
                 'class' => 'CMongoTypeBehavior',
                 'attributes' => array(
@@ -86,6 +102,13 @@ class Place extends CMongoDocument
                     'category' => 'array.MongoId',
                     'style'=>'array'
                 ),
+            ),
+            'timestamp' => array(
+                'class' => 'zii.behaviors.CTimestampBehavior',
+                'createAttribute' => 'createDate',
+                'updateAttribute' => 'updateDate',
+                'setUpdateOnCreate' => true,
+                'timestampExpression' => 'new MongoDate()'
             ),
         );
     }

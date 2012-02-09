@@ -11,6 +11,7 @@
 class gmap extends CWidget
 {
     public $baseUrl;
+    public $options = array();
     public $debug = true;
     public function init()
     {
@@ -35,7 +36,7 @@ class gmap extends CWidget
         //init js
         $cs->registerScript('DEMap','
             $(document).ready(function() {
-              $("#DEMap").DEMap();
+              $("#DEMap").DEMap('.CJSON::encode($this->options).');
             });
             ',CClientScript::POS_END);
     }

@@ -8,5 +8,7 @@
  */
 ?>
 <?php
-$this->widget('ext.gmap.gmap');
+$this->widget('ext.gmap.gmap',array('options'=>array(
+    'baseUrl'=>'http://http://192.168.122.128/kajak'
+)));
 ?>

@@ -8,7 +8,7 @@ class DataexchangeModule extends CWebModule
      */
     public $baseUrl = '/dataexchange';
 
-    public $formatsAlias = 'DataExchange.formats';
+    public $formatsAlias = 'dataexchange.formats';
 
     public $formats = array();
 

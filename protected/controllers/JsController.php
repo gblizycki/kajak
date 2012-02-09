@@ -1,6 +1,6 @@
 <?php
 
-class JSController extends Controller {
+class JsController extends Controller {
 
     public $layout = null;
 
@@ -438,7 +438,7 @@ class JSController extends Controller {
         return array_filter($input, 'checkNull');
     }
 
-}
+    }
 
 function checkNull($value) {
     if (is_array($value)) {

@@ -1,5 +1,5 @@
 drop table if exists authitem;
-drop table if exists authitemchild;
+drop table if exists authitemChild;
 drop table if exists authassignment;
 drop table if exists rights;
 

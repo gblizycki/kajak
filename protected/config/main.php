@@ -22,7 +22,7 @@ return array(
         'application.components.*',
         'application.modules.rights.*',
         'application.modules.rights.components.*',
-        'application.modules.DataExchange.components.*',
+        'application.modules.dataexchange.components.*',
         'ext.YiiMongoDbSuite.*',
         'ext.YiiMongoDbSuite.components.*',
         'ext.YiiMongoDbSuite.test.*',
@@ -53,7 +53,7 @@ return array(
             'newFileMode' => 0666,
             'newDirMode' => 0777,
         ),
-        'DataExchange' => array(
+        'dataexchange' => array(
             'formats' => array(
                 'GPX_kajak_org_pl',
                 'XML_kajak_org_pl',

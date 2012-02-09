@@ -1,1 +1,3 @@
 /nbproject/
+*.php5
+/assets/*

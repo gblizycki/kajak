@@ -1,6 +1,6 @@
 <?php
 
-class DataexchangeModule extends CWebModule
+class DataExchangeModule extends CWebModule
 {
 
     /**

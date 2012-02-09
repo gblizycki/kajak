@@ -40,3 +40,11 @@ create table rights
 	primary key (itemname),
 	foreign key (itemname) references authitem (name) on delete cascade on update cascade
 );
+
+INSERT INTO `authassignment` (`itemname`, `userid`, `bizrule`, `data`) VALUES
+('Admin', '4e5fc6aae20128417e660000', NULL, 'N;'),
+('Moderator', '4e5fc6aae20128417e660000', NULL, 'N;');
+
+INSERT INTO `authitem` (`name`, `type`, `description`, `bizrule`, `data`) VALUES
+('Admin', 2, 'Administrator systemu', NULL, 'N;'),
+('Moderator', 2, 'Moderator sytemowy', NULL, 'N;');

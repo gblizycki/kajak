@@ -1,5 +1,0 @@
-%ul
-    -foreach($model as $source)
-        .source
-            =CHtml::link($source->format,array('importer/select','id'=>$source->id))
-            =$source->version

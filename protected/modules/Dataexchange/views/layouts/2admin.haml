@@ -1,9 +1,0 @@
--$this->beginContent('/layouts/admin-base')
--$sidebar = $this->menu!=null && count($this->menu)>0;
-.container
-    .span-18#content
-        =$content
-    -if($sidebar)
-        .span-6.last#sidebar
-            -$this->widget('ext.sidemenu.sidemenu',array('items'=>$this->menu));
--$this->endContent()

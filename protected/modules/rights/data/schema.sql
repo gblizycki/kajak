@@ -3,7 +3,7 @@ CREATE USER 'kajak'@'localhost' IDENTIFIED BY '6rQAVXYnz7spUqr4';
 GRANT ALL PRIVILEGES ON *.* TO 'kajak'@'localhost' WITH GRANT OPTION;
 drop database if exists kajak_rights;
 create database kajak_rights;
-use database kajak_rights;
+use 'kajak_rights';
 drop table if exists authitem;
 drop table if exists authitemChild;
 drop table if exists authassignment;

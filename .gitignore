@@ -1,2 +1,4 @@
 /nbproject/
 /*.php5
+/protected/modules/dataexchange/runtime/*
+/protected/modules/DataExchange/runtime/

@@ -64,14 +64,14 @@
                                 array('label' => 'Create', 'url' => array('/user/create')),
                         )),
                         array('label' => 'Pedning objects', 'url' => '', 'items' => array(
-                                array('label' => 'Pending Route', 'url' => array('/DataExchange/routepending/admin'), 'items' => array(
-                                        array('label' => 'Admin', 'url' => array('/DataExchange/routepending/admin')),
+                                array('label' => 'Pending Route', 'url' => array('/dataexchange/routepending/admin'), 'items' => array(
+                                        array('label' => 'Admin', 'url' => array('/dataexchange/routepending/admin')),
                                 )),
-                                array('label' => 'Pending Place', 'url' => array('/DataExchange/placepending/admin'), 'items' => array(
-                                        array('label' => 'Admin', 'url' => array('/DataExchange/placepending/admin')),
+                                array('label' => 'Pending Place', 'url' => array('/dataexchange/placepending/admin'), 'items' => array(
+                                        array('label' => 'Admin', 'url' => array('/dataexchange/placepending/admin')),
                                 )),
-                                array('label' => 'Pending Area', 'url' => array('/DataExchange/areapending/admin'), 'items' => array(
-                                        array('label' => 'Admin', 'url' => array('/DataExchange/areapending/admin')),
+                                array('label' => 'Pending Area', 'url' => array('/dataexchange/areapending/admin'), 'items' => array(
+                                        array('label' => 'Admin', 'url' => array('/dataexchange/areapending/admin')),
                                 )),
                         )),
                         array('label' => 'Rights', 'url' => array('/rights'), 'items' => array(
@@ -101,7 +101,7 @@
                                     'itemOptions' => array('class' => 'item-operations'),
                                 ),
                         )),
-                        array('label' => 'Importer', 'url' => array('/DataExchange/importer/index')),
+                        array('label' => 'Importer', 'url' => array('/dataexchange/importer/index')),
                         array('label' => 'Login', 'url' => array('site/login'), 'visible' => Yii::app()->user->isGuest),
                         array('label' => 'Logout (' . Yii::app()->user->name . ')', 'url' => array('site/logout'), 'visible' => !Yii::app()->user->isGuest)
                     ),

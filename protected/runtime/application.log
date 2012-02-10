@@ -2980,3 +2980,109 @@ Stack trace:
 #3 /Users/gblizycki/Sites/kajak/framework/base/CApplication.php(158): CWebApplication->processRequest()
 #4 /Users/gblizycki/Sites/kajak/index.php(11): CApplication->run()
 #5 {main} REQUEST_URI=/kajak/js/editRoute/id/4f3274cba5ce57e308000000
+2012/02/10 11:33:08 [error] [exception.CException] exception 'CException' with message 'Właściwość "EWebUser.logoutUrl" nie jest zdefiniowana.' in /Users/gblizycki/Sites/kajak/framework/base/CComponent.php:131
+Stack trace:
+#0 /Users/gblizycki/Sites/kajak/framework/web/auth/CWebUser.php(124): CComponent->__get('logoutUrl')
+#1 /Users/gblizycki/Sites/kajak/protected/views/js/panel.php5(4): CWebUser->__get('logoutUrl')
+#2 /Users/gblizycki/Sites/kajak/framework/web/CBaseController.php(119): require('/Users/gblizyck...')
+#3 /Users/gblizycki/Sites/kajak/protected/extensions/phamlp/Haml.php(222): CBaseController->renderInternal('/Users/gblizyck...', Array, true)
+#4 /Users/gblizycki/Sites/kajak/framework/web/CBaseController.php(86): Haml->renderFile(Object(JsController), '/Users/gblizyck...', Array, true)
+#5 /Users/gblizycki/Sites/kajak/framework/web/CController.php(866): CBaseController->renderFile('/Users/gblizyck...', Array, true)
+#6 /Users/gblizycki/Sites/kajak/protected/controllers/JsController.php(110): CController->renderPartial('panel', Array, true, true)
+#7 /Users/gblizycki/Sites/kajak/framework/web/actions/CInlineAction.php(50): JsController->actionFilter()
+#8 /Users/gblizycki/Sites/kajak/framework/web/CController.php(300): CInlineAction->runWithParams(Array)
+#9 /Users/gblizycki/Sites/kajak/framework/web/CController.php(278): CController->runAction(Object(CInlineAction))
+#10 /Users/gblizycki/Sites/kajak/framework/web/CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#11 /Users/gblizycki/Sites/kajak/framework/web/CWebApplication.php(277): CController->run('filter')
+#12 /Users/gblizycki/Sites/kajak/framework/web/CWebApplication.php(136): CWebApplication->runController('js/filter')
+#13 /Users/gblizycki/Sites/kajak/framework/base/CApplication.php(158): CWebApplication->processRequest()
+#14 /Users/gblizycki/Sites/kajak/index.php(11): CApplication->run()
+#15 {main} REQUEST_URI=/kajak/js/filter?type%5B%5D=Route
+2012/02/10 11:33:14 [error] [exception.CException] exception 'CException' with message 'Właściwość "EWebUser.logoutUrl" nie jest zdefiniowana.' in /Users/gblizycki/Sites/kajak/framework/base/CComponent.php:131
+Stack trace:
+#0 /Users/gblizycki/Sites/kajak/framework/web/auth/CWebUser.php(124): CComponent->__get('logoutUrl')
+#1 /Users/gblizycki/Sites/kajak/protected/views/js/panel.php5(4): CWebUser->__get('logoutUrl')
+#2 /Users/gblizycki/Sites/kajak/framework/web/CBaseController.php(119): require('/Users/gblizyck...')
+#3 /Users/gblizycki/Sites/kajak/protected/extensions/phamlp/Haml.php(222): CBaseController->renderInternal('/Users/gblizyck...', Array, true)
+#4 /Users/gblizycki/Sites/kajak/framework/web/CBaseController.php(86): Haml->renderFile(Object(JsController), '/Users/gblizyck...', Array, true)
+#5 /Users/gblizycki/Sites/kajak/framework/web/CController.php(866): CBaseController->renderFile('/Users/gblizyck...', Array, true)
+#6 /Users/gblizycki/Sites/kajak/protected/controllers/JsController.php(110): CController->renderPartial('panel', Array, true, true)
+#7 /Users/gblizycki/Sites/kajak/framework/web/actions/CInlineAction.php(50): JsController->actionFilter()
+#8 /Users/gblizycki/Sites/kajak/framework/web/CController.php(300): CInlineAction->runWithParams(Array)
+#9 /Users/gblizycki/Sites/kajak/framework/web/CController.php(278): CController->runAction(Object(CInlineAction))
+#10 /Users/gblizycki/Sites/kajak/framework/web/CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#11 /Users/gblizycki/Sites/kajak/framework/web/CWebApplication.php(277): CController->run('filter')
+#12 /Users/gblizycki/Sites/kajak/framework/web/CWebApplication.php(136): CWebApplication->runController('js/filter')
+#13 /Users/gblizycki/Sites/kajak/framework/base/CApplication.php(158): CWebApplication->processRequest()
+#14 /Users/gblizycki/Sites/kajak/index.php(11): CApplication->run()
+#15 {main} REQUEST_URI=/kajak/js/filter?type%5B%5D=Route
+2012/02/10 11:41:43 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'System nie może odnaleźć żądanej akcji "moderate".' in /Users/gblizycki/Sites/kajak/framework/web/CController.php:477
+Stack trace:
+#0 /Users/gblizycki/Sites/kajak/framework/web/CController.php(262): CController->missingAction('moderate')
+#1 /Users/gblizycki/Sites/kajak/framework/web/CWebApplication.php(277): CController->run('moderate')
+#2 /Users/gblizycki/Sites/kajak/framework/web/CWebApplication.php(136): CWebApplication->runController('site/moderate')
+#3 /Users/gblizycki/Sites/kajak/framework/base/CApplication.php(158): CWebApplication->processRequest()
+#4 /Users/gblizycki/Sites/kajak/index.php(11): CApplication->run()
+#5 {main} REQUEST_URI=/kajak/site/moderate
+2012/02/10 11:44:58 [error] [exception.CException] exception 'CException' with message 'Place and its behaviors do not have a method or closure named "initEmbbededArray".' in /Users/gblizycki/Sites/kajak/framework/base/CComponent.php:269
+Stack trace:
+#0 /Users/gblizycki/Sites/kajak/protected/extensions/YiiMongoDbSuite/EMongoDocument.php(80): CComponent->__call('initEmbbededArr...', Array)
+#1 /Users/gblizycki/Sites/kajak/protected/controllers/JsController.php(289): EMongoDocument->__call('initEmbbededArr...', Array)
+#2 /Users/gblizycki/Sites/kajak/protected/controllers/JsController.php(289): Place->initEmbbededArray()
+#3 [internal function]: JsController->actionEdit('4f32691ba5ce57a...', 'Place')
+#4 /Users/gblizycki/Sites/kajak/framework/web/actions/CAction.php(104): ReflectionMethod->invokeArgs(Object(JsController), Array)
+#5 /Users/gblizycki/Sites/kajak/framework/web/actions/CInlineAction.php(48): CAction->runWithParamsInternal(Object(JsController), Object(ReflectionMethod), Array)
+#6 /Users/gblizycki/Sites/kajak/framework/web/CController.php(300): CInlineAction->runWithParams(Array)
+#7 /Users/gblizycki/Sites/kajak/framework/web/CController.php(278): CController->runAction(Object(CInlineAction))
+#8 /Users/gblizycki/Sites/kajak/framework/web/CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#9 /Users/gblizycki/Sites/kajak/framework/web/CWebApplication.php(277): CController->run('edit')
+#10 /Users/gblizycki/Sites/kajak/framework/web/CWebApplication.php(136): CWebApplication->runController('js/edit/id/4f32...')
+#11 /Users/gblizycki/Sites/kajak/framework/base/CApplication.php(158): CWebApplication->processRequest()
+#12 /Users/gblizycki/Sites/kajak/index.php(11): CApplication->run()
+#13 {main} REQUEST_URI=/kajak/js/edit/id/4f32691ba5ce57a40700018e/type/Place
+2012/02/10 11:47:48 [error] [exception.CException] exception 'CException' with message 'Place and its behaviors do not have a method or closure named "initEmbbededArray".' in /Users/gblizycki/Sites/kajak/framework/base/CComponent.php:269
+Stack trace:
+#0 /Users/gblizycki/Sites/kajak/protected/extensions/YiiMongoDbSuite/EMongoDocument.php(80): CComponent->__call('initEmbbededArr...', Array)
+#1 /Users/gblizycki/Sites/kajak/protected/controllers/JsController.php(290): EMongoDocument->__call('initEmbbededArr...', Array)
+#2 /Users/gblizycki/Sites/kajak/protected/controllers/JsController.php(290): Place->initEmbbededArray()
+#3 [internal function]: JsController->actionEdit('4f32691ba5ce57a...', 'Place')
+#4 /Users/gblizycki/Sites/kajak/framework/web/actions/CAction.php(104): ReflectionMethod->invokeArgs(Object(JsController), Array)
+#5 /Users/gblizycki/Sites/kajak/framework/web/actions/CInlineAction.php(48): CAction->runWithParamsInternal(Object(JsController), Object(ReflectionMethod), Array)
+#6 /Users/gblizycki/Sites/kajak/framework/web/CController.php(300): CInlineAction->runWithParams(Array)
+#7 /Users/gblizycki/Sites/kajak/framework/web/CController.php(278): CController->runAction(Object(CInlineAction))
+#8 /Users/gblizycki/Sites/kajak/framework/web/CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#9 /Users/gblizycki/Sites/kajak/framework/web/CWebApplication.php(277): CController->run('edit')
+#10 /Users/gblizycki/Sites/kajak/framework/web/CWebApplication.php(136): CWebApplication->runController('js/edit/id/4f32...')
+#11 /Users/gblizycki/Sites/kajak/framework/base/CApplication.php(158): CWebApplication->processRequest()
+#12 /Users/gblizycki/Sites/kajak/index.php(11): CApplication->run()
+#13 {main} REQUEST_URI=/kajak/js/edit/id/4f32691ba5ce57a40700018e/type/Place
+2012/02/10 11:56:40 [error] [exception.CException] exception 'CException' with message 'Właściwość "Route.behaviors" nie jest zdefiniowana.' in /Users/gblizycki/Sites/kajak/framework/base/CComponent.php:131
+Stack trace:
+#0 /Users/gblizycki/Sites/kajak/protected/extensions/YiiMongoDbSuite/EMongoEmbeddedDocument.php(169): CComponent->__get('behaviors')
+#1 /Users/gblizycki/Sites/kajak/protected/controllers/JsController.php(290): EMongoEmbeddedDocument->__get('behaviors')
+#2 [internal function]: JsController->actionEdit('4f3274a5a5ce57e...', 'Route')
+#3 /Users/gblizycki/Sites/kajak/framework/web/actions/CAction.php(104): ReflectionMethod->invokeArgs(Object(JsController), Array)
+#4 /Users/gblizycki/Sites/kajak/framework/web/actions/CInlineAction.php(48): CAction->runWithParamsInternal(Object(JsController), Object(ReflectionMethod), Array)
+#5 /Users/gblizycki/Sites/kajak/framework/web/CController.php(300): CInlineAction->runWithParams(Array)
+#6 /Users/gblizycki/Sites/kajak/framework/web/CController.php(278): CController->runAction(Object(CInlineAction))
+#7 /Users/gblizycki/Sites/kajak/framework/web/CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#8 /Users/gblizycki/Sites/kajak/framework/web/CWebApplication.php(277): CController->run('edit')
+#9 /Users/gblizycki/Sites/kajak/framework/web/CWebApplication.php(136): CWebApplication->runController('js/edit/id/4f32...')
+#10 /Users/gblizycki/Sites/kajak/framework/base/CApplication.php(158): CWebApplication->processRequest()
+#11 /Users/gblizycki/Sites/kajak/index.php(11): CApplication->run()
+#12 {main} REQUEST_URI=/kajak/js/edit/id/4f3274a5a5ce57e608000000/type/Route
+2012/02/10 11:57:43 [error] [exception.CException] exception 'CException' with message 'Właściwość "Route.behaviors" nie jest zdefiniowana.' in /Users/gblizycki/Sites/kajak/framework/base/CComponent.php:131
+Stack trace:
+#0 /Users/gblizycki/Sites/kajak/protected/extensions/YiiMongoDbSuite/EMongoEmbeddedDocument.php(169): CComponent->__get('behaviors')
+#1 /Users/gblizycki/Sites/kajak/protected/controllers/JsController.php(290): EMongoEmbeddedDocument->__get('behaviors')
+#2 [internal function]: JsController->actionEdit('4f3274a5a5ce57e...', 'Route')
+#3 /Users/gblizycki/Sites/kajak/framework/web/actions/CAction.php(104): ReflectionMethod->invokeArgs(Object(JsController), Array)
+#4 /Users/gblizycki/Sites/kajak/framework/web/actions/CInlineAction.php(48): CAction->runWithParamsInternal(Object(JsController), Object(ReflectionMethod), Array)
+#5 /Users/gblizycki/Sites/kajak/framework/web/CController.php(300): CInlineAction->runWithParams(Array)
+#6 /Users/gblizycki/Sites/kajak/framework/web/CController.php(278): CController->runAction(Object(CInlineAction))
+#7 /Users/gblizycki/Sites/kajak/framework/web/CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#8 /Users/gblizycki/Sites/kajak/framework/web/CWebApplication.php(277): CController->run('edit')
+#9 /Users/gblizycki/Sites/kajak/framework/web/CWebApplication.php(136): CWebApplication->runController('js/edit/id/4f32...')
+#10 /Users/gblizycki/Sites/kajak/framework/base/CApplication.php(158): CWebApplication->processRequest()
+#11 /Users/gblizycki/Sites/kajak/index.php(11): CApplication->run()
+#12 {main} REQUEST_URI=/kajak/js/edit/id/4f3274a5a5ce57e608000000/type/Route

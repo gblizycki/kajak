@@ -286,7 +286,11 @@ class JsController extends Controller {
         $model = $this->{'load' . $type}($id);
         if (isset($_POST[$type])) {
             $model->setAttributes($_POST[$type]);
-            $model->initEmbbededArray();
+            try{
+                $model->initEmbbededArray();
+            }  catch (Exception $e){
+                
+            }
             if ($model->validate() && $model->save()) {
 
                 Yii::app()->user->setFlash('edit', $type . ' update successful');

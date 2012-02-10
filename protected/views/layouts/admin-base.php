@@ -29,19 +29,19 @@
                 <?php
                 $this->widget('ext.mbmenu.MbMenu', array(
                     'items' => array(
-                        array('label' => 'Route', 'url' => array('/route/admin'), 'items' => array(
+                        array('label' => 'Route', 'url' => array('/route/admin'),'visible' => !Yii::app()->user->isGuest, 'items' => array(
                                 array('label' => 'Admin', 'url' => array('/route/admin')),
                                 array('label' => 'Create', 'url' => array('/route/create')),
                         )),
-                        array('label' => 'Place', 'url' => array('/place/admin'), 'items' => array(
+                        array('label' => 'Place', 'url' => array('/place/admin'),'visible' => !Yii::app()->user->isGuest, 'items' => array(
                                 array('label' => 'Admin', 'url' => array('/place/admin')),
                                 array('label' => 'Create', 'url' => array('/place/create')),
                         )),
-                        array('label' => 'Area', 'url' => array('/area/admin'), 'items' => array(
+                        array('label' => 'Area', 'url' => array('/area/admin'),'visible' => !Yii::app()->user->isGuest, 'items' => array(
                                 array('label' => 'Admin', 'url' => array('/area/admin')),
                                 array('label' => 'Create', 'url' => array('/area/create')),
                         )),
-                        array('label' => 'Category', 'items' => array(
+                        array('label' => 'Category','visible' => !Yii::app()->user->isGuest, 'items' => array(
                                 array('label' => 'Route', 'url' => array('/categoryroute/admin'), 'items' => array(
                                         array('label' => 'Admin', 'url' => array('/categoryroute/admin')),
                                         array('label' => 'Create', 'url' => array('/categoryroute/create')),
@@ -55,15 +55,15 @@
                                         array('label' => 'Create', 'url' => array('/categoryarea/create')),
                                 )),
                         )),
-                        array('label' => 'Data Source', 'url' => array('/datasource/admin'), 'items' => array(
+                        array('label' => 'Data Source', 'url' => array('/datasource/admin'),'visible' => !Yii::app()->user->isGuest, 'items' => array(
                                 array('label' => 'Admin', 'url' => array('/datasource/admin')),
                                 array('label' => 'Create', 'url' => array('/datasource/create')),
                         )),
-                        array('label' => 'User', 'url' => array('/user/admin'), 'items' => array(
+                        array('label' => 'User', 'url' => array('/user/admin'),'visible' => !Yii::app()->user->isGuest, 'items' => array(
                                 array('label' => 'Admin', 'url' => array('/user/admin')),
                                 array('label' => 'Create', 'url' => array('/user/create')),
                         )),
-                        array('label' => 'Pedning objects', 'url' => '', 'items' => array(
+                        array('label' => 'Pedning objects', 'url' => '','visible' => !Yii::app()->user->isGuest, 'items' => array(
                                 array('label' => 'Pending Route', 'url' => array('/dataexchange/routepending/admin'), 'items' => array(
                                         array('label' => 'Admin', 'url' => array('/dataexchange/routepending/admin')),
                                 )),
@@ -74,7 +74,7 @@
                                         array('label' => 'Admin', 'url' => array('/dataexchange/areapending/admin')),
                                 )),
                         )),
-                        array('label' => 'Rights', 'url' => array('/rights'), 'items' => array(
+                        array('label' => 'Rights', 'url' => array('/rights'),'visible' => !Yii::app()->user->isGuest, 'items' => array(
                                 array(
                                     'label' => Rights::t('core', 'Assignments'),
                                     'url' => array('/rights/assignment/view'),
@@ -101,7 +101,7 @@
                                     'itemOptions' => array('class' => 'item-operations'),
                                 ),
                         )),
-                        array('label' => 'Importer', 'url' => array('/dataexchange/importer/index')),
+                        array('label' => 'Importer', 'url' => array('/dataexchange/importer/index'),'visible' => !Yii::app()->user->isGuest),
                         array('label' => 'Login', 'url' => array('site/login'), 'visible' => Yii::app()->user->isGuest),
                         array('label' => 'Logout (' . Yii::app()->user->name . ')', 'url' => array('site/logout'), 'visible' => !Yii::app()->user->isGuest)
                     ),

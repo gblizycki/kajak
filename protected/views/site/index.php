@@ -9,6 +9,7 @@
 ?>
 <?php
 $this->widget('ext.gmap.gmap',array('options'=>array(
-    'baseUrl'=>Yii::app()->baseUrl//'http://192.168.122.128/kajak'
+    'baseUrl'=>Yii::app()->baseUrl,
+    'iconUrl'=>Yii::app()->baseUrl.'/css/icons.png'
 )));
 ?>

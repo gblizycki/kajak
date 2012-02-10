@@ -352,8 +352,9 @@
             if(plugin.options.debugCreate)console.timeEnd('creating places');
         }
     }
-    //Map object
+    //Obiekt mapy
     Plugin.prototype.map = {};
+    //Funckja dopasowująca mapę do aktualnie wybranych danych
     Plugin.prototype.map.autofit = function()
     {
         if(plugin.options.autofit)
@@ -365,6 +366,7 @@
                 $(plugin.element).gmap3('get').setZoom(plugin.options.minZoom);
         }
     }
+    //Funkcja zapobiegająca zbytniemu przybliżeniu podczas dopasowywania oraz zbliżająca do wybranych obiektów
     Plugin.prototype.map.zoomChanged = function()
     {
         return;
@@ -387,8 +389,9 @@
             });
         }
     }
-    //Filter object
+    //Obiekt filtrów (w panelu)
     Plugin.prototype.filter = {};
+    //Funkcja przypinająca zdarzenia do filtrów panelu
     Plugin.prototype.filter.bindEvents = function()
     {
         $(document).on({
@@ -406,6 +409,7 @@
             }
         },plugin.options.panelId+' .objects>.name');
     }
+    //Funkcja umożliwiwająca zasujwanie elementów np. listy miejsc
     Plugin.prototype.filter.slide = function(element,valueElement)
     {
         $(element).slideToggle(plugin.options.slideSpeed,function(){
@@ -424,8 +428,8 @@
         });
     }
 
-    
-    /*Route create*/
+    //Obiekt trasy i odcinka
+    //Funkcja tworząca odcinek trasy
     Plugin.prototype.route.section.create = function(section,scenario)
     {
         //set options & events based on place, category or defaults
@@ -456,6 +460,7 @@
             events: plugin.route.section.events[scenario]()
         };
     }
+    //Funkcja tworząca punkt na odcinku trasy
     Plugin.prototype.route.section.createPoint = function(point,scenario,index)
     {
         return $.extend(new google.maps.LatLng(point.latitude,point.longitude),{
@@ -463,14 +468,14 @@
             data:point
         });
     }
-    /*Get category*/
+    //Funkcja pobierająca kategorię trasy
     Plugin.prototype.route.getCategory = function(id,scenario)
     {
         if(plugin.categories.Route[id].style[scenario])
             return plugin.categories.Route[id].style[scenario];
         return {};
     }
-    //Route polygon editable events registering
+    //Funkcje podpinające zdarzenia podczas edycji trasy (polyline)
     Plugin.prototype.route.section.createEventListener = function(polyline)
     {
         google.maps.event.addListener(polyline.getPath(), 'set_at',plugin.route.section.set_at);
@@ -525,7 +530,7 @@
         $('#DEMap-panel form input[name="Route[sections]['+realNameSection+'][points]['+realName+'][location][1]"]').remove();
         $('#DEMap-panel form input[name="Route[sections]['+realNameSection+'][points]['+realName+'][order]"]').remove();
     }
-    /*Route default options*/
+    /*Domyślne style dla tras*/
     Plugin.prototype.route.section.options.list.normal= function(){
         return {
             strokeColor: "#000000",
@@ -571,7 +576,7 @@
             strokeColor: "#FF00F0"
         };
     };
-    /*Route default events*/
+    /*Wydarzenia podpinane do tras*/
     Plugin.prototype.route.section.events.list = function(){
         return {
             click: plugin.route.section.click,
@@ -588,7 +593,8 @@
             
         };
     };
-    /*Route actions*/
+    /*Akcje trasy*/
+    //Funkcja dodająca pojedyńczą trasę do mapy
     Plugin.prototype.route.add = function(routes,scenario)
     {
         async.forEach(routes, function(route){
@@ -597,6 +603,7 @@
             console.log(err,'error');
         });
     }
+    //Funkcja dodająca odcinek trasy do mapy
     Plugin.prototype.route.section.add = function(route,sections,scenario)
     {
         async.forEach(sections, function(section){
@@ -633,6 +640,7 @@
             console.log(err,'error');
         });
     }
+    //Akcja trasy pozwalająca na przejście do trybu edycji
     Plugin.prototype.route.edit = function(id)
     {
         plugin.request.start();
@@ -648,6 +656,7 @@
             success: plugin.request.process
         });
     }
+    //Akcja trasy pozwalająca na przejście do trybu widoku
     Plugin.prototype.route.view = function(id)
     {
         plugin.request.start();
@@ -662,7 +671,7 @@
             success: plugin.request.process
         });
     }
-    /*Route events*/
+    /*Zdarzenia trasy*/
     Plugin.prototype.route.section.click = function(polyline,event,data)
     {
         plugin.route.view(data.id);
@@ -688,7 +697,7 @@
             $(data.element).removeClass('hover');
         polyline.setOptions(data.normalOptions);
     }
-    /*Route misc functions*/
+    /*Pozostałe funkcje dla tras*/
     Plugin.prototype.route.findRealName = function(order,section)
     {
         var name = undefined;
@@ -751,8 +760,8 @@
     }
     
     
-    //Area object
-    /*Area create*/
+    //Obiekt obszaru
+    /*Funkcja tworząca obszar na mapie*/
     Plugin.prototype.area.create = function(area,scenario)
     {
         //set options & events based on place, category or defaults
@@ -787,6 +796,7 @@
             events: plugin.area.events[scenario]()
         };
     }
+    /*Funckja tworząca punkt obszaru*/
     Plugin.prototype.area.createPoint = function(point,scenario,index)
     {
         return $.extend(new google.maps.LatLng(point.latitude,point.longitude),{
@@ -794,13 +804,14 @@
             data:point
         });
     }
+    /*Funckja pobierająca kategorię obszaru*/
     Plugin.prototype.area.getCategory = function(id,scenario)
     {
         if(id!==undefined && plugin.categories.Area[id] && plugin.categories.Area[id].style[scenario])
             return plugin.categories.Area[id].style[scenario];
         return {};
     }
-    /*Area default styles*/
+    /*Domyślne style dla obszaru*/
     Plugin.prototype.area.options.list.normal= function(){
         return {
             strokeColor: "#ff00ff",
@@ -849,7 +860,7 @@
             strokeColor: "#FF00F0"
         };
     };
-    /*Area default events*/
+    /*Domyślne zdarzenia dla obszaru*/
     Plugin.prototype.area.events.list = function(){
         return {
             click: plugin.area.click,
@@ -866,7 +877,7 @@
             
         };
     };
-    //Area polygon editable events registering
+    /*Funkcje podpinające zdarzenia podczas edycji obszaru*/
     Plugin.prototype.area.createEventListener = function(polygon)
     {
         google.maps.event.addListener(polygon.getPaths().getAt(0), 'set_at',plugin.area.set_at);
@@ -915,7 +926,8 @@
         $('#DEMap-panel form input[name="Area[points]['+realName+'][location][1]"]').remove();
         $('#DEMap-panel form input[name="Area[points]['+realName+'][order]"]').remove();
     }
-    /*Area actions*/
+    /*Akcje obszaru*/
+    /*Funkcja dodająca obszar do mapy*/
     Plugin.prototype.area.add = function(areas,scenario)
     {
         async.forEach(areas, function(area){
@@ -927,6 +939,7 @@
         });
         
     }
+    /*Akcja umożlwiająca przejście do trybu edycji obszaru*/
     Plugin.prototype.area.edit = function(id)
     {
         plugin.request.start();
@@ -942,6 +955,7 @@
             success: plugin.request.process
         });
     }
+    /*Akcja umożlwiająca przejście do trybu widoku obszaru*/
     Plugin.prototype.area.view = function(id)
     {
         plugin.request.start();
@@ -956,7 +970,7 @@
             success: plugin.request.process
         });
     }
-    /*Area events*/
+    /*Zdarzanie obszaru*/
     Plugin.prototype.area.click = function(polygon,event,data)
     {
         plugin.area.view(data.id);
@@ -982,7 +996,7 @@
             $(data.element).removeClass('hover');
         polygon.setOptions(data.normalOptions);
     }
-    /*Area misc functions*/
+    /*Pozostałe funkcje dla obszarów*/
     Plugin.prototype.area.findRealName = function(order)
     {
         var name = undefined;
@@ -1032,7 +1046,7 @@
 
 
 
-    /*Create place*/
+    /*Obiekt miejsca*/
     Plugin.prototype.place.create = function(place,scenario)
     {
         //set options & events based on place, category or defaults
@@ -1059,14 +1073,15 @@
             
         };
     }
-    //@TODO solve many categories problem
+    /*Pobranie kategorii miejsca*/
+    //@TODO wiele kategori miejsca -> style ?
     Plugin.prototype.place.getCategory = function(id,scenario)
     {
         if(plugin.categories.Place[id].style[scenario])
             return plugin.categories.Place[id].style[scenario];
         return {};
     }
-    /*Place default styles*/
+    /*Domyślne style dla miejsc*/
     Plugin.prototype.place.options.list.normal= function(){
         return {
             clickable: true,
@@ -1163,7 +1178,7 @@
             zIndex:1000
         };
     };
-    /*Place default events*/
+    /*Domyślne zdarzenia miejsca*/
     Plugin.prototype.place.events.list = function(){
         return {
             click: plugin.place.click,
@@ -1180,7 +1195,8 @@
             dragend: plugin.place.drag
         };
     };
-    /*Place adding*/
+    /*Akcje miejsca*/
+    /*Akcja dodająca miejsce do mapy*/
     Plugin.prototype.place.add = function(places,scenario)
     {
         async.forEach(places, function(place){
@@ -1192,7 +1208,38 @@
         });
 
     }
-    /*Place misc functions*/
+    /*Akcja pozwalająca przejść w tryb widoku pojedyńczego miejsca*/
+    Plugin.prototype.place.view = function(id)
+    {
+        plugin.request.start();
+        $.ajax({
+            url: plugin.options.baseUrl+'/js/view',
+            data: {
+                id:id,
+                type: 'Place',
+                backUrl:$(plugin.panel).find('input#backUrl').val()
+            },
+            dataType: 'JSON',
+            success: plugin.request.process
+        });
+    }
+    /*Akcja pozwalająca przejść w tryb edycji pojedyńczego miejsca*/
+    Plugin.prototype.place.edit = function(id)
+    {
+        plugin.request.start();
+        $.ajax({
+            url: plugin.options.baseUrl+'/js/edit',
+            type: 'GET',
+            data: {
+                id:id,
+                type:'Place',
+                backUrl:$(plugin.panel).find('input#backUrl').val()
+            },
+            dataType: 'JSON',
+            success: plugin.request.process
+        });
+    }
+    /*Pozostałe funkcje miejsc*/
     Plugin.prototype.place.bindEvents = function()
     {
         //bind list with proper object
@@ -1230,37 +1277,7 @@
             all:true
         });
     }
-    /*Place actions*/
-    Plugin.prototype.place.view = function(id)
-    {
-        plugin.request.start();
-        $.ajax({
-            url: plugin.options.baseUrl+'/js/view',
-            data: {
-                id:id,
-                type: 'Place',
-                backUrl:$(plugin.panel).find('input#backUrl').val()
-            },
-            dataType: 'JSON',
-            success: plugin.request.process
-        });
-    }
-    Plugin.prototype.place.edit = function(id)
-    {
-        plugin.request.start();
-        $.ajax({
-            url: plugin.options.baseUrl+'/js/edit',
-            type: 'GET',
-            data: {
-                id:id,
-                type:'Place',
-                backUrl:$(plugin.panel).find('input#backUrl').val()
-            },
-            dataType: 'JSON',
-            success: plugin.request.process
-        });
-    }
-    /*Place event functions*/
+    /*Zdarzenia miejsc*/
     Plugin.prototype.place.click = function(marker,event,data)
     {
         plugin.place.view(data.id);

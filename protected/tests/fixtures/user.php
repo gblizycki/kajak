@@ -1,6 +1,5 @@
 <?php
 date_default_timezone_set('Europe/Warsaw');
-//test Fe6nf5vk
 return array(
     //Users
     'Janina' => array(

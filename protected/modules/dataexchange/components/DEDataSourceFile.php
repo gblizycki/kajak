@@ -27,8 +27,7 @@ abstract class DEDataSourceFile extends DEAbstractDataSource
      */
     public function init()
     {
-        $this->_file = Yii::getPathOfAlias($this->tmpDirectory) . DIRECTORY_SEPARATOR . md5($this->uri);
-        file_put_contents($this->_file, file_get_contents($this->uri));
+        $this->_file = $this->uri;
     }
 
 }

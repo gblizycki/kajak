@@ -3086,3 +3086,138 @@ Stack trace:
 #10 /Users/gblizycki/Sites/kajak/framework/base/CApplication.php(158): CWebApplication->processRequest()
 #11 /Users/gblizycki/Sites/kajak/index.php(11): CApplication->run()
 #12 {main} REQUEST_URI=/kajak/js/edit/id/4f3274a5a5ce57e608000000/type/Route
+2012/02/10 12:48:12 [warning] [application] Failed to set unsafe attribute "generatedPassword" of "User".
+2012/02/10 12:48:12 [warning] [application] Failed to set unsafe attribute "note" of "User".
+2012/02/10 12:48:12 [warning] [application] Failed to set unsafe attribute "type" of "User".
+2012/02/10 12:48:34 [warning] [application] Failed to set unsafe attribute "generatedPassword" of "User".
+2012/02/10 12:48:34 [warning] [application] Failed to set unsafe attribute "note" of "User".
+2012/02/10 12:48:34 [warning] [application] Failed to set unsafe attribute "type" of "User".
+2012/02/10 12:48:38 [warning] [application] Failed to set unsafe attribute "note" of "User".
+2012/02/10 12:48:38 [warning] [application] Failed to set unsafe attribute "type" of "User".
+2012/02/10 12:48:46 [warning] [application] Failed to set unsafe attribute "note" of "User".
+2012/02/10 12:48:46 [warning] [application] Failed to set unsafe attribute "type" of "User".
+2012/02/10 12:48:48 [warning] [application] Failed to set unsafe attribute "note" of "User".
+2012/02/10 12:48:48 [warning] [application] Failed to set unsafe attribute "type" of "User".
+2012/02/10 12:48:48 [warning] [application] Failed to set unsafe attribute "note" of "User".
+2012/02/10 12:48:48 [warning] [application] Failed to set unsafe attribute "type" of "User".
+2012/02/10 12:48:54 [warning] [application] Failed to set unsafe attribute "note" of "User".
+2012/02/10 12:48:54 [warning] [application] Failed to set unsafe attribute "type" of "User".
+2012/02/10 12:50:03 [warning] [application] Failed to set unsafe attribute "note" of "User".
+2012/02/10 12:50:03 [warning] [application] Failed to set unsafe attribute "type" of "User".
+2012/02/10 12:50:07 [warning] [application] Failed to set unsafe attribute "note" of "User".
+2012/02/10 12:50:07 [warning] [application] Failed to set unsafe attribute "type" of "User".
+2012/02/10 12:50:07 [error] [system.db.CDbCommand] Wywołanie CDbCommand::execute() nie powiodło się: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`kajak_rights`.`authassignment`, CONSTRAINT `authassignment_ibfk_1` FOREIGN KEY (`itemname`) REFERENCES `authitem` (`name`) ON DELETE CASCADE ON UPDATE CASCADE). Wykonywana instrukcja SQL to: INSERT INTO `authassignment` (`itemname`, `userid`, `bizrule`, `data`) VALUES (:itemname, :userid, :bizrule, :data).
+2012/02/10 12:50:07 [error] [exception.CDbException] exception 'CDbException' with message 'CDbCommand nie zdołał wykonać instrukcji SQL: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`kajak_rights`.`authassignment`, CONSTRAINT `authassignment_ibfk_1` FOREIGN KEY (`itemname`) REFERENCES `authitem` (`name`) ON DELETE CASCADE ON UPDATE CASCADE). The SQL statement executed was: INSERT INTO `authassignment` (`itemname`, `userid`, `bizrule`, `data`) VALUES (:itemname, :userid, :bizrule, :data)' in /Users/gblizycki/Sites/kajak/framework/db/CDbCommand.php:336
+Stack trace:
+#0 /Users/gblizycki/Sites/kajak/framework/db/CDbCommand.php(1166): CDbCommand->execute(Array)
+#1 /Users/gblizycki/Sites/kajak/framework/web/auth/CDbAuthManager.php(255): CDbCommand->insert('authassignment', Array)
+#2 /Users/gblizycki/Sites/kajak/protected/modules/rights/components/RDbAuthManager.php(51): CDbAuthManager->assign('UserUnregister', '4f35046fa5ce578...', NULL, NULL)
+#3 /Users/gblizycki/Sites/kajak/protected/modules/rights/components/Rights.php(32): RDbAuthManager->assign('UserUnregister', '4f35046fa5ce578...', NULL, NULL)
+#4 /Users/gblizycki/Sites/kajak/protected/models/User/User.php(235): Rights::assign('UserUnregister', '4f35046fa5ce578...')
+#5 /Users/gblizycki/Sites/kajak/protected/extensions/YiiMongoDbSuite/EMongoDocument.php(620): User->afterSave()
+#6 /Users/gblizycki/Sites/kajak/protected/extensions/YiiMongoDbSuite/EMongoDocument.php(565): EMongoDocument->insert(NULL)
+#7 /Users/gblizycki/Sites/kajak/protected/controllers/UserController.php(47): EMongoDocument->save()
+#8 /Users/gblizycki/Sites/kajak/framework/web/actions/CInlineAction.php(50): UserController->actionCreate()
+#9 /Users/gblizycki/Sites/kajak/framework/web/CController.php(300): CInlineAction->runWithParams(Array)
+#10 /Users/gblizycki/Sites/kajak/framework/web/filters/CFilterChain.php(134): CController->runAction(Object(CInlineAction))
+#11 /Users/gblizycki/Sites/kajak/framework/web/filters/CFilter.php(41): CFilterChain->run()
+#12 /Users/gblizycki/Sites/kajak/protected/modules/rights/components/RController.php(39): CFilter->filter(Object(CFilterChain))
+#13 /Users/gblizycki/Sites/kajak/framework/web/filters/CInlineFilter.php(59): RController->filterRights(Object(CFilterChain))
+#14 /Users/gblizycki/Sites/kajak/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#15 /Users/gblizycki/Sites/kajak/framework/web/CController.php(283): CFilterChain->run()
+#16 /Users/gblizycki/Sites/kajak/framework/web/CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#17 /Users/gblizycki/Sites/kajak/framework/web/CWebApplication.php(277): CController->run('create')
+#18 /Users/gblizycki/Sites/kajak/framework/web/CWebApplication.php(136): CWebApplication->runController('user/create')
+#19 /Users/gblizycki/Sites/kajak/framework/base/CApplication.php(158): CWebApplication->processRequest()
+#20 /Users/gblizycki/Sites/kajak/index.php(11): CApplication->run()
+#21 {main} REQUEST_URI=/kajak/user/create
+2012/02/10 12:54:36 [warning] [application] Failed to set unsafe attribute "note" of "User".
+2012/02/10 12:54:36 [warning] [application] Failed to set unsafe attribute "type" of "User".
+2012/02/10 12:54:36 [error] [system.db.CDbCommand] Wywołanie CDbCommand::execute() nie powiodło się: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`kajak_rights`.`authassignment`, CONSTRAINT `authassignment_ibfk_1` FOREIGN KEY (`itemname`) REFERENCES `authitem` (`name`) ON DELETE CASCADE ON UPDATE CASCADE). Wykonywana instrukcja SQL to: INSERT INTO `authassignment` (`itemname`, `userid`, `bizrule`, `data`) VALUES (:itemname, :userid, :bizrule, :data).
+2012/02/10 12:54:36 [error] [exception.CDbException] exception 'CDbException' with message 'CDbCommand nie zdołał wykonać instrukcji SQL: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`kajak_rights`.`authassignment`, CONSTRAINT `authassignment_ibfk_1` FOREIGN KEY (`itemname`) REFERENCES `authitem` (`name`) ON DELETE CASCADE ON UPDATE CASCADE). The SQL statement executed was: INSERT INTO `authassignment` (`itemname`, `userid`, `bizrule`, `data`) VALUES (:itemname, :userid, :bizrule, :data)' in /Users/gblizycki/Sites/kajak/framework/db/CDbCommand.php:336
+Stack trace:
+#0 /Users/gblizycki/Sites/kajak/framework/db/CDbCommand.php(1166): CDbCommand->execute(Array)
+#1 /Users/gblizycki/Sites/kajak/framework/web/auth/CDbAuthManager.php(255): CDbCommand->insert('authassignment', Array)
+#2 /Users/gblizycki/Sites/kajak/protected/modules/rights/components/RDbAuthManager.php(51): CDbAuthManager->assign('UserUnregister', '4f35057ca5ce578...', NULL, NULL)
+#3 /Users/gblizycki/Sites/kajak/protected/modules/rights/components/Rights.php(32): RDbAuthManager->assign('UserUnregister', '4f35057ca5ce578...', NULL, NULL)
+#4 /Users/gblizycki/Sites/kajak/protected/models/User/User.php(235): Rights::assign('UserUnregister', '4f35057ca5ce578...')
+#5 /Users/gblizycki/Sites/kajak/protected/extensions/YiiMongoDbSuite/EMongoDocument.php(620): User->afterSave()
+#6 /Users/gblizycki/Sites/kajak/protected/extensions/YiiMongoDbSuite/EMongoDocument.php(565): EMongoDocument->insert(NULL)
+#7 /Users/gblizycki/Sites/kajak/protected/controllers/UserController.php(47): EMongoDocument->save()
+#8 /Users/gblizycki/Sites/kajak/framework/web/actions/CInlineAction.php(50): UserController->actionCreate()
+#9 /Users/gblizycki/Sites/kajak/framework/web/CController.php(300): CInlineAction->runWithParams(Array)
+#10 /Users/gblizycki/Sites/kajak/framework/web/filters/CFilterChain.php(134): CController->runAction(Object(CInlineAction))
+#11 /Users/gblizycki/Sites/kajak/framework/web/filters/CFilter.php(41): CFilterChain->run()
+#12 /Users/gblizycki/Sites/kajak/protected/modules/rights/components/RController.php(39): CFilter->filter(Object(CFilterChain))
+#13 /Users/gblizycki/Sites/kajak/framework/web/filters/CInlineFilter.php(59): RController->filterRights(Object(CFilterChain))
+#14 /Users/gblizycki/Sites/kajak/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#15 /Users/gblizycki/Sites/kajak/framework/web/CController.php(283): CFilterChain->run()
+#16 /Users/gblizycki/Sites/kajak/framework/web/CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#17 /Users/gblizycki/Sites/kajak/framework/web/CWebApplication.php(277): CController->run('create')
+#18 /Users/gblizycki/Sites/kajak/framework/web/CWebApplication.php(136): CWebApplication->runController('user/create')
+#19 /Users/gblizycki/Sites/kajak/framework/base/CApplication.php(158): CWebApplication->processRequest()
+#20 /Users/gblizycki/Sites/kajak/index.php(11): CApplication->run()
+#21 {main} REQUEST_URI=/kajak/user/create
+2012/02/10 13:05:50 [error] [exception.CHttpException.403] exception 'CHttpException' with message 'You are not authorized to perform this action.' in /Users/gblizycki/Sites/kajak/protected/modules/rights/components/RController.php:65
+Stack trace:
+#0 /Users/gblizycki/Sites/kajak/protected/modules/rights/components/RightsFilter.php(62): RController->accessDenied()
+#1 /Users/gblizycki/Sites/kajak/framework/web/filters/CFilter.php(39): RightsFilter->preFilter(Object(CFilterChain))
+#2 /Users/gblizycki/Sites/kajak/protected/modules/rights/components/RController.php(39): CFilter->filter(Object(CFilterChain))
+#3 /Users/gblizycki/Sites/kajak/framework/web/filters/CInlineFilter.php(59): RController->filterRights(Object(CFilterChain))
+#4 /Users/gblizycki/Sites/kajak/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#5 /Users/gblizycki/Sites/kajak/framework/web/CController.php(283): CFilterChain->run()
+#6 /Users/gblizycki/Sites/kajak/framework/web/CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#7 /Users/gblizycki/Sites/kajak/framework/web/CWebApplication.php(277): CController->run('admin')
+#8 /Users/gblizycki/Sites/kajak/framework/web/CWebApplication.php(136): CWebApplication->runController('datasource/admi...')
+#9 /Users/gblizycki/Sites/kajak/framework/base/CApplication.php(158): CWebApplication->processRequest()
+#10 /Users/gblizycki/Sites/kajak/index.php(11): CApplication->run()
+#11 {main} REQUEST_URI=/kajak/datasource/admin
+2012/02/10 13:05:58 [error] [exception.CHttpException.403] exception 'CHttpException' with message 'You are not authorized to perform this action.' in /Users/gblizycki/Sites/kajak/protected/modules/rights/components/RController.php:65
+Stack trace:
+#0 /Users/gblizycki/Sites/kajak/protected/modules/rights/components/RightsFilter.php(62): RController->accessDenied()
+#1 /Users/gblizycki/Sites/kajak/framework/web/filters/CFilter.php(39): RightsFilter->preFilter(Object(CFilterChain))
+#2 /Users/gblizycki/Sites/kajak/protected/modules/rights/components/RController.php(39): CFilter->filter(Object(CFilterChain))
+#3 /Users/gblizycki/Sites/kajak/framework/web/filters/CInlineFilter.php(59): RController->filterRights(Object(CFilterChain))
+#4 /Users/gblizycki/Sites/kajak/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#5 /Users/gblizycki/Sites/kajak/framework/web/CController.php(283): CFilterChain->run()
+#6 /Users/gblizycki/Sites/kajak/framework/web/CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#7 /Users/gblizycki/Sites/kajak/framework/web/CWebApplication.php(277): CController->run('admin')
+#8 /Users/gblizycki/Sites/kajak/framework/web/CWebApplication.php(136): CWebApplication->runController('datasource/admi...')
+#9 /Users/gblizycki/Sites/kajak/framework/base/CApplication.php(158): CWebApplication->processRequest()
+#10 /Users/gblizycki/Sites/kajak/index.php(11): CApplication->run()
+#11 {main} REQUEST_URI=/kajak/datasource/admin
+2012/02/10 13:06:00 [error] [exception.CHttpException.403] exception 'CHttpException' with message 'You are not authorized to perform this action.' in /Users/gblizycki/Sites/kajak/protected/modules/rights/components/RController.php:65
+Stack trace:
+#0 /Users/gblizycki/Sites/kajak/protected/modules/rights/components/RightsFilter.php(62): RController->accessDenied()
+#1 /Users/gblizycki/Sites/kajak/framework/web/filters/CFilter.php(39): RightsFilter->preFilter(Object(CFilterChain))
+#2 /Users/gblizycki/Sites/kajak/protected/modules/rights/components/RController.php(39): CFilter->filter(Object(CFilterChain))
+#3 /Users/gblizycki/Sites/kajak/framework/web/filters/CInlineFilter.php(59): RController->filterRights(Object(CFilterChain))
+#4 /Users/gblizycki/Sites/kajak/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#5 /Users/gblizycki/Sites/kajak/framework/web/CController.php(283): CFilterChain->run()
+#6 /Users/gblizycki/Sites/kajak/framework/web/CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#7 /Users/gblizycki/Sites/kajak/framework/web/CWebApplication.php(277): CController->run('admin')
+#8 /Users/gblizycki/Sites/kajak/framework/web/CWebApplication.php(136): CWebApplication->runController('user/admin')
+#9 /Users/gblizycki/Sites/kajak/framework/base/CApplication.php(158): CWebApplication->processRequest()
+#10 /Users/gblizycki/Sites/kajak/index.php(11): CApplication->run()
+#11 {main} REQUEST_URI=/kajak/user/admin
+2012/02/10 13:13:30 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'System nie może odnaleźć żądanej akcji "index".' in /Users/gblizycki/Sites/kajak/framework/web/CController.php:477
+Stack trace:
+#0 /Users/gblizycki/Sites/kajak/framework/web/CController.php(262): CController->missingAction('index')
+#1 /Users/gblizycki/Sites/kajak/framework/web/CWebApplication.php(277): CController->run('index')
+#2 /Users/gblizycki/Sites/kajak/framework/web/CWebApplication.php(136): CWebApplication->runController('user/index')
+#3 /Users/gblizycki/Sites/kajak/framework/base/CApplication.php(158): CWebApplication->processRequest()
+#4 /Users/gblizycki/Sites/kajak/index.php(11): CApplication->run()
+#5 {main} REQUEST_URI=/kajak/user/index
+2012/02/10 14:03:34 [error] [exception.CHttpException.403] exception 'CHttpException' with message 'There must be at least one superuser!' in /Users/gblizycki/Sites/kajak/protected/extensions/YiiMongoDbSuite/EMongoAuthorizer.php:45
+Stack trace:
+#0 /Users/gblizycki/Sites/kajak/protected/modules/rights/controllers/AssignmentController.php(51): EMongoAuthorizer->getSuperusers()
+#1 /Users/gblizycki/Sites/kajak/framework/web/CController.php(1143): AssignmentController->accessRules()
+#2 /Users/gblizycki/Sites/kajak/framework/web/filters/CInlineFilter.php(59): CController->filterAccessControl(Object(CFilterChain))
+#3 /Users/gblizycki/Sites/kajak/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#4 /Users/gblizycki/Sites/kajak/framework/web/CController.php(283): CFilterChain->run()
+#5 /Users/gblizycki/Sites/kajak/framework/web/CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#6 /Users/gblizycki/Sites/kajak/framework/web/CWebApplication.php(277): CController->run('')
+#7 /Users/gblizycki/Sites/kajak/framework/web/CWebApplication.php(136): CWebApplication->runController('rights')
+#8 /Users/gblizycki/Sites/kajak/framework/base/CApplication.php(158): CWebApplication->processRequest()
+#9 /Users/gblizycki/Sites/kajak/index.php(11): CApplication->run()
+#10 {main} REQUEST_URI=/kajak/rights

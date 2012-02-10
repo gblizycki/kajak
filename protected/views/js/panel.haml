@@ -7,6 +7,8 @@
     =CHtml::link('Login',Yii::app()->user->loginUrl)
 -else
     =CHtml::link('Logout',Yii::app()->user->logoutUrl)
+-if(Yii::app()->user->hasAnyRole(array('Admin','Moderator')))
+    =CHtml::link('Admin',array('/site/admin'))
 //-if(Yii::app()->user->hasAnyRole(array('Admin','Moderator')))
     //=CHtml::link('Moderate',array('/site/moderate'))
 .row.buttons

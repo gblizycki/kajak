@@ -14,7 +14,7 @@ class UserController extends Controller
 	public function filters()
 	{
 		return array(
-			'rights', // perform access control for CRUD operations
+			'rights',
 		);
 	}
 
@@ -45,7 +45,10 @@ class UserController extends Controller
 		{
 			$model->attributes=$_POST['User'];
 			if($model->save())
-				$this->redirect(array('view','id'=>$model->_id));
+                        {
+                            $this->render('afterCreate',array('model'=>$model));return;
+                        }
+				//$this->redirect(array('view','id'=>$model->_id));
 		}
 
 		$this->render('create',array(
@@ -65,9 +68,15 @@ class UserController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['User']))
+		if(isset($_POST['Admin']))
 		{
-			$model->attributes=$_POST['User'];
+			$model->attributes=$_POST['Admin'];
+			if($model->save())
+				$this->redirect(array('view','id'=>$model->_id));
+		}
+		elseif(isset($_POST['Moderator']))
+		{
+			$model->attributes=$_POST['Moderator'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->_id));
 		}
@@ -86,9 +95,11 @@ class UserController extends Controller
 	{
 		if(Yii::app()->request->isPostRequest)
 		{
+                    $success = $this->loadModel($id)->delete();
+                    //$model = $this->loadModel($id);
 			// we only allow deletion via POST request
-			$this->loadModel($id)->delete();
-
+			//$c = $model->delete();
+                        //$b = $model->getIsNewRecord();
 			// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 			if(!isset($_GET['ajax']))
 				$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));

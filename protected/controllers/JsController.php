@@ -5,12 +5,16 @@ class JsController extends Controller {
     public $layout = null;
 
     /**
-     * Declares class-based actions.
+     * @return array action filters
      */
     public function filters() {
         return array(
-                //'rights',
+            'rights',
         );
+    }
+    public function allowedActions()
+    {
+        return 'filter,data,view';
     }
 
     public function actionFilter() {
@@ -286,9 +290,9 @@ class JsController extends Controller {
         $model = $this->{'load' . $type}($id);
         if (isset($_POST[$type])) {
             $model->setAttributes($_POST[$type]);
-            try{
+            try {
                 $model->initEmbbededArray();
-            }  catch (Exception $e){
+            } catch (Exception $e) {
                 
             }
             if ($model->validate() && $model->save()) {

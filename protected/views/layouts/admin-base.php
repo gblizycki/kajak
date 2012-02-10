@@ -55,11 +55,11 @@
                                         array('label' => 'Create', 'url' => array('/categoryarea/create')),
                                 )),
                         )),
-                        array('label' => 'Data Source', 'url' => array('/datasource/admin'),'visible' => !Yii::app()->user->isGuest, 'items' => array(
+                        array('label' => 'Data Source', 'url' => array('/datasource/admin'),'visible' => !Yii::app()->user->isGuest && Yii::app()->user->hasRole('Admin'), 'items' => array(
                                 array('label' => 'Admin', 'url' => array('/datasource/admin')),
                                 array('label' => 'Create', 'url' => array('/datasource/create')),
                         )),
-                        array('label' => 'User', 'url' => array('/user/admin'),'visible' => !Yii::app()->user->isGuest, 'items' => array(
+                        array('label' => 'User', 'url' => array('/user/admin'),'visible' => !Yii::app()->user->isGuest && Yii::app()->user->hasRole('Admin'), 'items' => array(
                                 array('label' => 'Admin', 'url' => array('/user/admin')),
                                 array('label' => 'Create', 'url' => array('/user/create')),
                         )),
@@ -74,7 +74,7 @@
                                         array('label' => 'Admin', 'url' => array('/dataexchange/areapending/admin')),
                                 )),
                         )),
-                        array('label' => 'Rights', 'url' => array('/rights'),'visible' => !Yii::app()->user->isGuest, 'items' => array(
+                        array('label' => 'Rights', 'url' => array('/rights'),'visible' => !Yii::app()->user->isGuest && Yii::app()->user->hasRole('Admin'), 'items' => array(
                                 array(
                                     'label' => Rights::t('core', 'Assignments'),
                                     'url' => array('/rights/assignment/view'),
@@ -101,7 +101,7 @@
                                     'itemOptions' => array('class' => 'item-operations'),
                                 ),
                         )),
-                        array('label' => 'Importer', 'url' => array('/dataexchange/importer/index'),'visible' => !Yii::app()->user->isGuest),
+                        array('label' => 'Importer', 'url' => array('/dataexchange/importer/index'),'visible' => !Yii::app()->user->isGuest && Yii::app()->user->hasRole('Admin')),
                         array('label' => 'Login', 'url' => array('site/login'), 'visible' => Yii::app()->user->isGuest),
                         array('label' => 'Logout (' . Yii::app()->user->name . ')', 'url' => array('site/logout'), 'visible' => !Yii::app()->user->isGuest)
                     ),

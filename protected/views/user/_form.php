@@ -6,25 +6,13 @@
 )); ?>
 
 	<p class="note">Fields with <span class="required">*</span> are required.</p>
-
+        <?php var_dump($model->errors);?>
 	<?php echo $form->errorSummary($model); ?>
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'email'); ?>
 		<?php echo $form->textField($model,'email'); ?>
 		<?php echo $form->error($model,'email'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'password'); ?>
-		<?php echo $form->textField($model,'password'); ?>
-		<?php echo $form->error($model,'password'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'salt'); ?>
-		<?php echo $form->textField($model,'salt'); ?>
-		<?php echo $form->error($model,'salt'); ?>
 	</div>
 
 	<div class="row">
@@ -47,7 +35,7 @@
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'type'); ?>
-		<?php echo $form->textField($model,'type'); ?>
+		<?php echo $form->dropDownList($model,'type',array(User::USER_ADMIN=>'Admin',User::USER_MODERATOR=>'Moderator')); ?>
 		<?php echo $form->error($model,'type'); ?>
 	</div>
 

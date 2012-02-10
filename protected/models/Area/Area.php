@@ -186,5 +186,9 @@ class Area extends CMongoDocument {
         }
         return $fields;
     }
+    public function save($runValidation = true, $attributes = null) {
+        Yii::app()->cache->flush();
+        parent::save($runValidation, $attributes);
+    }
 }
 

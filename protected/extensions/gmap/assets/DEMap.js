@@ -18,8 +18,8 @@
     var pluginName = 'DEMap',
     plugin,
     defaults = {
-        baseUrl: "http://localhost/kajak2",
-        iconUrl: "http://localhost/kajak2/css/icons.png",
+        baseUrl: "http://localhost/kajak",
+        iconUrl: "http://localhost/kajak/css/icons.png",
         data: {},
         routeLod: 11,
         debug: true,
@@ -128,6 +128,15 @@
         plugin.route.bindEvents();
         plugin.filter.bindEvents();
         plugin.user = new User($.parseJSON($.cookie('DEMap-username')));
+        $(document).ajaxStop(function() {
+                plugin.request.processData(plugin.scenario);
+                plugin.objects.Area = [];
+                plugin.objects.Place = [];
+                plugin.objects.Route = [];
+                plugin.map.zoomChanged();
+                plugin.map.autofit();
+                plugin.request.end();
+            });
     }
     //Funkcja pozwalająca wstępnie załadować dane z serwera
     Plugin.prototype.loadData = function (data)
@@ -187,7 +196,7 @@
             data: $(this).serialize(),
             type: 'POST',
             dataType: 'JSON',
-            success: plugin.request.processEdit
+            success: plugin.request.process
         });
         return false;
     }
@@ -206,6 +215,10 @@
     //Funkcja przetwarzająca zwrócony wynik z serwera
     Plugin.prototype.request.process = function(data)
     {
+        plugin.scenario = undefined;
+        if(data.scenario)
+            plugin.scenario = data.scenario;
+        console.log(plugin.scenario);
         plugin.renderPanel(data.panel);
         plugin.categories = {
             Route:[],
@@ -223,7 +236,7 @@
         plugin.objects.Route = [];
         plugin.objects.Place = [];
         plugin.objects.Area = [];
-        if(data.pages.length)
+        if(data.pages && data.pages.length)
         {
             var form = $(plugin.panel).children('form').serializeArray();
             var newForm = [];
@@ -284,19 +297,18 @@
                 
             });
             async.parallel(requests);
-            $(document).ajaxStop(function() {
-                plugin.request.processData();
-                plugin.objects.Area = [];
-                plugin.objects.Place = [];
-                plugin.objects.Route = [];
-                plugin.map.zoomChanged();
-                plugin.map.autofit();
-                plugin.request.end();
-            });
+        }
+        else if(data.objects)
+        {
+            if(data.objects.Route)
+                $.merge(plugin.objects.Route,data.objects.Route);
+            if(data.objects.Area)
+                $.merge(plugin.objects.Area,data.objects.Area);
+            if(data.objects.Place)
+                $.merge(plugin.objects.Place,data.objects.Place);
         }
         else
         {
-            //console.log('no pages?');
             plugin.objects.Area = [];
             plugin.objects.Place = [];
             plugin.objects.Route = [];
@@ -323,69 +335,22 @@
         {
             if(plugin.options.debugCreate)console.time('creating routes');
             //$.each(plugin.objects.Route,plugin.route.add);
-            plugin.route.add(plugin.objects.Route,'list');
+            plugin.route.add(plugin.objects.Route,scenario);
             if(plugin.options.debugCreate)console.timeEnd('creating routes');
         }
         if(plugin.objects.Area.length>0)
         {
             if(plugin.options.debugCreate)console.time('creating areas');
-            plugin.area.add(plugin.objects.Area,'list');
+            plugin.area.add(plugin.objects.Area,scenario);
             //$.each(plugin.objects.Area,plugin.area.add);
             if(plugin.options.debugCreate)console.timeEnd('creating areas');
         }
         if(plugin.objects.Place.length>0)
         {
             if(plugin.options.debugCreate)console.time('creating places');
-            plugin.place.add(plugin.objects.Place,'list');
+            plugin.place.add(plugin.objects.Place,scenario);
             if(plugin.options.debugCreate)console.timeEnd('creating places');
         }
-    }
-    Plugin.prototype.request.processSingle = function(data)
-    {
-        plugin.renderPanel(data.panel);
-        plugin.categories = {
-            Route:[],
-            Area:[],
-            Place:[]
-        };
-        plugin.request.processCategories(data.categories);
-        //clear all objects from map
-        $(plugin.element).gmap3({
-            action: 'clear'
-        });
-        if(data.objects.Route)
-            plugin.route.add(data.objects.Route,'single');
-        if(data.objects.Area)
-            plugin.area.add(data.objects.Area,'single');
-        if(data.objects.Place)
-            plugin.place.add(data.objects.Place,'single');
-            
-        //plugin.place.addAll(data.objects.Place);
-        plugin.map.zoomChanged();
-        plugin.request.end();
-    }
-    Plugin.prototype.request.processEdit = function(data)
-    {
-        plugin.renderPanel(data.panel);
-        plugin.categories = {
-            Route:[],
-            Area:[],
-            Place:[]
-        };
-        plugin.request.processCategories(data.categories);
-        //clear all objects from map
-        $(plugin.element).gmap3({
-            action: 'clear'
-        });
-        if(data.objects.Route)
-            plugin.route.add(data.objects.Route,'edit');
-        if(data.objects.Area)
-            plugin.area.add(data.objects.Area,'edit');
-        if(data.objects.Place)
-            plugin.place.add(data.objects.Place,'edit');
-        //plugin.place.addAll(data.objects.Place);
-        plugin.map.zoomChanged();
-        plugin.request.end();
     }
     //Map object
     Plugin.prototype.map = {};
@@ -672,27 +637,29 @@
     {
         plugin.request.start();
         $.ajax({
-            url: plugin.options.baseUrl+'/js/editRoute',
+            url: plugin.options.baseUrl+'/js/edit',
             type: 'GET',
             data: {
                 id:id,
+                type:'Route',
                 backUrl:$(plugin.panel).find('input#backUrl').val()
             },
             dataType: 'JSON',
-            success: plugin.request.processEdit
+            success: plugin.request.process
         });
     }
     Plugin.prototype.route.view = function(id)
     {
         plugin.request.start();
         $.ajax({
-            url: plugin.options.baseUrl+'/js/viewRoute',
+            url: plugin.options.baseUrl+'/js/view',
             data: {
                 id:id,
+                type:'Route',
                 backUrl:$(plugin.panel).find('input#backUrl').val()
             },
             dataType: 'JSON',
-            success: plugin.request.processSingle
+            success: plugin.request.process
         });
     }
     /*Route events*/
@@ -964,27 +931,29 @@
     {
         plugin.request.start();
         $.ajax({
-            url: plugin.options.baseUrl+'/js/editArea',
+            url: plugin.options.baseUrl+'/js/edit',
             type: 'GET',
             data: {
                 id:id,
+                type:'Area',
                 backUrl:$(plugin.panel).find('input#backUrl').val()
             },
             dataType: 'JSON',
-            success: plugin.request.processEdit
+            success: plugin.request.process
         });
     }
     Plugin.prototype.area.view = function(id)
     {
         plugin.request.start();
         $.ajax({
-            url: plugin.options.baseUrl+'/js/viewArea',
+            url: plugin.options.baseUrl+'/js/view',
             data: {
                 id:id,
+                type:'Area',
                 backUrl:$(plugin.panel).find('input#backUrl').val()
             },
             dataType: 'JSON',
-            success: plugin.request.processSingle
+            success: plugin.request.process
         });
     }
     /*Area events*/
@@ -1266,27 +1235,29 @@
     {
         plugin.request.start();
         $.ajax({
-            url: plugin.options.baseUrl+'/js/viewPlace',
+            url: plugin.options.baseUrl+'/js/view',
             data: {
                 id:id,
+                type: 'Place',
                 backUrl:$(plugin.panel).find('input#backUrl').val()
             },
             dataType: 'JSON',
-            success: plugin.request.processSingle
+            success: plugin.request.process
         });
     }
     Plugin.prototype.place.edit = function(id)
     {
         plugin.request.start();
         $.ajax({
-            url: plugin.options.baseUrl+'/js/editPlace',
+            url: plugin.options.baseUrl+'/js/edit',
             type: 'GET',
             data: {
                 id:id,
+                type:'Place',
                 backUrl:$(plugin.panel).find('input#backUrl').val()
             },
             dataType: 'JSON',
-            success: plugin.request.processEdit
+            success: plugin.request.process
         });
     }
     /*Place event functions*/

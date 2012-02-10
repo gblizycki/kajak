@@ -25,7 +25,7 @@ abstract class DEAbstractDataSource extends CWidget {
             throw new CHttpException('404','No model to render');
         $class = str_replace('Pending', '', get_class($data['model']));
         $panel = Yii::app()->user->hasFlash('edit')?Yii::app()->user->getFlash('edit'):'';
-        $panel .= CHtml::beginForm(array('js/edit'.$class,'id'=>$data['model']->id),'post',array('class'=>'object-edit'));
+        $panel .= CHtml::beginForm(array('js/edit','id'=>$data['model']->id,'type'=>  get_class($data['model'])),'post',array('class'=>'object-edit'));
         $panel .= $this->renderBackButton($data['backUrl'], $data['currentUrl']);
         $panel .= $this->renderHiddenFields($data['model']);
         $panel .= $this->{'render' . $class . 'Form'}($data,$return);

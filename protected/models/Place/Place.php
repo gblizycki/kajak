@@ -205,5 +205,9 @@ class Place extends CMongoDocument
             'location[location][1]'=>array('class'=>'latitude'),
         );
     }
+    public function save($runValidation = true, $attributes = null) {
+        Yii::app()->cache->flush();
+        parent::save($runValidation, $attributes);
+    }
 }
 

@@ -2,73 +2,17 @@
 // scripts and/or other plugins which may not be closed properly.
 ;
 (function ( $, window, document, undefined ) {
-    //define some helpers
-    Array.max = function( array ){
-        return Math.max.apply( Math, array );
+    //User
+    User = function(user){
+        $.extend(this, user);
     };
-    Array.min = function( array ){
-        return Math.min.apply( Math, array );
-    };
-    Array.subset = function(array,index)
-    {
-        var values = [];
-        for (var element in array)
-        {
-            values.push(array[element][index]);
-        }
-        return values;
+    User.prototype.canEdit = function(){
+        if(!this.roles)
+            return false;
+        if(this.roles.Admin || this.roles.Moderator)
+            return true;
+        return false;
     }
-    Array.bounds = function(array)
-    {
-        var bounds = new google.maps.LatLngBounds();
-        for (var element in array)
-        {
-            bounds.extend(new google.maps.LatLng(array[element][0],array[element][1]));
-        }
-        return bounds;
-        
-    }
-    function deepCopy(p,c) {
-        var c = c||{};
-        for (var i in p) {
-            if (typeof p[i] === 'object') {
-                c[i] = (p[i].constructor === Array)?[]:{};
-                deepCopy(p[i],c[i]);
-            } else c[i] = p[i];
-        }
-        return c;
-    }
-    
-    
-    function Place(place)
-    {
-        $.extend(this, place);
-    }
-    /*Place.prototype.__defineGetter__('id', function(){
-        return this._id.$id;
-    });*/
-    function Area(area)
-    {
-        $.extend(this, area);
-    }
-    /*Area.prototype.__defineGetter__('id', function(){
-        return this._id.$id;
-    });*/
-    function Route(route)
-    {
-        $.extend(this, route);
-    }
-    /*Route.prototype.__defineGetter__('id', function(){
-        return this._id.$id;
-    });*/
-    // undefined is used here as the undefined global variable in ECMAScript 3 is
-    // mutable (ie. it can be changed by someone else). undefined isn't really being
-    // passed in so we can ensure the value of it is truly undefined. In ES5, undefined
-    // can no longer be modified.
-
-    // window and document are passed through as local variables rather than globals
-    // as this (slightly) quickens the resolution process and can be more efficiently
-    // minified (especially when both are regularly referenced in your plugin).
 
     // Create the defaults once
     var pluginName = 'DEMap',
@@ -130,7 +74,7 @@
         },
         events:{}
     };
-    // The actual plugin constructor
+    // Konstruktor całej wtyczki,ustawia wartości opcji oraz tworzy odpowiednie obiekty i zmienne
     function Plugin( element, options ) {
         this.element = element;
         
@@ -146,7 +90,7 @@
         this.init();
         this.loadData(this.options.data);
     }
-    
+    //Funkcja inicjująca działanie wtyczki
     Plugin.prototype.init = function () {
         // Place initialization logic here
         // You already have access to the DOM element and the options via the instance, 
@@ -184,7 +128,8 @@
         plugin.route.bindEvents();
         plugin.filter.bindEvents();
         plugin.user = new User($.parseJSON($.cookie('DEMap-username')));
-    };
+    }
+    //Funkcja pozwalająca wstępnie załadować dane z serwera
     Plugin.prototype.loadData = function (data)
     {
         plugin.request.start();
@@ -202,23 +147,14 @@
             success: plugin.request.process
         });
     }
+    //Fnkcja renderująca panel zarządzania
     Plugin.prototype.renderPanel = function(data)
     {
         $(plugin.panel).html(data);
     }
-    //User
-    User = function(user){
-        $.extend(this, user);
-    };
-    User.prototype.canEdit = function(){
-        if(!this.roles)
-            return false;
-        if(this.roles.Admin || this.roles.Moderator)
-            return true;
-        return false;
-    }
-    //Request object
+    //Obiekt request odpowiedzialny za wysyłanie oraz odbieranie z przetwarzaniem wszytkich zapytań
     Plugin.prototype.request = {};
+    //Funkcja pozawalająca cofać ostatnią akcję aplikacji
     Plugin.prototype.request.back = function(){
         plugin.request.start();
         $.ajax({
@@ -229,6 +165,7 @@
         return false;
         
     }
+    //Funkcja wysyłające zapytanie do serwera
     Plugin.prototype.request.send = function()
     {
         plugin.request.start();
@@ -241,6 +178,7 @@
         
         
     }
+    //Funkcja wysyłająca zapytanie edycyjne do serwera
     Plugin.prototype.request.sendEditForm = function()
     {
         plugin.request.start();
@@ -253,15 +191,19 @@
         });
         return false;
     }
+    //Funkcja rozpoczynające wysyłanie zapytania
+    //Pozwala na wyświetlenie wskaźnika postępu zapytania
     Plugin.prototype.request.start = function()
     {
         $(plugin.container).addClass('loading');
     }
+    //Funcja kończąca zapytanie wysłane do serwera, ukrywa wskaźnik ładowania zapytania
     Plugin.prototype.request.end = function()
     {
         plugin.map.autofit();
         $(plugin.container).removeClass('loading');
     }
+    //Funkcja przetwarzająca zwrócony wynik z serwera
     Plugin.prototype.request.process = function(data)
     {
         plugin.renderPanel(data.panel);
@@ -365,10 +307,12 @@
             
         
     }
+    //Funkcja przetwarzająca kategorie zwrócone w wyniku zapytania
     Plugin.prototype.request.processCategories = function(categories)
     {
         $.extend(plugin.categories,categories);
     }
+    //Funckja przetwarzająca obiekty zwrócone w wyniku zapytania
     Plugin.prototype.request.processData = function(scenario)
     {
         //set appropriate scenario

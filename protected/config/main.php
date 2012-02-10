@@ -55,7 +55,6 @@ return array(
         ),
         'dataexchange' => array(
             'formats' => array(
-                'GPX_kajak_org_pl',
                 'XML_kajak_org_pl',
                 'wikimapia',
                 'kajakorgpl'

@@ -1,6 +1,6 @@
 <?php
 $this->breadcrumbs=array(
-	'Routes'=>array('index'),
+	'Routes'=>array('admin'),
 	$model->id=>array('view','id'=>$model->_id),
 	'Update',
 );

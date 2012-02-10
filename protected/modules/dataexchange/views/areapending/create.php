@@ -1,6 +1,6 @@
 <?php
 $this->breadcrumbs=array(
-	'Area Pendings'=>array('index'),
+	'Area Pendings'=>array('admin'),
 	'Create',
 );
 

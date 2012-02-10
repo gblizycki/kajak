@@ -1,6 +1,6 @@
 <?php
 $this->breadcrumbs=array(
-	'Category Places'=>array('index'),
+	'Category Places'=>array('admin'),
 	$model->name,
 );
 

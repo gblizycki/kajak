@@ -1,6 +1,6 @@
 <?php
 $this->breadcrumbs=array(
-	'Routes'=>array('index'),
+	'Routes'=>array('admin'),
 	'Create',
 );
 

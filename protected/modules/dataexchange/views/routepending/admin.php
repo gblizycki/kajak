@@ -1,6 +1,6 @@
 <?php
 $this->breadcrumbs=array(
-	'Route Pendings'=>array('index'),
+	'Route Pendings'=>array('admin'),
 	'Manage',
 );
 

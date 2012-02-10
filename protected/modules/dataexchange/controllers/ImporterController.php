@@ -58,7 +58,7 @@ class ImporterController extends Controller
             //var_dump($data['places'][0]->info);die();
             DataExchange::module()->save($model, $data);
                 Yii::app()->user->setFlash('top','Import successful');
-                $this->redirect(array('index'));
+                $this->redirect(array('admin'));
             /*}catch(Exception $e)
             {
                 Yii::app()->user->setFlash('top','Bad username or password');
@@ -79,7 +79,7 @@ class ImporterController extends Controller
             $data = $de->import();
             DataExchange::module()->save($model, $data);
                 Yii::app()->user->setFlash('top','Import successful');
-                $this->redirect(array('index'));
+                $this->redirect(array('admin'));
         }
         $this->render('selectFile',array('model'=>$model));
     }
@@ -94,7 +94,7 @@ class ImporterController extends Controller
             $data = $de->import();
             DataExchange::module()->save($model, $data);
                 Yii::app()->user->setFlash('top','Import successful');
-                $this->redirect(array('index'));
+                $this->redirect(array('admin'));
         }
         $this->render('selectprovider',array('model'=>$model));
     }

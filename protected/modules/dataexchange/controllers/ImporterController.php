@@ -2,28 +2,33 @@
 
 class ImporterController extends Controller
 {
-    public $layout = '//layouts/admin';
     /**
-     * @return array action filters
+     * Główny layout kontrolera
+     * @var mixed 
+     */
+    public $layout = '//layouts/admin';
+
+    /**
+     * @return Filtry kontrolera
      */
     public function filters()
     {
         return array(
-            'rights', // perform access control for CRUD operations
+            'rights',
         );
     }
+    /**
+     * Główna akacja wyświetlająca listę możliwych importerów 
+     */
     public function actionIndex()
     {
-
-        //$de = DataExchange::module()->getDataSource('XML_kajak_org_pl');
-        //$de->uri = Yii::getPathOfAlias('webroot.tmp').DIRECTORY_SEPARATOR.'testdata.xml';
-        //DataExchange::module()->save($dataSource, $data);
-        //echo 'yupi';die();
         $models = DataSource::model()->findAll();
         $this->render('sources', array('model' => $models));
-        //$this->renderPartial('test');
     }
-
+    /**
+     * Pośrednia akcja wyboru odpowiedniego importera
+     * @param string $id DataSource id
+     */
     public function actionSelect($id)
     {
         $ds = DataSource::model()->findByPk(new MongoId($id));
@@ -31,44 +36,38 @@ class ImporterController extends Controller
         if ($model instanceof DEDataSourceDb)
         {
             $this->redirect(array('selectdb', 'id' => $id));
-        }
-        elseif ($model instanceof DEDataSourceFile)
+        } elseif ($model instanceof DEDataSourceFile)
         {
             $this->redirect(array('selectfile', 'id' => $id));
-        }
-        elseif($model instanceof DEDataSourceWebService)
+        } elseif ($model instanceof DEDataSourceWebService)
         {
-            //DataExchange::module()->save($ds, $model->import());
             $this->redirect(array('selectprovider', 'id' => $id));
         }
     }
-
+    /**
+     * Akcja pozwlająca wybrać parametry bazy danych do importu
+     * @param string $id DataSource id
+     */
     public function actionSelectDb($id)
     {
         $model = DataSource::model()->findByPk(new MongoId($id));
-        if (isset($_POST['username'],$_POST['password']))
+        if (isset($_POST['username'], $_POST['password']))
         {
             $de = DataExchange::module()->getDataSource($model->format);
             $de->username = $_POST['username'];
             $de->password = $_POST['password'];
             $de->init();
-            //try{
-                //$de->connection->connectionStatus;
-                $data = $de->import();
-            //var_dump($data['places'][0]->info);die();
+            $data = $de->import();
             DataExchange::module()->save($model, $data);
-                Yii::app()->user->setFlash('top','Import successful');
-                $this->redirect(array('admin'));
-            /*}catch(Exception $e)
-            {
-                Yii::app()->user->setFlash('top','Bad username or password');
-            }*/
-            
+            Yii::app()->user->setFlash('top', 'Import successful');
+            $this->redirect(array('index'));
         }
-        $this->render('selectDb',array('model'=>$model));
-        
+        $this->render('selectDb', array('model' => $model));
     }
-
+    /**
+     * Akcja pozwlająca wybrać parametry pliku do importu
+     * @param string $id DataSource id
+     */
     public function actionSelectFile($id)
     {
         $model = DataSource::model()->findByPk(new MongoId($id));
@@ -78,12 +77,15 @@ class ImporterController extends Controller
             $de->uri = CUploadedFile::getInstanceByName('dataFile')->tempName;
             $data = $de->import();
             DataExchange::module()->save($model, $data);
-                Yii::app()->user->setFlash('top','Import successful');
-                $this->redirect(array('admin'));
+            Yii::app()->user->setFlash('top', 'Import successful');
+            $this->redirect(array('index'));
         }
-        $this->render('selectFile',array('model'=>$model));
+        $this->render('selectFile', array('model' => $model));
     }
-    
+    /**
+     * Akcja pozwlająca wybrać parametry serwisu do importu
+     * @param string $id DataSource id
+     */
     public function actionSelectProvider($id)
     {
         $model = DataSource::model()->findByPk(new MongoId($id));
@@ -93,10 +95,10 @@ class ImporterController extends Controller
             $de->provider = $_POST['provider'];
             $data = $de->import();
             DataExchange::module()->save($model, $data);
-                Yii::app()->user->setFlash('top','Import successful');
-                $this->redirect(array('admin'));
+            Yii::app()->user->setFlash('top', 'Import successful');
+            $this->redirect(array('index'));
         }
-        $this->render('selectprovider',array('model'=>$model));
+        $this->render('selectprovider', array('model' => $model));
     }
 
 }

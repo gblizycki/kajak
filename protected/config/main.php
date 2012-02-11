@@ -54,11 +54,11 @@ return array(
             'newDirMode' => 0777,
         ),
         'dataexchange' => array(
-            'formats' => array(
+            /*'formats' => array(
                 'XML_kajak_org_pl',
                 'wikimapia',
                 'kajakorgpl'
-            )
+            )*/
         ),
     ),
     // application components

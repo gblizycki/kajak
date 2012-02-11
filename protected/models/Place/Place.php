@@ -30,10 +30,13 @@ class Place extends CMongoDocument
      * @var array.MongoId Place category id (@see CategoryPlace)
      */
     public $category;
-    
+
+    /**
+     * @var array Styles realted to this object
+     */
     public $style;
-    
-        /**
+
+    /**
      * Create date
      * @var MongoDate
      */
@@ -44,11 +47,12 @@ class Place extends CMongoDocument
      * @var MongoDate
      */
     public $updateDate;
+
     /**
      * Returns the static model of the specified AR class.
      * @return UserRights the static model class
      */
-    public static function model($className=__CLASS__)
+    public static function model($className = __CLASS__)
     {
         return parent::model($className);
     }
@@ -91,16 +95,16 @@ class Place extends CMongoDocument
     public function behaviors()
     {
         return array(
-            'cachceclear'=>array(
-                'class'=>'ext.CCacheClearBehavior.CCacheClearBehavior',
-                'cacheId'=>'cache',
+            'cachceclear' => array(
+                'class' => 'ext.CCacheClearBehavior.CCacheClearBehavior',
+                'cacheId' => 'cache',
             ),
             'MongoTypes' => array(
                 'class' => 'CMongoTypeBehavior',
                 'attributes' => array(
                     'address' => 'string',
                     'category' => 'array.MongoId',
-                    'style'=>'array'
+                    'style' => 'array'
                 ),
             ),
             'timestamp' => array(
@@ -148,66 +152,74 @@ class Place extends CMongoDocument
      * @param array $pagination
      * @return CMongoDocumentDataProvider 
      */
-    public function search($pagination=array())
+    public function search($pagination = array())
     {
         $criteria = new CMongoCriteria();
         $criteria->compare('_id', $this->_id, 'MongoId', false);
         $criteria->compare('address', $this->address, 'string', true);
         $criteria->compare('authorId', $this->authorId, 'MongoId', false);
         $criteria->compare('type', $this->type, 'string', false);
-        $criteria->compare('category', $this->category , 'MongoId',false);
+        $criteria->compare('category', $this->category, 'MongoId', false);
         $criteria->setLimit(1000);
         //$criteria->compare('category', $this->category, 'MongoId', true);
-        $criteria->setSort(array('info.name'=>  CMongoCriteria::SORT_ASC));
+        $criteria->setSort(array('info.name' => CMongoCriteria::SORT_ASC));
         //$dependecy = new CDbCacheDependency('SELECT MAX(update_time) FROM {{post}}');
         return new CMongoDocumentDataProvider(get_class($this), array(
                     'criteria' => $criteria,
                     'pagination' => $pagination,
                 ));
     }
-    
-    public function exportAttributes()
-    {
-        
-    }
+
+    /**
+     * Export object in appropriate format
+     * @return array 
+     */
     public function exportView()
     {
-        
-        $exportdata = Yii::app()->cache->get('export'.$this->id); 
-        if($exportdata===false)
+
+        $exportdata = Yii::app()->cache->get('export' . $this->id);
+        if ($exportdata === false)
         {
             $exportdata = array(
-                'id'=>  $this->id,
-                'author'=> (string)$this->authorId,
-                'category'=>  $this->exportCategories(),
-                'location'=> $this->location->exportView(),
+                'id' => $this->id,
+                'author' => (string) $this->authorId,
+                'category' => $this->exportCategories(),
+                'location' => $this->location->exportView(),
             );
-            Yii::app()->cache->set('export'.$this->id, $exportdata, 30);
+            Yii::app()->cache->set('export' . $this->id, $exportdata, 30);
         }
         return $exportdata;
     }
-    
-    public function exportCategories()
-    {
-        $categories = array();
-        if(!is_array($this->category))return $categories;
-        foreach($this->category as $category)
-        {
-            $categories[(string)$category] = (string)$category;
-        }
-        return $categories;
-    }
-    
+
+    /**
+     * Return all hidden fields related to this object
+     * @return array 
+     */
     public function getHiddenFields()
     {
         return array(
-            'location[location][0]'=>array('class'=>'longitude'),
-            'location[location][1]'=>array('class'=>'latitude'),
+            'location[location][0]' => array('class' => 'longitude'),
+            'location[location][1]' => array('class' => 'latitude'),
         );
     }
-    public function save($runValidation = true, $attributes = null) {
+
+    public function save($runValidation = true, $attributes = null)
+    {
         Yii::app()->cache->flush();
         parent::save($runValidation, $attributes);
     }
+
+    protected function exportCategories()
+    {
+        $categories = array();
+        if (!is_array($this->category))
+            return $categories;
+        foreach ($this->category as $category)
+        {
+            $categories[(string) $category] = (string) $category;
+        }
+        return $categories;
+    }
+
 }
 

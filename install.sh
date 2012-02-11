@@ -1,4 +1,4 @@
-#!/bin/bash
+//Wszystkie polecenia jako root
 echo "deb http://downloads-distro.mongodb.org/repo/debian-sysvinit dist 10gen">>/etc/apt/source.list
 apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10
 apt-get update
@@ -7,6 +7,8 @@ pecl install mongo
 echo "extension=mongo.so">>/etc/php5/apache2/php.ini
 a2enmod rewrite
 cd /var/www
+//jeżeli potrzeba proxy np (10.64.254.254:8080)
+git config --global http.proxy http://10.64.254.254:8080/
 git clone https://Gary131@github.com/Gary131/kajak.git
 cd /var/www/kajak
 find . –type d –exec chmod 777 {} \;

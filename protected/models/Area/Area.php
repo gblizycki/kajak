@@ -2,13 +2,11 @@
 
 /**
  * Description of Area
- *
  * @name Area
  * @author Grzegorz Bliżycki <grzegorzblizycki@gmail.com>
- * @todo 
- * Created: 2011-12-21
  */
-class Area extends CMongoDocument {
+class Area extends CMongoDocument
+{
 
     /**
      * Points defining the area border
@@ -32,7 +30,7 @@ class Area extends CMongoDocument {
      * @var MongoId Area category id (@see CategoryArea)
      */
     public $category;
-    
+
     /**
      *
      * @var array
@@ -43,21 +41,24 @@ class Area extends CMongoDocument {
      * Returns the static model of the specified AR class.
      * @return UserRights the static model class
      */
-    public static function model($className = __CLASS__) {
+    public static function model($className = __CLASS__)
+    {
         return parent::model($className);
     }
 
     /**
      * @return string the associated collection name
      */
-    public function getCollectionName() {
+    public function getCollectionName()
+    {
         return 'area';
     }
 
     /**
      * @return array validation rules for model attributes.
      */
-    public function rules() {
+    public function rules()
+    {
         return array(
             array('points, createDate, updateDate, info, style,category', 'safe')
         );
@@ -66,7 +67,8 @@ class Area extends CMongoDocument {
     /**
      * @return array customized attribute labels (name=>label)
      */
-    public function attributeLabels() {
+    public function attributeLabels()
+    {
         return array(
             'points' => 'Punkty',
             'createDate' => 'Data stworzenia',
@@ -78,11 +80,12 @@ class Area extends CMongoDocument {
      * returns array of behaviors
      * @return array
      */
-    public function behaviors() {
+    public function behaviors()
+    {
         return array(
-            'cachceclear'=>array(
-                'class'=>'ext.CCacheClearBehavior.CCacheClearBehavior',
-                'cacheId'=>'cache',
+            'cachceclear' => array(
+                'class' => 'ext.CCacheClearBehavior.CCacheClearBehavior',
+                'cacheId' => 'cache',
             ),
             'points' => array(
                 'class' => 'ext.YiiMongoDbSuite.extra.EEmbeddedArraysBehavior',
@@ -111,7 +114,8 @@ class Area extends CMongoDocument {
      * returns array of indexes
      * @return array
      */
-    public function indexes() {
+    public function indexes()
+    {
         return array(
             'points' => array(
                 // key array holds list of fields for index
@@ -128,7 +132,8 @@ class Area extends CMongoDocument {
      * returns embedded documents
      * @return array
      */
-    public function embeddedDocuments() {
+    public function embeddedDocuments()
+    {
         return array(
             'info' => 'Info',
         );
@@ -139,56 +144,70 @@ class Area extends CMongoDocument {
      * @param array $pagination
      * @return CMongoDocumentDataProvider 
      */
-    public function search($pagination = array()) {
+    public function search($pagination = array())
+    {
         $criteria = new CMongoCriteria();
         $criteria->compare('_id', $this->_id, 'MongoId', false);
         $criteria->compare('category', $this->category, 'MongoId', false);
         $criteria->compare('createDate', $this->createDate, 'MongoDate');
         $criteria->compare('updateDate', $this->updateDate, 'MongoDate');
-        $criteria->setSort(array('info.name'=>  CMongoCriteria::SORT_ASC));
+        $criteria->setSort(array('info.name' => CMongoCriteria::SORT_ASC));
         return new CMongoDocumentDataProvider(get_class($this), array(
                     'criteria' => $criteria,
                     'pagination' => $pagination,
                 ));
     }
-    
+
+    /**
+     * Export object in appropriate format
+     * @return array
+     */
     public function exportView()
     {
-        $value = Yii::app()->cache->get(get_class($this).$this->id);
-        if($value===false)
+        $value = Yii::app()->cache->get(get_class($this) . $this->id);
+        if ($value === false)
         {
             $value = array(
-                'id'=>  $this->id,
-                'points'=> $this->exportPoints(),
-                'category'=>  (string)$this->category
+                'id' => $this->id,
+                'points' => $this->exportPoints(),
+                'category' => (string) $this->category
             );
-            Yii::app()->cache->set(get_class($this).$this->id,$value,5000);
+            Yii::app()->cache->set(get_class($this) . $this->id, $value, 5000);
         }
         return $value;
     }
+
+    /**
+     * Return all hidden fields related to this object
+     * @return array 
+     */
+    public function getHiddenFields()
+    {
+        $fields = array();
+        foreach ($this->points as $index => $point)
+        {
+            $fields['points[' . $index . '][location][0]'] = array();
+            $fields['points[' . $index . '][location][1]'] = array();
+            $fields['points[' . $index . '][order]'] = array('class' => 'order');
+        }
+        return $fields;
+    }
+
+    public function save($runValidation = true, $attributes = null)
+    {
+        Yii::app()->cache->flush();
+        parent::save($runValidation, $attributes);
+    }
+
     protected function exportPoints()
     {
         $points = array();
-        foreach($this->points as $point)
+        foreach ($this->points as $point)
         {
             $points[$point->order] = $point->exportView();
         }
         return $points;
     }
-    public function getHiddenFields()
-    {
-        $fields = array();
-        foreach($this->points as $index=>$point)
-        {
-            $fields['points['.$index.'][location][0]']= array();
-            $fields['points['.$index.'][location][1]'] = array();
-            $fields['points['.$index.'][order]']= array('class'=>'order');
-        }
-        return $fields;
-    }
-    public function save($runValidation = true, $attributes = null) {
-        Yii::app()->cache->flush();
-        parent::save($runValidation, $attributes);
-    }
+
 }
 

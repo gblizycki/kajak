@@ -5,7 +5,7 @@
  *
  * @name ObjectPending
  * @author Grzegorz Bliżycki <grzegorzblizycki@gmail.com>
- * @todo 
+ * @package models 
  * Created: 2011-12-29
  */
 abstract class ObjectPending extends CMongoDocument

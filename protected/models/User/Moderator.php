@@ -45,7 +45,7 @@ class Moderator extends User
   */
  public function getDefaultUrl()
  {
-  return CHtml::normalizeUrl(array('admin'));
+  return CHtml::normalizeUrl(array('site/admin'));
  }
  
 

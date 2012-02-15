@@ -5,7 +5,7 @@
  *
  * @name DEAbstractDataSource
  * @author Grzegorz Bliżycki <grzegorzblizycki@gmail.com>
- * @todo 
+ * @package dataexchange
  * Created: 2012-01-02
  */
 abstract class DEAbstractDataSource extends CWidget {

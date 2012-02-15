@@ -5,7 +5,7 @@
  *
  * @name DEXML_kajak_org_pl
  * @author Grzegorz Bliżycki <grzegorzblizycki@gmail.com>
- * @todo 
+ * @package dataexchange
  * Created: 2011-12-29
  */
 class DEkajakorgpl extends DEDataSourceDb implements DEImporter

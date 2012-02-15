@@ -5,7 +5,7 @@
  *
  * @name Filter
  * @author Grzegorz Bliżycki <grzegorzblizycki@gmail.com>
- * @todo 
+ * @package models 
  * Created: 2011-12-22
  */
 class Filter extends CMongoEmbeddedDocument
@@ -100,7 +100,7 @@ class Filter extends CMongoEmbeddedDocument
     public function setFilter(CMongoCriteria $criteria,$object)
     {
         $value = CHtml::resolveValue($object, $this->attribute);
-        $attribute = $this->transformAttribute();
+        //$attribute = $this->transformAttribute();
         $criteria->compare($this->transformAttribute(), CHtml::resolveValue($object, $this->attribute),  $this->type,$this->partialMatch);
     }
     protected function transformAttribute()

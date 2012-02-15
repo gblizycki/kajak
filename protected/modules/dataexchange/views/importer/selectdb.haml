@@ -1,5 +1,7 @@
 =CHtml::beginForm('', 'post')
+    =CHtml::label('Nazwa użytkownika','username')
     =CHtml::textField('username','')
+    =CHtml::label('Hasło','password')
     =CHtml::passwordField('password','')
     =CHtml::submitButton()
 =CHtml::endForm()

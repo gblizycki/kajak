@@ -5,7 +5,7 @@
  *
  * @name Route
  * @author Grzegorz Bliżycki <grzegorzblizycki@gmail.com>
- * @todo 
+ * @package models
  * Created: 2011-12-21
  */
 class RoutePending extends ObjectPending

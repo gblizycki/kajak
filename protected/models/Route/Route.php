@@ -5,7 +5,7 @@
  *
  * @name Route
  * @author Grzegorz Bliżycki <grzegorzblizycki@gmail.com>
- * @todo 
+ * @package models 
  * Created: 2011-12-21
  */
 class Route extends CMongoDocument {
@@ -25,11 +25,6 @@ class Route extends CMongoDocument {
      * @var array
      */
     public $sections;
-
-    /**
-     * @var string format of datasource
-     */
-    public $format;
     
     public $style;
 

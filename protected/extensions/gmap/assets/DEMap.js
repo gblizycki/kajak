@@ -20,6 +20,8 @@
     defaults = {
         baseUrl: "http://localhost/kajak",
         iconUrl: "http://localhost/kajak/css/icons.png",
+        useNode: false,
+        nodeUrl: "http://localhost:3000",
         data: {},
         routeLod: 11,
         debug: true,
@@ -30,9 +32,16 @@
         slideSpeed:'fase',
         pageSize: {
             pagesize:{
-                'Route':30,
+                'Route':10,
                 'Area':20,
                 'Place':300
+            }
+        },
+        pageSizeNode: {
+            pagesize:{
+                'Route':30,
+                'Area':40,
+                'Place':500
             }
         },
         minZoom: 12,
@@ -129,14 +138,14 @@
         plugin.filter.bindEvents();
         plugin.user = new User($.parseJSON($.cookie('DEMap-username')));
         $(document).ajaxStop(function() {
-                plugin.request.processData(plugin.scenario);
-                plugin.objects.Area = [];
-                plugin.objects.Place = [];
-                plugin.objects.Route = [];
-                plugin.map.zoomChanged();
-                plugin.map.autofit();
-                plugin.request.end();
-            });
+            plugin.request.processData(plugin.scenario);
+            plugin.objects.Area = [];
+            plugin.objects.Place = [];
+            plugin.objects.Route = [];
+            plugin.map.zoomChanged();
+            plugin.map.autofit();
+            plugin.request.end();
+        });
     }
     //Funkcja pozwalająca wstępnie załadować dane z serwera
     Plugin.prototype.loadData = function (data)
@@ -178,9 +187,11 @@
     Plugin.prototype.request.send = function()
     {
         plugin.request.start();
+        var pages = plugin.options.useNode?$.param(plugin.options.pageSizeNode):$.param(plugin.options.pageSize);
+        console.log(pages);
         $.ajax({
             url: $(plugin.panel).children('form').attr('action'),//$(plugin.panel).children('form').attr('action'),
-            data: $(plugin.panel).children('form').serialize()+'&'+$.param(plugin.options.pageSize),
+            data: $(plugin.panel).children('form').serialize()+'&'+pages,
             dataType: 'JSON',
             success: plugin.request.process
         });
@@ -218,7 +229,6 @@
         plugin.scenario = undefined;
         if(data.scenario)
             plugin.scenario = data.scenario;
-        console.log(plugin.scenario);
         plugin.renderPanel(data.panel);
         plugin.categories = {
             Route:[],
@@ -260,30 +270,56 @@
                 var request = $.jStorage.get(plugin.options.baseUrl+'/js/data&'+dataUrl);
                 if(!request)
                 {
-                    requests.push(function(){
-                        $.ajax({
-                            url: plugin.options.baseUrl+'/js/data',
-                            data:dataUrl,
-                            type: 'GET',
-                            dataType: 'JSON',
-                            cache: true,
-                            success:function(data){
-                                //$.jStorage.set(plugin.options.baseUrl+'/js/data&'+dataUrl, data);
-                                //$.jStorage.setTTL(plugin.options.baseUrl+'/js/data&'+dataUrl, 30000);
-                                if(data.objects.Route)
-                                    $.merge(plugin.objects.Route,data.objects.Route);
-                                if(data.objects.Area)
-                                    $.merge(plugin.objects.Area,data.objects.Area);
-                                if(data.objects.Place)
-                                    $.merge(plugin.objects.Place,data.objects.Place);
-                            }
-                        });
+                    if(plugin.options.useNode)
+                    {
+                        requests.push(function(){
+                            $.ajax({
+                                url: plugin.options.nodeUrl,
+                                data:dataUrl,
+                                type: 'GET',
+                                dataType: 'JSON',
+                                cache: true,
+                                success:function(data){
+                                    //$.jStorage.set(plugin.options.baseUrl+'/js/data&'+dataUrl, data);
+                                    //$.jStorage.setTTL(plugin.options.baseUrl+'/js/data&'+dataUrl, 30000);
+                                    if(data.objects.Route)
+                                        $.merge(plugin.objects.Route,data.objects.Route);
+                                    if(data.objects.Area)
+                                        $.merge(plugin.objects.Area,data.objects.Area);
+                                    if(data.objects.Place)
+                                        $.merge(plugin.objects.Place,data.objects.Place);
+                                }
+                            });
+                        }
+                        );
                     }
-                    );
+                    else
+                    {
+                        requests.push(function(){
+                            $.ajax({
+                                url: plugin.options.baseUrl+'/js/data',
+                                data:dataUrl,
+                                type: 'GET',
+                                dataType: 'JSON',
+                                cache: true,
+                                success:function(data){
+                                    //$.jStorage.set(plugin.options.baseUrl+'/js/data&'+dataUrl, data);
+                                    //$.jStorage.setTTL(plugin.options.baseUrl+'/js/data&'+dataUrl, 30000);
+                                    if(data.objects.Route)
+                                        $.merge(plugin.objects.Route,data.objects.Route);
+                                    if(data.objects.Area)
+                                        $.merge(plugin.objects.Area,data.objects.Area);
+                                    if(data.objects.Place)
+                                        $.merge(plugin.objects.Place,data.objects.Place);
+                                }
+                            });
+                        }
+                        );
+                    }
                 }
                 else
                 {
-                    requests.push(function(){
+                    requests.push(function(callback){
                         data = request;
                         if(data.objects.Route)
                             $.merge(plugin.objects.Route,data.objects.Route);
@@ -291,6 +327,7 @@
                             $.merge(plugin.objects.Area,data.objects.Area);
                         if(data.objects.Place)
                             $.merge(plugin.objects.Place,data.objects.Place);
+                        callback();
                     });
                 }
                 

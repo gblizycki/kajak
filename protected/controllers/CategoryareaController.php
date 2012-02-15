@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @package controllers 
+ */
 class CategoryAreaController extends Controller
 {
 

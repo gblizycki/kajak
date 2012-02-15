@@ -46,12 +46,12 @@
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'style'); ?>
-		<?php $this->renderPartial('/style/_form',array('form'=>$form,'model'=>$model->style));?>
+		<?php $this->renderPartial('/style/_form',array('form'=>$form,'model'=>$model));?>
 	</div>
         
         <div class="row">
 		<?php echo $form->labelEx($model,'location'); ?>
-		<?php $this->renderPartial('/point/_form',array('form'=>$form,'model'=>$model->location));?>
+		<?php $this->renderPartial('//point/_form',array('form'=>$form,'model'=>$model->location));?>
 	</div>
 
 	<div class="row buttons">

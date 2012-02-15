@@ -10,6 +10,7 @@
  * Edit - akcja pozwalająca edytować obiekty
  * @name JsController
  * @author Grzegorz Bliżycki <grzegorzblizycki@gmail.com>
+ * @package controllers
  */
 class JsController extends Controller
 {
@@ -70,6 +71,7 @@ class JsController extends Controller
             $dp = $obj->search(false);
             //Wybór filtrów
             $this->selectFilters($obj, $t, $filters, $categoriesExport);
+            //var_dump($filters);die();
             //Wprowadzenie filtrów do kryteriów wyszukiwania
             $criteria = new CMongoCriteria($dp->getCriteria());
             foreach ($filters[$t] as $filter)
@@ -95,6 +97,7 @@ class JsController extends Controller
         unset($currentUrl['backUrl']);
         $currentUrl = '/js/filter?' . http_build_query($currentUrl);
         $backUrl = null;
+        
         $panel = $this->renderPartial('panel', array('filters' => $filters, 'objects' => $objects, 'type' => $type,
             'models' => $filterObjects, 'backUrl' => $backUrl, 'currentUrl' => $currentUrl, 'realModels' => $models), true, true);
         echo CJSON::encode(array('panel' => $panel, 'pages' => $pages, 'pagesize' => $size, 'categories' => $categoriesExport, 'scenario' => 'list'));
@@ -334,6 +337,7 @@ class JsController extends Controller
             $categories = $object->category;
         } else
         {
+            
             $categories = $object->getDb()->command(
                     array("distinct" => $object->getCollectionName(),
                         "key" => "category",
@@ -341,7 +345,7 @@ class JsController extends Controller
                     ));
             $categories = $categories['values'];
         }
-
+        
         if (is_array($categories))
         {
             foreach ($categories as $category)
@@ -349,7 +353,9 @@ class JsController extends Controller
                 $cat = CMongoDocument::model('Category' . $type)->findByPk(new MongoId($category));
                 $categoriesExport[$type][$cat->id] = $this->array_filter_recursive($cat->exportView());
                 if ($cat != null && count($cat->filters) > 0)
+                {
                     $filters[$type] = CMap::mergeArray($filters[$type], $cat->filters);
+                }
             }
         }
         elseif ($categories != null)
@@ -358,7 +364,9 @@ class JsController extends Controller
             $cat = CMongoDocument::model('Category' . $type)->findByPk(new MongoId($categories));
             $categoriesExport[$t][$cat->id] = $this->array_filter_recursive($cat->exportView());
             if (count($cat->filters) > 0)
+            {
                 $filters[$type] = CMap::mergeArray($filters[$type], $cat->filters);
+            }
         }
     }
 

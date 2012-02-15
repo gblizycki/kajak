@@ -4,6 +4,7 @@
  * Description of Area
  * @name Area
  * @author Grzegorz Bliżycki <grzegorzblizycki@gmail.com>
+ * @package models
  */
 class Area extends CMongoDocument
 {
@@ -60,6 +61,7 @@ class Area extends CMongoDocument
     public function rules()
     {
         return array(
+            array('style','ext.JSONInput.JSONValidator'),
             array('points, createDate, updateDate, info, style,category', 'safe')
         );
     }

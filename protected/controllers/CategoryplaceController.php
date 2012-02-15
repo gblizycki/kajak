@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @package controllers 
+ */
 class CategoryPlaceController extends Controller
 {
 

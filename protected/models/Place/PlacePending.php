@@ -5,7 +5,7 @@
  *
  * @name Place
  * @author Grzegorz Bliżycki <grzegorzblizycki@gmail.com>
- * @todo 
+ * @package models
  * Created: 2011-12-21
  */
 class PlacePending extends ObjectPending

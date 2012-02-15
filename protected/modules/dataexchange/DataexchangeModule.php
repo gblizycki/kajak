@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @package dataexchange 
+ */
 class DataExchangeModule extends CWebModule
 {
 

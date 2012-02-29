@@ -29,7 +29,7 @@
                 <?php
                 $this->widget('ext.mbmenu.MbMenu', array(
                     'items' => array(
-												array('label'=>'App','url'=>array('site/index'),'visible'=>!Yii::app()->user->isGuest),
+												array('label'=>'App','url'=>array('/site/index'),'visible'=>!Yii::app()->user->isGuest),
                         array('label' => 'Route', 'url' => array('/route/admin'),'visible' => !Yii::app()->user->isGuest, 'items' => array(
                                 array('label' => 'Admin', 'url' => array('/route/admin')),
                                 array('label' => 'Create', 'url' => array('/route/create')),

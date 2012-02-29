@@ -20,7 +20,7 @@
     defaults = {
         baseUrl: "http://localhost/kajak",
         iconUrl: "http://localhost/kajak/css/icons.png",
-        useNode: false,
+        useNode: true,
         nodeUrl: "http://localhost:3000",
         data: {},
         routeLod: 11,

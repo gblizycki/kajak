@@ -10,6 +10,7 @@
 <?php
 $this->widget('ext.gmap.gmap',array('options'=>array(
     'baseUrl'=>Yii::app()->baseUrl,
-    'iconUrl'=>Yii::app()->baseUrl.'/css/icons.png'
+    'iconUrl'=>Yii::app()->baseUrl.'/css/icons.png',
+		'nodeUrl'=>'http://'.Yii::app()->request->serverName.':3000',
 )));
 ?>
